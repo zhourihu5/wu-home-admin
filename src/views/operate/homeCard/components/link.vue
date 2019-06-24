@@ -1,0 +1,194 @@
+<template>
+  <div class="link">
+    <el-form
+      ref="linkForm"
+      :rules="rules"
+      :model="linkForm"
+      label-position="left"
+      label-width="100px"
+      style="width: 600px; margin-left:50px;"
+    >
+      <el-form-item :label="$t('form.Cover')" prop="file">
+        <el-upload
+          :action="updateURL"
+          list-type="picture-card"
+          :limit="1"
+          :multiple="false"
+          :file-list="fileList"
+          :on-exceed="exceedUpload"
+          :before-upload="beforeAvatarUpload"
+          :on-success="handleAvatarSuccess"
+          :data="uploadParams"
+        >
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </el-form-item>
+      <el-form-item :label="$t('form.title')" prop="title">
+        <el-input v-model="linkForm.title" :placeholder="$t('table.temp.title')"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('form.cardAddress')" prop="location">
+        <el-input-number v-model="linkForm.location"></el-input-number>
+      </el-form-item>
+      <el-form-item :label="$t('form.uptime')" prop="pushDate">
+        <el-date-picker
+          v-model="linkForm.pushDate"
+          type="datetime"
+          :placeholder="$t('table.temp.date')"
+        />
+      </el-form-item>
+      <!-- <el-form-item :label="$t('form.downtime')" prop="downtime">
+        <el-date-picker
+          v-model="linkForm.downtime"
+          type="datetime"
+          :placeholder="$t('table.temp.date')"
+        />
+      </el-form-item>-->
+      <el-form-item :label="$t('form.link')" prop="url">
+        <el-input v-model="linkForm.url" :placeholder="$t('table.temp.url')"/>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="close">{{ $t('table.cancel') }}</el-button>
+      <el-button type="primary" @click="createData">{{ $t('table.confirm') }}</el-button>
+    </div>
+  </div>
+</template>
+<style lang="scss">
+@import "~@/styles/mixin.scss";
+.link {
+  animation: mymove 0.5s ease-in;
+  -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/
+  textarea {
+    height: 100px;
+  }
+  .dialog-footer {
+    text-align: right;
+    margin: 10px;
+  }
+}
+</style>
+<script>
+import { generatePoint } from "@/utils/i18n";
+import { addCard } from "@/api/card";
+import { overall } from '@/constant/index';
+export default {
+  data() {
+    return {
+      updateURL: overall.uploadUrl,
+      fileList: [], // 上传图片回显列表
+      linkForm: {
+        cardType: 3, // 图文卡片
+        location: 0, // 位置
+        pushDate: "", // 上线时间
+        title: "",
+        path: "", // 上传
+        // downtime: "", // 下线时间
+        url: "" // 链接
+      },
+      uploadParams: {
+        type: "card"
+      },
+      // 验证规则
+      rules: {
+        pushDate: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("unitName")
+          }
+        ],
+        title: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("title")
+          }
+        ],
+        url: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
+          }
+        ],
+        file: [
+          {
+            validator: (rule, value, callback) => {
+              console.log("验证");
+              if (this.linkForm.path == "") {
+                callback(this.generatePoint("upload"));
+              } else {
+                callback();
+              }
+            }
+          }
+        ]
+      }
+    };
+  },
+  created() {
+    console.log("上传连接 --- ", overall, this.updateURL)
+  },
+  methods: {
+    generatePoint,
+    createData() {
+      let _this = this;
+      console.log(this.linkForm);
+      _this.$refs.linkForm.validate(valid => {
+        if (valid) {
+          console.log(" -- ", _this.linkForm);
+          addCard(_this.linkForm).then(function(res) {
+            console.log("res --- >", res);
+            if (res.message == "SUCCESS") {
+              _this.close(); // 关闭弹窗
+              _this.$notify({
+                title: _this.generatePoint("notifySuccess.title"),
+                message: _this.generatePoint("notifySuccess.message"),
+                type: "success"
+              });
+            } else {
+              _this.$message.error(_this.generatePoint("system"));
+            }
+            _this.$emit("fetchData");
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    // 超出文件上传个数时触发
+    exceedUpload(file, fileList) {
+      // this.$message.error("超过最大上传数量,目前只可上传1张");
+      this.$notify({
+        title: this.generatePoint("notifyWarning.title"),
+        message: this.generatePoint("notifyWarning.message"),
+        type: "warning"
+      });
+    },
+    beforeAvatarUpload(file) {
+      // console.log("beforeAvatarUpload --", file);
+      this.uploadParams.file = file;
+    },
+    handleAvatarSuccess(res, file) {
+      // console.log("handleAvatarSuccess --", res, file);
+      this.linkForm.path = res.data;
+    },
+    // 图片
+    close() {
+      console.log("关闭");
+      this.$emit("close");
+      this.linkForm = {
+        cardType: 3, // 图文卡片
+        location: 0, // 位置
+        pushDate: "", // 上线时间
+        title: "",
+        path: "", // 上传
+        // downtime: "", // 下线时间
+        url: "" // 链接
+      };
+      this.fileList = [];
+      this.$refs.linkForm.resetFields();
+    }
+  }
+};
+</script>s
