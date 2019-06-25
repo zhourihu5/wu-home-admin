@@ -70,7 +70,7 @@
 <script>
 import { generatePoint } from "@/utils/i18n";
 import { addCard } from "@/api/card";
-import { overall } from '@/constant/index';
+import { overall } from "@/constant/index";
 export default {
   data() {
     return {
@@ -108,7 +108,7 @@ export default {
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            validator: this.validateUrl
           }
         ],
         file: [
@@ -127,10 +127,22 @@ export default {
     };
   },
   created() {
-    console.log("上传连接 --- ", overall, this.updateURL)
+    console.log("上传连接 --- ", overall, this.updateURL);
   },
   methods: {
     generatePoint,
+    // 验证url
+    validateUrl(rule, value, callback) {
+      if (!value) {
+        callback(new Error(this.generatePoint("required")));
+      } else {
+        if (value.match(/http:\/\/.+/) == null) {
+          callback(new Error(this.generatePoint("urlInvalid")));
+        } else {
+          callback();
+        }
+      }
+    },
     createData() {
       let _this = this;
       console.log(this.linkForm);

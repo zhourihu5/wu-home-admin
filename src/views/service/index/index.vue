@@ -99,7 +99,6 @@
       <el-dialog
         :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
         :visible.sync="dialogFormVisible"
-        :fullscreen="true"
         @close="close"
         @opened="opened"
       >

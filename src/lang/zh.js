@@ -114,7 +114,8 @@ export default {
         serviceProvider: '服务商',
         product: '产品端',
         uploadTime: '上传时间',
-        deliveryTime: '发送时间'
+        deliveryTime: '发送时间',
+        cover: '封面'
     },
     form: {
         title: '标题',
@@ -160,7 +161,10 @@ export default {
         describe: '描述',
         serviceProviderName: '服务商名称',
         type: '类型',
-        content: '内容'
+        content: '内容',
+        unchecked: "未选中",
+        select: "选中的",
+        deliveryTime: '发送时间',
     },
     login: {
         title: '系统登录',
@@ -198,6 +202,7 @@ export default {
     },
     point: {
         close: "确认关闭吗?",
+        delete: "确认删除吗",
         loadMore: '加载更多...',
         notifySuccess: {
             title: '成功',
@@ -238,5 +243,6 @@ export default {
         required: '必填',
         upload: '必须上传',
         modular: '请选择模块',
+        urlInvalid: 'url无效,请以http://开头'
     }
 }

@@ -161,8 +161,12 @@ export default {
         serviceList: 'Service List',
         describe: 'describe',
         serviceProviderName: 'Service Provider Name',
-        type: 'type',
-        content: "content"
+        type: 'Type',
+        content: "Content",
+        cover: 'Cover',
+        unchecked: "Unchecked",
+        select: "Select",
+        deliveryTime: 'DeliveryTime',
     },
     login: {
         title: 'Login Form',
@@ -200,6 +204,7 @@ export default {
     },
     point: {
         close: "Are you sure to close it?",
+        delete: "Do you confirm deletion?",
         loadMore: 'Load more...',
         notifySuccess: {
             title: 'Success',
@@ -239,6 +244,7 @@ export default {
         title: 'Title must be filled in',
         required: 'required',
         upload: 'Must upload',
-        modular: 'Please choose modular'
+        modular: 'Please choose modular',
+        urlInvalid: 'The URL is invalid. Start with http://'
     }
 }

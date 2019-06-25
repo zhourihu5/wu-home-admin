@@ -1,39 +1,35 @@
 import request from '@/utils/request'
 
-export function getAdvertList() {
-    return new Promise(function (resolve, reject) {
-        let data = {
-            code: 0,
-            data: [
-                {
-                    id: 1,
-                    title: '测试消息1',
-                    type: '图片',
-                    view: 'http://image.house-keeper.cn/advertisement/2019-04-25/6be68d90-da6a-46ea-8261-906fd9b8f77bWX20190424-12495.png',
-                    url: 'https://www.baidu.com/'
-                },
-                {
-                    id: 2,
-                    title: '测试消息2',
-                    type: '图片',
-                    view: 'http://image.house-keeper.cn/advertisement/2019-04-25/6be68d90-da6a-46ea-8261-906fd9b8f77bWX20190424-12495.png',
-                    url: 'https://www.baidu.com/'
-                },
-                {
-                    id: 3,
-                    title: '测试消息3',
-                    type: '图片',
-                    view: 'http://image.house-keeper.cn/advertisement/2019-04-25/6be68d90-da6a-46ea-8261-906fd9b8f77bWX20190424-12495.png',
-                    url: 'https://www.baidu.com/'
-                },
-            ]
-        }
-        resolve(data);
+// 获取广告列表
+export function getAdvertList(params) {
+    return request({
+        url: '/v1/adv/findAll',
+        method: 'get',
+        params
+    })
+}
+
+// 保存广告
+export function addAdver(data) {
+    return request({
+        url: '/v1/adv/saveAdv',
+        method: 'post',
+        data: data,
+    })
+
+}
+
+// 删除广告
+export function deleteAdver(data) {
+    return request({
+        url: '/v1/adv/delAdv',
+        method: 'post',
+        data: data,
     })
 }
 
 export function getFloorList() {
-    return new Promise(function (resolve, reject) { 
+    return new Promise(function (resolve, reject) {
         let data = {
             code: 0,
             data: [

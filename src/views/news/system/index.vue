@@ -101,10 +101,9 @@
             placement="top"
           >
             <el-transfer
-              filter-placeholder="请选择社区"
               v-model="systemForm.communtity"
-              :titles="['社区列表', '选中列表']"
-              :button-texts="['删除', '添加']"
+              :titles="[$t('form.unchecked'), $t('form.select')]"
+              :button-texts="[$t('table.delete'), $t('table.add')]"
               :data="data"
               @change="handleChange"
             ></el-transfer>
@@ -148,7 +147,7 @@ import { generatePoint } from "@/utils/i18n";
 import { overall } from "@/constant/index";
 import wangeditor from "@/components/Wangeditor/index";
 import { getAreas } from "@/api/area";
-import { getCommuntityByArea, getFloorByCommuntity } from "@/api/community";
+import { getCommuntityByArea } from "@/api/community";
 export default {
   components: { Pagination, wangeditor },
   data() {
@@ -200,7 +199,7 @@ export default {
         ],
         areaOptionsVal: [
           {
-            type: 'array',
+            type: "array",
             required: true,
             trigger: "change",
             // validator: this.validateareaOptionsVal
@@ -250,8 +249,8 @@ export default {
       communitypProps: {
         label: "name",
         value: "id"
-      },
-      
+      }
+
       // areaOptionsVal: []
     };
   },
@@ -272,14 +271,6 @@ export default {
         callback();
       }
     },
-    // validateareaOptionsVal(rule, value, callback) {
-    //   console.log(value,  this.areaOptionsVal)
-    //   if (!this.areaOptionsVal) {
-    //     callback(new Error(this.generatePoint("required")));
-    //   } else {
-    //     callback();
-    //   }
-    // },
     // 查询数据
     fetchData() {
       let _this = this;

@@ -112,7 +112,8 @@ export default {
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: this.validateUrl
           }
         ],
         file: [
@@ -154,6 +155,18 @@ export default {
   created() {},
   methods: {
     generatePoint,
+    // 验证url
+    validateUrl(rule, value, callback) {
+      if (!value) {
+        callback(new Error(this.generatePoint("required")));
+      } else {
+        if (value.match(/http:\/\/.+/) == null) {
+          callback(new Error(this.generatePoint("urlInvalid")));
+        } else {
+          callback();
+        }
+      }
+    },
     // 超出文件上传个数时触发
     exceedUpload(file, fileList) {
       // this.$message.error("超过最大上传数量,目前只可上传1张");
