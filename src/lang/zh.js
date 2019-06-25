@@ -160,6 +160,7 @@ export default {
         describe: '描述',
         serviceProviderName: '服务商名称',
         type: '类型',
+        content: '内容'
     },
     login: {
         title: '系统登录',

@@ -161,7 +161,8 @@ export default {
         serviceList: 'Service List',
         describe: 'describe',
         serviceProviderName: 'Service Provider Name',
-        type: 'type'
+        type: 'type',
+        content: "content"
     },
     login: {
         title: 'Login Form',

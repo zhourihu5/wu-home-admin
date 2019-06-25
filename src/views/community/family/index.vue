@@ -254,16 +254,14 @@
 import Pagination from "@/components/Pagination"; // 分页
 import { getAreas } from "@/api/area";
 import {
-  getFloorByCommuntity,
-  getUnitByFloor,
-  addFamily
-} from "@/api/community";
-import {
   getCommuntityByArea,
   getFamilyAll,
   addUserAndFamily,
   findFamilyUser,
-  delUserAndFamily
+  delUserAndFamily,
+  getFloorByCommuntity,
+  getUnitByFloor,
+  addFamily
 } from "@/api/community";
 import { generatePoint } from "@/utils/i18n";
 import userList from "./components/user";

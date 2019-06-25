@@ -77,26 +77,56 @@
         <el-form-item :label="$t('form.title')" prop="title">
           <el-input v-model="systemForm.title" :placeholder="$t('table.temp.title')"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('form.type')" prop="url">
+        <el-form-item :label="$t('form.type')" prop="type">
           <el-select v-model="systemForm.type" :placeholder="$t('table.temp.modular')">
-            <el-option
-              v-for="item in type"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+            <el-option v-for="item in type" :key="item.id" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('form.type')" prop="url">
-          <wangeditor></wangeditor>
+        <el-form-item :label="$t('form.content')" prop="content">
+          <wangeditor ref="wangeditor"></wangeditor>
+        </el-form-item>
+        <el-form-item :label="$t('form.area')" prop="areaOptionsVal">
+          <el-cascader
+            :props="areaProps"
+            @change="handleAreaForm"
+            v-model="systemForm.areaOptionsVal"
+            :placeholder="$t('table.temp.area')"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item :label="$t('form.community')" prop="communtity">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('point.addreCommunity')"
+            placement="top"
+          >
+            <el-transfer
+              filter-placeholder="请选择社区"
+              v-model="systemForm.communtity"
+              :titles="['社区列表', '选中列表']"
+              :button-texts="['删除', '添加']"
+              :data="data"
+              @change="handleChange"
+            ></el-transfer>
+          </el-tooltip>
         </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="close">{{ $t('table.cancel') }}</el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus==='create'?createData():updateData()"
+        >{{ $t('table.confirm') }}</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 <style lang="scss">
 .system {
   padding: 20px;
+  .el-transfer {
+    margin: 20px 0 0 0;
+  }
   .system-container {
     margin-bottom: 20px;
     .el-cascader {
@@ -113,14 +143,17 @@
 </style>
 <script>
 import Pagination from "@/components/Pagination"; // 分页
-import { getMessageAll } from "@/api/message";
+import { getMessageAll, pushMessage } from "@/api/message";
 import { generatePoint } from "@/utils/i18n";
 import { overall } from "@/constant/index";
 import wangeditor from "@/components/Wangeditor/index";
+import { getAreas } from "@/api/area";
+import { getCommuntityByArea, getFloorByCommuntity } from "@/api/community";
 export default {
-  components: { Pagination, wangeditor},
+  components: { Pagination, wangeditor },
   data() {
     return {
+      data: [], // 穿梭框数据
       listLoading: true,
       systemNewsList: [], // 列表数据
       total: 0,
@@ -132,21 +165,121 @@ export default {
       dialogStatus: "", // 标示当前操作是添加、还是修改
       dialogFormVisible: false, // 是否展示dialog内容
       listQuery: {
-        title: ""
+        title: "",
+        pageNum: 1,
+        pageSize: 10
       },
       systemForm: {
-          title: "",
-          type: ""
+        title: "",
+        type: "",
+        content: "",
+        communtity: [],
+        areaOptionsVal: [] // 三级联动数据
       },
-      rules: {},
-      type: overall.message.type
+      rules: {
+        title: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
+          }
+        ],
+        type: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
+          }
+        ],
+        content: [
+          {
+            required: true,
+            trigger: "change",
+            validator: this.validateContent
+          }
+        ],
+        areaOptionsVal: [
+          {
+            type: 'array',
+            required: true,
+            trigger: "change",
+            // validator: this.validateareaOptionsVal
+            message: this.generatePoint("required")
+          }
+        ],
+        communtity: [
+          {
+            type: "array",
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
+          }
+        ]
+      },
+      type: overall.message.type,
+      // 省市区
+      areaProps: {
+        label: "areaName",
+        value: "id",
+        children: "children",
+        lazy: true,
+        lazyLoad(node, resolve) {
+          const { level } = node;
+          switch (level) {
+            case 0:
+              getAreas().then(function(res) {
+                resolve(res.data);
+              });
+              break;
+            case 1:
+              getAreas({ pid: node.value }).then(function(res) {
+                resolve(res.data);
+              });
+              break;
+            case 2:
+              getAreas({ pid: node.value }).then(function(res) {
+                for (let i = 0; i < res.data.length; i++) {
+                  res.data[i].leaf = true;
+                }
+                resolve(res.data);
+              });
+              break;
+          }
+        }
+      },
+      communitypProps: {
+        label: "name",
+        value: "id"
+      },
+      
+      // areaOptionsVal: []
     };
   },
   created() {
+    console.log(this.type);
     this.fetchData();
   },
   methods: {
     generatePoint,
+    handleChange(value, direction, movedKeys) {
+      console.log(" -- ", this.value);
+      console.log(value, direction, movedKeys);
+    },
+    validateContent(rule, value, callback) {
+      if (!this.$refs.wangeditor.getContentText()) {
+        callback(new Error(this.generatePoint("required")));
+      } else {
+        callback();
+      }
+    },
+    // validateareaOptionsVal(rule, value, callback) {
+    //   console.log(value,  this.areaOptionsVal)
+    //   if (!this.areaOptionsVal) {
+    //     callback(new Error(this.generatePoint("required")));
+    //   } else {
+    //     callback();
+    //   }
+    // },
     // 查询数据
     fetchData() {
       let _this = this;
@@ -164,21 +297,74 @@ export default {
         return v.value == flag;
       })[0].label;
     },
-    querySystemNews() {},
+    querySystemNews() {
+      this.fetchData();
+    },
     showAddSystemView() {
       this.dialogStatus = "create"; // 标示创建
       this.dialogFormVisible = true; // 展示弹窗
+    },
+    // 监听区域查询社区 表单
+    handleAreaForm(val) {
+      this.getCommuntity(1, val[2]); // 查询社区
+    },
+    // 更新社区
+    getCommuntity(code, val) {
+      let _this = this;
+      getCommuntityByArea({ areaCode: val }).then(function(res) {
+        let newData = [];
+        res.data.forEach(function(v) {
+          newData.push({
+            label: v.name,
+            key: v.id,
+            pinyin: v.name
+          });
+        });
+        _this.data = newData;
+      });
+    },
+    createData() {
+      let _this = this;
+      _this.$refs.systemForm.validate(valid => {
+        if (valid) {
+          _this.systemForm.content = this.$refs.wangeditor.getContentHtml(); // 获取html格式
+          console.log(_this.systemForm);
+          pushMessage({
+            communtity: _this.systemForm.communtity.join(","),
+            content: _this.systemForm.content,
+            title: _this.systemForm.title,
+            type: _this.systemForm.type
+          }).then(function(res) {
+            _this.dialogFormVisible = false; // 关闭弹窗
+            if (res.message == "SUCCESS") {
+              _this.$notify({
+                title: _this.generatePoint("notifySuccess.title"),
+                message: _this.generatePoint("notifySuccess.message"),
+                type: "success"
+              });
+            } else {
+              _this.$message.error(_this.generatePoint("system"));
+            }
+            _this.fetchData(); // 更新列表
+          });
+        } else {
+          return false;
+        }
+      });
     },
     close() {
       console.log("关闭");
       this.systemForm = {
         title: "",
-        url: "",
-        path: "",
-        memo: "",
-        pushDate: ""
+        type: "",
+        content: "",
+        communtity: [],
+        areaOptionsVal: [] // 清空省市区
       };
+      this.data = []; // 清空穿梭框
+      this.$refs.wangeditor.initContent(); // 重置富文本内容
       this.$refs.systemForm.resetFields();
+      this.dialogFormVisible = false;
     }
   }
 };

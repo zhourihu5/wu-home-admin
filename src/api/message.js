@@ -8,3 +8,12 @@ export function getMessageAll(params) {
         params,
     })
 }
+
+// 推送消息
+export function pushMessage(data) {
+    return request({
+        url: '/v1/message/pushMessage',
+        method: 'post',
+        data: data,
+    })
+}

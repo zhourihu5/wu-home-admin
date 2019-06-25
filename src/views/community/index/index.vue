@@ -89,6 +89,7 @@
       <el-dialog
         :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
         :visible.sync="dialogFormVisible"
+        @close="close"
       >
         <el-form
           ref="communityForm"
