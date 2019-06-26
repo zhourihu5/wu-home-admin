@@ -489,7 +489,7 @@ export default {
       } else {
         this.$notify({
           dangerouslyUseHTMLString: true,
-          title: "提示",
+          title: this.generatePoint("notifyWarning.title1"),
           message:
             "1. " +
             _this.generatePoint("retrieval") +

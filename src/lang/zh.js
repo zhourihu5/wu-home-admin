@@ -115,7 +115,9 @@ export default {
         product: '产品端',
         uploadTime: '上传时间',
         deliveryTime: '发送时间',
-        cover: '封面'
+        cover: '封面',
+        upperShelf: '上架',
+        lowerShelf: '下架'
     },
     form: {
         title: '标题',
@@ -212,6 +214,7 @@ export default {
             message3: '恭喜您,上架成功',
             message4: '恭喜您,操作成功',
             message5: '恭喜您,删除成功',
+            message6: '恭喜您,下架成功'
         },
         login: {
             nickName: '请输入账号',
@@ -219,7 +222,13 @@ export default {
         },
         notifyWarning: {
             title: '警告',
+            title1: '提示',
             message: '最多只可上传一张,请删除后重新上传',
+        },
+        notifyError: {
+            title: '错误',
+            message: '图片必传, 请上传',
+            message1: '服务必选, 请选择服务',
         },
         platform: '平台必选',
         userName: '账号不能为空',

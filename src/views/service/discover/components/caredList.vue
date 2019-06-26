@@ -197,10 +197,10 @@ export default {
     };
   },
   props: {
-    careds: Object
+    services: Object
   },
   watch: {
-    careds: {
+    services: {
       handler: function(val, oldval) {
         if (val) {
           this.list = val.data;

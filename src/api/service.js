@@ -19,6 +19,16 @@ export function addService(data) {
   })
 }
 
+// 修改服务
+export function updateService(data) {
+  return request({
+    url: '/v1/service/updateType',
+    method: 'post',
+    data
+  })
+}
+
+
 // 获取应用审核专区列表
 export function getApplicationAudit() {
   return new Promise(function (resolve, reject) {

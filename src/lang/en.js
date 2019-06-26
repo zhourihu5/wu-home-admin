@@ -115,7 +115,9 @@ export default {
         serviceProvider: 'Service Provider',
         product: 'Product',
         uploadTime: 'UploadTime',
-        deliveryTime: 'DeliveryTime'
+        deliveryTime: 'DeliveryTime',
+        upperShelf: 'upperShelf',
+        lowerShelf: 'lowerShelf'
     },
     form: {
         title: 'Title',
@@ -214,6 +216,7 @@ export default {
             message3: 'Congratulations on your success',
             message4: 'Congratulations on your successful operation',
             message5: 'Congratulations on the success of deletion',
+            message6: 'Congratulations on your success'
         },
         login: {
             nickName: 'Please enter your account number.',
@@ -221,6 +224,7 @@ export default {
         },
         notifyWarning: {
             title: 'warning',
+            title1: 'tips',
             message: 'Up to one upload',
         },
         platform: 'Platform Requirements',
