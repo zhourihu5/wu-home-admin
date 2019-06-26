@@ -1,161 +1,163 @@
 <template>
-  <div class="affair">
-    <el-button
-      class="filter-item"
-      style="margin-left: 10px;"
-      type="primary"
-      icon="el-icon-edit"
-      @click="showAddUserView"
-    >{{ $t('table.add') }}</el-button>
-    <cared-list :careds="careds" ref="headerChild" @onPage="getPage" v-loading="loading"></cared-list>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        label-width="100px"
-        style="width: 500px; margin-left:20px;"
-      >
-        <el-form-item :label="$t('form.icon')" prop="userName">
-          <!-- <el-input v-model="temp.userName"/> -->
-          <el-upload
-            v-show="uploadIsShow"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            list-type="picture-card"
-            :limit="1"
-            :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
-            :multiple="false"
-            :file-list="fileList"
-            :on-error="errorUpload"
-            :on-exceed="exceedUpload"
-          >
-            <i class="el-icon-plus"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item :label="$t('form.mainTitle')" prop="userName">
-          <el-input v-model="temp.mainTitle"/>
-        </el-form-item>
-        <el-form-item :label="$t('form.subheading')" prop="userName">
-          <el-input v-model="temp.subheading"/>
-        </el-form-item>
-        <el-form-item :label="$t('form.link')" prop="userName">
-          <el-input v-model="temp.link"/>
-        </el-form-item>
-        <el-form-item :label="$t('form.PutIn')" prop="userName">
-          <el-date-picker
-            v-model="temp.putInTime"
-            type="datetime"
-            :placeholder="$t('placeholder.putinTime')"
-          ></el-date-picker>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus==='create'?createData():updateData()"
-        >{{ dialogStatus==='create' ? $t('table.preserve') : $t('table.update') }}</el-button>
-        <el-button type="primary" @click="preview()">{{ $t('table.preview') }}</el-button>
-        <el-button type="primary" @click="preserveAndPutIn()">{{ $t('table.preserveAndPutIn') }}</el-button>
+  <div class="find">
+    <div class="cover-summary">
+      <!-- <h3>{{ $t('form.Cover') }}</h3>
+      <div class="cover">
+        <el-upload
+          :action="updateURL"
+          list-type="picture-card"
+          :limit="1"
+          :multiple="false"
+          :file-list="fileList"
+          :on-exceed="exceedUpload"
+          :before-upload="beforeAvatarUpload"
+          :on-success="handleAvatarSuccess"
+          :on-error="handleAvatarError"
+          :data="uploadParams"
+        >
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </div>-->
+    </div>
+    <div class="service-list">
+      <div class="myForm">
+        <el-tabs v-model="activeName" @tab-click="handleClick" class="my-tabs">
+          <el-tab-pane :label="$t('form.applicationAll')" name="serviceAll"></el-tab-pane>
+          <el-tab-pane :label="$t('form.UpperShelf')" name="upperShelf"></el-tab-pane>
+        </el-tabs>
+        <component :is="currentView" ref="component"></component>
       </div>
-    </el-dialog>
+    </div>
+    <div class="options-main">
+      <el-button
+        type="primary"
+        size="medium"
+        @click="createData"
+      >{{ index == 0 ? $t('table.upperShelf') : $t('table.lowerShelf')}}</el-button>
+      <!-- <el-button type="primary" size="medium">{{ $t('table.preview') }}</el-button>
+      <el-button type="primary" size="medium">{{ $t('table.preserveAndPutIn') }}</el-button>-->
+    </div>
   </div>
 </template>
-<style lang="scss">
-.affair {
+<style lang="scss" >
+@import "~@/styles/mixin.scss";
+.find {
   margin: 20px;
-  .el-dialog__body {
-    text-align: left;
+  .cover-summary {
+    @include clearfix;
+    .cover {
+      float: left;
+      width: 30%;
+      .el-upload-list__item {
+        width: 156px !important;
+        height: 156px !important;
+      }
+      .el-upload--picture-card {
+        width: 156px;
+        height: 156px;
+      }
+    }
+    .content {
+      float: left;
+      width: 70%;
+      height: 148px;
+      position: relative;
+      .el-textarea {
+        height: 100%;
+        textarea {
+          height: 100%;
+        }
+      }
+
+      .textarea-point {
+        position: absolute;
+        // bottom: -10px;
+        bottom: 0px;
+        right: 10px;
+        text-align: right;
+        p {
+          font-size: 12px;
+          color: #c0c0c0;
+        }
+      }
+    }
+  }
+  .service-list {
+    margin-top: 20px;
+    .myForm {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+      padding: 10px;
+      position: relative;
+      height: 800px;
+      overflow: auto;
+    }
+  }
+  .create-date {
+    padding: 50px 0 50px 0;
+    .demonstration {
+      font-size: 14px;
+    }
+  }
+  .options-main {
+    text-align: center;
+    // padding: 50px;
+    button {
+      margin: 10px;
+    }
   }
 }
 </style>
 <script>
-import { getCardList } from "./../../../api/card";
 import { generatePoint } from "@/utils/i18n";
-import caredList from "./components/caredList";
+import { overall } from "@/constant/index";
+import { getServiceAll, updateService } from "@/api/service";
+import serviceAll from "./components/serviceAll"; // 全部应用
+import upperShelf from "./components/recommend"; // 已经上架应用
 export default {
+  components: { serviceAll, upperShelf },
   data() {
     return {
-      careds: null, // 卡片列表对象
-      textMap: {
-        // 弹窗展示的title
-        update: "Edit",
-        create: "Create"
-      },
-      dialogStatus: "", // 标示当前操作是添加、还是修改
-      dialogFormVisible: false, // 是否展示表单dialog内容
-      // 表单验证
-      rules: {},
-      // 表单数据
-      temp: {
-        theme: "", // 主标题
-        subheading: "", // 副标题
-        link: "", // 链接
-        putInTime: null // 投放时间
-        // userName: "",
-        // userId: "",
-        // password: "",
-        // email: "",
-        // radioName: "",
-        // phone: "",
-        // rolesValue: "",
-        // dictionaryNameList: [], // 地区
-        // expireTime: ""
+      activeName: "serviceAll",
+      index: 0,
+      arr: ["serviceAll", "upperShelf"],
+      updateURL: overall.uploadUrl,
+      uploadParams: {
+        type: "service"
       },
       fileList: [], // 上传图片回显列表
-      dialogImageUrl: "",
-      dialogImgVisible: false,
-      uploadIsShow: true,
-
-      pageNum: 1, // 默认第一页面
-      pageSize: 10, // 一页多少条
-      loading: true,
+      loading: true, // 列表数据加载loading
+      discoverForm: {
+        cover: ""
+      },
+      listQuery: {
+        // type: 1, // 发现type
+        pageNum: 1,
+        pageSize: 10
+      },
+      serviceList: []
     };
   },
-  created() {
-    this.getCardDatas(); // 获取卡片数据
-  },
-  components: {
-    caredList
+  computed: {
+    // 动态组件
+    currentView() {
+      return this.arr[this.index];
+    }
   },
   methods: {
     generatePoint,
-    // 获取卡片数据
-    getCardDatas() {
-      let _this = this;
-      // 获取数据
-      getCardList({pageNum: _this.pageNum, pageSize: _this.pageSize}).then(function(res) {
-         setTimeout(() => {
-          _this.careds = res;
-          _this.loading = false;
-        }, 2000);
-      });
+    // 页签切换
+    handleClick(tab, event) {
+      console.log("页签切换 ", tab.index);
+      this.index = tab.index;
     },
-
-    // 显示添加/修改窗口
-    showAddUserView() {
-      let _this = this;
-      _this.dialogStatus = "create"; // 标示创建
-      _this.dialogFormVisible = true; // 展示弹窗
+    handleAvatarSuccess(res, file) {
+      this.discoverForm.cover = res.data;
     },
-
-    handlePictureCardPreview(file) {
-      console.log(111, file);
-      this.dialogImageUrl = file.url;
-      this.dialogImgVisible = true;
+    handleAvatarError(err, file, fileList) {
+      console.log(err, file, fileList);
     },
-    // 删除上传列表文件时触发
-    handleRemove(file, fileList) {
-      this.fileList = fileList;
-    },
-    // 上传错误时候触发
-    errorUpload(err, file, fileList) {
-      console.log(err);
-      console.log(file);
-      console.log(fileList);
-      this.fileList.push(file); // 回显
+    beforeAvatarUpload(file) {
+      this.uploadParams.file = file;
     },
     // 超出文件上传个数时触发
     exceedUpload(file, fileList) {
@@ -168,55 +170,57 @@ export default {
     },
     // 保存
     createData() {
-      console.log("createData");
-      this.dialogFormVisible = false; // 关闭弹窗
-      this.$notify({
-        title: this.generatePoint("notifySuccess.title"),
-        message: this.generatePoint("notifySuccess.message"),
-        type: "success"
-      });
-    },
-    // 修改
-    updateData() {
-      console.log("updateData");
-      this.dialogFormVisible = false; // 关闭弹窗
-      this.$notify({
-        title: this.generatePoint("notifySuccess.title"),
-        message: this.generatePoint("notifySuccess.message1"),
-        type: "success"
-      });
-    },
-    // 预览
-    preview() {
-      console.log("preview");
-      this.dialogFormVisible = false; // 关闭弹窗
-    },
-    // 保存并投放
-    preserveAndPutIn() {
-      console.log("preserveAndPutIn");
-      this.dialogFormVisible = false; // 关闭弹窗
-      this.$notify({
-        title: this.generatePoint("notifySuccess.title"),
-        message: this.generatePoint("notifySuccess.message2"),
-        type: "success"
-      });
-    },
-     // 分页查询数据
-    getPage() {
-      let _this = this;
-      _this.pageNum = this.pageNum + 1; // 更新分页数
-      console.log("调用分页", this.pageNum + 1);
-      _this.loading = true;
-      // 获取数据
-      getCardList({pageNum: _this.pageNum, pageSize: _this.pageSize}).then(function(res) {
-        console.log("res.data --- ", res.data)
-        setTimeout(() => {
-          _this.careds.isNext = res.isNext;
-          _this.careds.data = _this.careds.data.concat(res.data);
-          console.log( _this.list)
-          _this.loading = false;
-        }, 2000);
-      });
+      let msg = "";
+      let flag = true; // 可以提交
+      // 验证图片
+      // if (this.discoverForm.cover == "") {
+      //   flag = false;
+      //   msg +=
+      //     (msg == "" ? "1. " : "2. ") +
+      //     this.generatePoint("notifyError.message") +
+      //     (msg == "" ? "<br/> " : "");
+      // }
+      // 验证服务
+      if (this.$refs.component.checkedCities.length == 0) {
+        flag = false;
+        msg +=
+          (msg == "" ? "1. " : "2. ") +
+          this.generatePoint("notifyError.message1") +
+          (msg == "" ? "<br/> " : "");
+      }
+
+      if (flag) {
+        let _this = this;
+        // 修改
+        updateService({
+          type: _this.index == 0 ? 2 : null,
+          service: this.$refs.component.checkedCities.join(",")
+        }).then(function(res) {
+          console.log("res --- ", res);
+          if (res.message == "SUCCESS") {
+            let msg =
+              _this.index == 0
+                ? _this.generatePoint("notifySuccess.message3")
+                : _this.generatePoint("notifySuccess.message6");
+            _this.$notify({
+              title: _this.generatePoint("notifySuccess.title"),
+              message: msg,
+              type: "success"
+            });
+          } else {
+            _this.$message.error(_this.generatePoint("system"));
+          }
+          _this.$refs.component.restDefault();
+          _this.$refs.component.fetchData(); // 更新列表
+        });
+      } else {
+        this.$notify({
+          dangerouslyUseHTMLString: true,
+          title: this.generatePoint("notifyWarning.title1"),
+          message: msg,
+          type: "warning"
+        });
+      }
     }
   }
 };

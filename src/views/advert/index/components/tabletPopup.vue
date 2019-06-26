@@ -87,7 +87,7 @@
       >
         <el-form-item :label="$t('form.Cover')" prop="file">
           <el-upload
-            :action="updateURL"
+            :action="uploadUrl"
             list-type="picture-card"
             :limit="1"
             :multiple="false"
@@ -195,7 +195,7 @@ import { overall } from "@/constant/index";
 export default {
   data() {
     return {
-      updateURL: overall.uploadUrl,
+      uploadUrl: overall.uploadUrl,
       fileList: [], // 上传图片回显列表
       uploadParams: {
         type: "adv"
