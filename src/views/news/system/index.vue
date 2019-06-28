@@ -115,6 +115,7 @@
         <el-button
           type="primary"
           @click="dialogStatus==='create'?createData():updateData()"
+          :loading="buttonLoading"
         >{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
@@ -154,6 +155,7 @@ export default {
     return {
       data: [], // 穿梭框数据
       listLoading: true,
+      buttonLoading: false, // 按钮加载请求
       systemNewsList: [], // 列表数据
       total: 0,
       textMap: {
@@ -316,6 +318,7 @@ export default {
     },
     createData() {
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.systemForm.validate(valid => {
         if (valid) {
           _this.systemForm.content = this.$refs.wangeditor.getContentHtml(); // 获取html格式
@@ -327,6 +330,7 @@ export default {
             type: _this.systemForm.type
           }).then(function(res) {
             _this.dialogFormVisible = false; // 关闭弹窗
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.$notify({
                 title: _this.generatePoint("notifySuccess.title"),
@@ -339,6 +343,7 @@ export default {
             _this.fetchData(); // 更新列表
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

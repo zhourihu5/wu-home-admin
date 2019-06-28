@@ -1,6 +1,6 @@
 <template>
   <div class="userList">
-    <h3 class="title">添加住戶</h3>
+    <h3 class="title">{{ $t('table.household') }}</h3>
     <div class="app-container">
       <!-- query -->
       <div class="filter-container">
@@ -38,22 +38,22 @@
             <el-radio v-model="userId" :label="row.id" @change="userChange(row)">{{row.id}}</el-radio>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.nickName')" width="200">
+        <el-table-column align="center" :label="$t('table.nickName')" width="330">
           <template
             slot-scope="scope"
           >{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.userName')" width="210" align="center">
+        <el-table-column :label="$t('table.userName')" width="334" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.userName ? scope.row.userName : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.community')" width="310" align="center">
+        <el-table-column :label="$t('table.community')" width="330" align="center">
           <template
             slot-scope="scope"
           >{{ scope.row.community ? scope.row.community : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.addUser')" width="233" align="center">
+        <el-table-column :label="$t('table.addUser')" width="335" align="center">
           <template
             slot-scope="scope"
           >{{ scope.row.addUser ? scope.row.addUser : $t('table.noTime')}}</template>
@@ -62,7 +62,7 @@
           align="center"
           prop="created_at"
           :label="$t('table.createTime')"
-          width="200"
+          width="300"
         >
           <template slot-scope="scope">
             <i class="el-icon-time"/>

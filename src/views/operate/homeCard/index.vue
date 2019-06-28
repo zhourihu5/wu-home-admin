@@ -94,9 +94,9 @@
       >
         <div class="myForm">
           <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="增加图文保护" name="imageText"></el-tab-pane>
-            <el-tab-pane label="增加链接型保护" name="mlink"></el-tab-pane>
-            <el-tab-pane label="增加功能保护" name="mFunction"></el-tab-pane>
+            <el-tab-pane :label="$t('form.imageText')" name="imageText"></el-tab-pane>
+            <el-tab-pane :label="$t('form.olink')" name="mlink"></el-tab-pane>
+            <el-tab-pane :label="$t('form.ofunction')" name="mFunction"></el-tab-pane>
           </el-tabs>
           <component
             :is="currentView"

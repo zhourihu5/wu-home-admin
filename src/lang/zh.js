@@ -3,7 +3,7 @@ export default {
         dashboard: '首页',
         service: '服务',
         discover: '发现管理',
-        affair: '政服服务',
+        affair: '政务服务',
         subscribe: '订阅管理',
         serviceIndex: '服务管理',
         operate: '运营',
@@ -27,7 +27,10 @@ export default {
         role: '角色管理',
         advert: '广告',
         push: '广告推广',
-        advertIndex: '广告管理'
+        advertIndex: '广告管理',
+        equipment: '设备管理',
+        base: '底座机管理',
+        pad: '平板机管理'
     },
     table: {
         id: 'ID',
@@ -74,6 +77,7 @@ export default {
             communityChoice: '请选择社区',
             floorChoice: '请选择楼宇',
             unitChoice: '请选择单元',
+            familyChoice: '请选择家庭',
             floorNum: '请输入总楼层数',
             floorName: '请输入楼宇名称',
             floorChoice: '请选择楼宇',
@@ -87,7 +91,9 @@ export default {
             date: '请选择时间',
             url: '请输入链接',
             modular: '请选择模块',
-            title: '请输入标题'
+            title: '请输入标题',
+            equipmentCoding: '请输入编码',
+            installer: '请输入安装人'
         },
         platform: '平台',
         roleName: '角色名称',
@@ -117,7 +123,11 @@ export default {
         deliveryTime: '发送时间',
         cover: '封面',
         upperShelf: '上架',
-        lowerShelf: '下架'
+        lowerShelf: '下架',
+        outDate: '出库时间',
+        installer: '安装人',
+        installDate: '安装时间',
+        installaddres: '安装地址'
     },
     form: {
         title: '标题',
@@ -167,6 +177,22 @@ export default {
         unchecked: "未选中",
         select: "选中的",
         deliveryTime: '发送时间',
+        imageText: '增加图文保护',
+        olink: '增加链接型保护',
+        ofunction: '增加功能保护',
+        popup: '平板弹屏广告',
+        bottom: '平板首页底部广告',
+        short: '短信广告',
+        machine: '单元门口机广告',
+        installaddres: '安装地址',
+        equipmentCoding: '设备编码',
+        extensionCoding: '分机编码',
+        installer: '安装人',
+        installDate: '安装时间',
+        outDate: '出库时间',
+        install: '已安装',
+        notInstalled: '未安装',
+        onReplace: '替换'
     },
     login: {
         title: '系统登录',
@@ -244,9 +270,11 @@ export default {
         community: '社区必选',
         floor: '楼宇必选',
         unit: '单元必选',
+        family: '家庭必选',
         addreCommunity: '选择区域后获取该项数据',
         communityFloor: '选择社区后获取该项数据',
         floorUnit: '选择楼宇后获取该项数据',
+        familyUnit: '选择单元后获取该项数据',
         uptime: '上线时间必选',
         title: '标题必填',
         required: '必填',

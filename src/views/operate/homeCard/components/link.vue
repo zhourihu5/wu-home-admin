@@ -49,7 +49,11 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="close">{{ $t('table.cancel') }}</el-button>
-      <el-button type="primary" @click="createData">{{ $t('table.confirm') }}</el-button>
+      <el-button
+        type="primary"
+        @click="createData"
+        :loading="buttonLoading"
+      >{{ $t('table.confirm') }}</el-button>
     </div>
   </div>
 </template>
@@ -76,6 +80,7 @@ export default {
     return {
       updateURL: overall.uploadUrl,
       fileList: [], // 上传图片回显列表
+      buttonLoading: false, // 按钮加载请求
       linkForm: {
         cardType: 3, // 图文卡片
         location: 0, // 位置
@@ -145,12 +150,13 @@ export default {
     },
     createData() {
       let _this = this;
-      console.log(this.linkForm);
+       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.linkForm.validate(valid => {
         if (valid) {
           console.log(" -- ", _this.linkForm);
           addCard(_this.linkForm).then(function(res) {
             console.log("res --- >", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.close(); // 关闭弹窗
               _this.$notify({
@@ -164,6 +170,7 @@ export default {
             _this.$emit("fetchData");
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

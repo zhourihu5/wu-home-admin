@@ -139,6 +139,7 @@
           <el-button
             type="primary"
             @click="dialogStatus==='create'?createData():updateData()"
+            :loading="buttonLoading"
           >{{ $t('table.confirm') }}</el-button>
         </div>
       </el-dialog>
@@ -183,6 +184,7 @@ export default {
     return {
       communityFormOptions: [], // form表单中的区域
       listLoading: true,
+      buttonLoading: false, // 按钮加载请求
       florrList: [], // 列表数据
       total: 0, // 分页
       dialogStatus: "", // 标示当前操作是添加、还是修改
@@ -358,6 +360,7 @@ export default {
     // 创建数据
     createData() {
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.floorForm.validate(valid => {
         if (valid) {
           console.log(_this.floorForm);
@@ -367,6 +370,7 @@ export default {
             name: _this.floorForm.cname
           }).then(function(res) {
             console.log(res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false; // 关闭弹窗
               _this.$notify({
@@ -380,12 +384,14 @@ export default {
             _this.fetchData(); // 更新列表
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
     },
     updateData() {
       let _this = this;
+       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.floorForm.validate(valid => {
         if (valid) {
           // 修改
@@ -394,6 +400,7 @@ export default {
             id: _this.floorForm.id,
             name: _this.floorForm.cname
           }).then(function(res) {
+             _this.buttonLoading = false; // 清楚加载中
             console.log(res);
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false; // 关闭弹窗
@@ -408,6 +415,7 @@ export default {
             _this.fetchData(); // 更新列表
           });
         } else {
+           _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

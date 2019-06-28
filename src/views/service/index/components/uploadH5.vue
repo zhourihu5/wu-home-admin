@@ -53,6 +53,7 @@
       <el-button
         type="primary"
         @click="dialogStatus==='create'?createData():updateData()"
+         :loading="buttonLoading"
       >{{ $t('table.confirm') }}</el-button>
     </div>
   </div>
@@ -80,6 +81,7 @@ export default {
   data() {
     return {
       updateURL: overall.uploadUrl,
+      buttonLoading: false, // 按钮加载请求
       uploadParams: {
         type: "service"
       },
@@ -192,11 +194,13 @@ export default {
     },
     createData() {
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.uploadH5Form.validate(valid => {
         if (valid) {
-          console.log(" --- ", this.uploadH5Form);
+          console.log(" ---吃 吃吃 ", this.uploadH5Form);
           addService(this.uploadH5Form).then(function(res) {
             console.log("res --- ", res);
+            _this.dialogFormVisible = false;
             if (res.message == "SUCCESS") {
               _this.close(); // 关闭弹窗
               _this.$notify({
@@ -210,6 +214,7 @@ export default {
             _this.$emit("fetchData");
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
@@ -217,9 +222,11 @@ export default {
     updateData() {
       console.log("修改");
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.uploadH5Form.validate(valid => {
         if (valid) {
           addService(this.uploadH5Form).then(function(res) {
+             _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.close(); // 关闭弹窗
               _this.$notify({
@@ -233,6 +240,7 @@ export default {
             _this.$emit("fetchData");
           });
         } else {
+           _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
@@ -262,7 +270,8 @@ export default {
         url: "",
         path: "",
         memo: "",
-        pushDate: ""
+        pushDate: "",
+        flag: ""
       };
       this.fileList = [];
       this.$refs.uploadH5Form.resetFields();

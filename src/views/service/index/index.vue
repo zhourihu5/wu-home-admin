@@ -49,28 +49,28 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.category')" width="95">
+        <el-table-column align="center" :label="$t('table.category')" width="105">
           <template
             slot-scope="scope"
           >{{ scope.row.category ? scope.row.category : $t('table.noTime') }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.applyName')" width="200">
+        <el-table-column align="center" :label="$t('table.applyName')" width="255">
           <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime') }}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.serviceProvider')" width="200">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime') }}</template>
+          <template slot-scope="scope">{{ scope.row.providerName ? scope.row.providerName : $t('table.noTime') }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.product')" width="200">
+        <el-table-column align="center" :label="$t('table.product')" width="254">
           <template
             slot-scope="scope"
           >{{ scope.row.flag ? getFlagText(scope.row.flag) : $t('table.noTime') }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.createTime')" width="200">
+        <el-table-column align="center" :label="$t('table.createTime')" width="255">
           <template
             slot-scope="scope"
           >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime') }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.state')" width="200">
+        <el-table-column align="center" :label="$t('table.state')" width="255">
           <template
             slot-scope="scope"
           >{{ scope.row.status ? getStatusText(scope.row.status) : $t('table.noTime') }}</template>

@@ -61,12 +61,12 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.familyName')" width="250" align="center">
+        <el-table-column :label="$t('table.familyName')" width="256" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.num ? scope.row.num : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.belongToUnit')" width="250">
+        <el-table-column align="center" :label="$t('table.belongToUnit')" width="260">
           <template
             slot-scope="scope"
           >{{ scope.row.unitName ? scope.row.unitName : $t('table.noTime')}}</template>
@@ -92,7 +92,7 @@
             <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-      
+
         <!-- <el-table-column :label="$t('table.operation')" align="center" width="300">
           <template slot-scope="{row}">
             <el-button
@@ -101,7 +101,7 @@
               @click="showEditFamilyView(row)"
             >{{ $t('table.edit') }}</el-button>
           </template>
-        </el-table-column> -->
+        </el-table-column>-->
       </el-table>
       <!-- 分页 -->
       <pagination
@@ -230,6 +230,7 @@
           <el-button
             type="primary"
             @click="dialogStatus==='create'?createData():updateData()"
+            :loading="buttonLoading"
           >{{ $t('table.confirm') }}</el-button>
         </div>
       </el-dialog>
@@ -361,6 +362,7 @@ export default {
       dialogFormVisible: false, // 是否展示dialog内容
       familyList: [], // 列表数据
       listLoading: true,
+      buttonLoading: false,
       total: 0,
       textMap: {
         // 弹窗展示的title
@@ -589,7 +591,7 @@ export default {
     // 创建数据
     createData() {
       let _this = this;
-      console.log("参数", _this.familyForm);
+      _this.buttonLoading = true; // 按钮加载中
       // 最后处理函数
       function lastHandel() {
         _this.dialogFormVisible = false; // 关闭弹窗
@@ -603,10 +605,11 @@ export default {
         if (valid) {
           addFamily({
             num: _this.familyForm.cname,
-            unitId: _this.familyForm.unitOptionsVal[0]
+            unitId: _this.familyForm.unitOptionsVal[0],
+            communtityId: _this.familyForm.communityFormOptionsVal[0]
           }).then(function(res) {
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
-              console.log("新增res --- >", res);
               // 判断是否需要保存户主 0 不保存  1保存
               if (_this.isHousehold == 1) {
                 addUserAndFamily({
@@ -616,6 +619,7 @@ export default {
                     userId: _this.familyForm.user.id
                   }
                 }).then(function(res1) {
+                  _this.buttonLoading = false; // 清楚加载中
                   if (res1.message == "SUCCESS") {
                     console.log("添加完关系 --  ", res1);
                     lastHandel();
@@ -625,14 +629,17 @@ export default {
                   _this.fetchData(); // 更新列表
                 });
               } else {
+                _this.buttonLoading = false; // 清楚加载中
                 lastHandel();
               }
             } else {
+              _this.buttonLoading = false; // 清楚加载中
               _this.$message.error(_this.generatePoint("system"));
             }
             _this.fetchData(); // 更新列表
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
@@ -640,6 +647,7 @@ export default {
     // 修改数据
     updateData() {
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       // 最后处理函数
       function lastHandel() {
         _this.dialogFormVisible = false; // 关闭弹窗
@@ -662,6 +670,7 @@ export default {
                   familyId: res.data.id,
                   userId: _this.familyForm.user.id
                 }).then(function(res1) {
+                  _this.buttonLoading = false; // 清楚加载中
                   if (res1.message == "SUCCESS") {
                     lastHandel();
                   } else {
@@ -676,6 +685,7 @@ export default {
                     userId: _this.familyForm.user.id
                   }
                 }).then(function(res1) {
+                  _this.buttonLoading = false; // 清楚加载中
                   if (res1.message == "SUCCESS") {
                     console.log("添加完关系 --  ", res1);
                     lastHandel();
@@ -686,11 +696,13 @@ export default {
                 });
               }
             } else {
+              _this.buttonLoading = false; // 清楚加载中
               _this.$message.error(_this.generatePoint("system"));
             }
             _this.fetchData(); // 更新列表
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

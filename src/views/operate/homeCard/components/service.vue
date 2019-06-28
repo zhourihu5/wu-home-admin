@@ -37,7 +37,7 @@
               slot-scope="scope"
             >{{ scope.row.category ? scope.row.category : $t('table.noTime') }}</template>
           </el-table-column>
-          <el-table-column align="center" :label="$t('table.applyName')" width="260">
+          <el-table-column align="center" :label="$t('table.applyName')" width="258">
             <template
               slot-scope="scope"
             >{{ scope.row.title ? scope.row.title : $t('table.noTime') }}</template>
@@ -47,7 +47,7 @@
               slot-scope="scope"
             >{{ scope.row.title ? scope.row.title : $t('table.noTime') }}</template>
           </el-table-column>
-          <el-table-column align="center" :label="$t('table.product')" width="300">
+          <el-table-column align="center" :label="$t('table.product')" width="290">
             <template
               slot-scope="scope"
             >{{ scope.row.flag ? getFlagText(scope.row.flag) : $t('table.noTime') }}</template>
@@ -75,7 +75,7 @@
       />
     </div>
     <div class="options">
-      <el-button type="primary" size="mini" @click="onSubmit">{{ $t('table.confirm') }}</el-button>
+      <el-button type="primary" size="mini" @click="onSubmit" :loading="buttonLoading">{{ $t('table.confirm') }}</el-button>
     </div>
   </div>
 </template>
@@ -102,6 +102,7 @@ export default {
         name: ""
       },
       listLoading: true,
+      buttonLoading: false, // 按钮加载请求
       serviceList: [], // 列表数据
       total: 0,
       flags: overall.service.flags,

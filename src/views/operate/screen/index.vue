@@ -40,7 +40,6 @@
     <el-dialog
       :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
       :visible.sync="dialogFormVisible"
-      :fullscreen="true"
       @close="close"
     >
       <el-form
@@ -71,7 +70,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">{{ $t('table.cancel') }}</el-button>
-        <el-button type="primary" @click="createData">{{ $t('table.confirm') }}</el-button>
+        <el-button
+          type="primary"
+          @click="createData"
+          :loading="buttonLoading"
+        >{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -114,6 +117,7 @@ export default {
     return {
       uploadUrl: overall.uploadUrl,
       listLoading: true,
+      buttonLoading: false, // 按钮加载请求
       screenList: [],
       fileList: [], // 上传图片回显列表
       uploadParams: {
@@ -205,10 +209,11 @@ export default {
     },
     createData() {
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.screenForm.validate(valid => {
         if (valid) {
           addScreen(_this.screenForm).then(function(res) {
-            console.log("res -- ", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false;
               _this.$notify({
@@ -222,6 +227,7 @@ export default {
             _this.fetchData();
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

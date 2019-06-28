@@ -159,7 +159,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">{{ $t('table.cancel') }}</el-button>
-        <el-button type="primary" @click="createData">{{ $t('table.confirm') }}</el-button>
+        <el-button type="primary" @click="createData" :loading="buttonLoading">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -203,6 +203,7 @@ export default {
       data: [],
       list: [],
       listLoading: true,
+      buttonLoading: false, // 按钮加载请求
       dialogStatus: "",
       dialogFormVisible: false,
       total: 0, // 分页

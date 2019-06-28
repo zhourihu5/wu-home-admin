@@ -173,6 +173,7 @@
           <el-button
             type="primary"
             @click="dialogStatus==='create'?createData():updateData()"
+            :loading="buttonLoading"
           >{{ $t('table.confirm') }}</el-button>
         </div>
       </el-dialog>
@@ -247,6 +248,7 @@ export default {
         value: "id"
       },
       listLoading: true,
+      buttonLoading: false, // 按钮加载请求
       unitList: [], // 单元列表数据
       total: 0, // 分页
       dialogStatus: "", // 标示当前操作是添加、还是修改
@@ -351,10 +353,12 @@ export default {
           title: "提示",
           message:
             "1. " +
-            _this.generatePoint("retrieval") + _this.generatePoint("community") +
+            _this.generatePoint("retrieval") +
+            _this.generatePoint("community") +
             "<br/>" +
             "2. " +
-             _this.generatePoint("retrieval") + _this.generatePoint("floor"),
+            _this.generatePoint("retrieval") +
+            _this.generatePoint("floor"),
           type: "warning"
         });
       }
@@ -394,7 +398,7 @@ export default {
     // 更新社区
     getCommuntity(code, val) {
       let _this = this;
-      console.log(2)
+      console.log(2);
       _this.list.communityOptions = [];
       _this.unitForm.communityOptions = [];
       _this.list.floorOptions = [];
@@ -434,7 +438,7 @@ export default {
     // 创建数据
     createData() {
       let _this = this;
-      console.log("楼 --- ", _this.unitForm.floorOptionsVal, _this.unitForm);
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.unitForm.validate(valid => {
         if (valid) {
           addUnit({
@@ -442,6 +446,7 @@ export default {
             num: _this.unitForm.cname
           }).then(function(res) {
             console.log("res --- >", res);
+             _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false; // 关闭弹窗
               _this.$notify({
@@ -455,6 +460,7 @@ export default {
             _this.fetchData(); // 更新列表
           });
         } else {
+           _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
@@ -462,6 +468,7 @@ export default {
     // 修改数据
     updateData() {
       let _this = this;
+       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.unitForm.validate(valid => {
         if (valid) {
           console.log(_this.floorForm);
@@ -471,7 +478,7 @@ export default {
             num: _this.unitForm.cname,
             floorId: _this.unitForm.floorId
           }).then(function(res) {
-            console.log(res);
+             _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false; // 关闭弹窗
               _this.$notify({
@@ -485,6 +492,7 @@ export default {
             _this.fetchData(); // 更新列表
           });
         } else {
+           _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

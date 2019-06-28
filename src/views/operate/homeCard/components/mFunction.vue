@@ -22,7 +22,7 @@
         >
           <i class="el-icon-plus"></i>
         </el-upload>
-      </el-form-item> -->
+      </el-form-item>-->
       <el-form-item :label="$t('form.title')" prop="title">
         <el-input v-model="mfunctionForm.title" :placeholder="$t('table.temp.title')"></el-input>
       </el-form-item>
@@ -51,7 +51,11 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="close">{{ $t('table.cancel') }}</el-button>
-      <el-button type="primary" @click="createData">{{ $t('table.confirm') }}</el-button>
+      <el-button
+        type="primary"
+        @click="createData"
+        :loading="buttonLoading"
+      >{{ $t('table.confirm') }}</el-button>
     </div>
   </div>
 </template>
@@ -78,6 +82,7 @@ export default {
     return {
       updateURL: overall.uploadUrl,
       fileList: [], // 上传图片回显列表
+      buttonLoading: false, // 按钮加载请求
       mfunctionForm: {
         cardType: 3, // 图文卡片
         location: 0, // 位置
@@ -144,18 +149,19 @@ export default {
     },
     createData() {
       let _this = this;
-      console.log(this.mfunctionForm);
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.mfunctionForm.validate(valid => {
         if (valid) {
           // 取出用户选择的ICON
           _this.modulars.forEach(function(v, i) {
-            if(v.flag == _this.mfunctionForm.url) {
+            if (v.flag == _this.mfunctionForm.url) {
               _this.mfunctionForm.path = v.icon;
             }
-          })
-          console.log("保存", _this.mfunctionForm)
+          });
+          console.log("保存", _this.mfunctionForm);
           addCard(_this.mfunctionForm).then(function(res) {
             console.log("res --- >", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.close(); // 关闭弹窗
               _this.$notify({
@@ -169,6 +175,7 @@ export default {
             _this.$emit("fetchData");
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

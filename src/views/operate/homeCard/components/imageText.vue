@@ -71,7 +71,11 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="close">{{ $t('table.cancel') }}</el-button>
-      <el-button type="primary" @click="createData">{{ $t('table.confirm') }}</el-button>
+      <el-button
+        type="primary"
+        @click="createData"
+        :loading="buttonLoading"
+      >{{ $t('table.confirm') }}</el-button>
     </div>
     <!-- dialog -->
     <div class="community-dialog">
@@ -172,13 +176,14 @@
 import serviceList from "./service";
 import { generatePoint } from "@/utils/i18n";
 import { addCard } from "@/api/card";
-import { overall } from '@/constant/index';
+import { overall } from "@/constant/index";
 export default {
   components: { serviceList },
   data() {
     return {
       updateURL: overall.uploadUrl,
       fileList: [], // 上传图片回显列表
+      buttonLoading: false, // 按钮加载请求
       imagTextForm: {
         cardType: 3, // 图文卡片
         location: 0, // 位置
@@ -187,7 +192,7 @@ export default {
         memo: "", // 大文本
         title: "",
         path: "", // 上传
-        service: "" // 選中的服務
+        services: "" // 選中的服務
       },
       // 验证规则
       rules: {
@@ -215,9 +220,8 @@ export default {
         file: [
           {
             validator: (rule, value, callback) => {
-              console.log("验证")
+              console.log("验证");
               if (this.imagTextForm.path == "") {
-              
                 callback(this.generatePoint("upload"));
               } else {
                 callback();
@@ -238,7 +242,7 @@ export default {
         ]
       },
       uploadParams: {
-         type: 'card'
+        type: "card"
       },
       textareaMaxLength: 120, // textarea可输入的长度
       textareaLength: 120, // textarea 已经输入的长度
@@ -249,8 +253,7 @@ export default {
     };
   },
   created() {
-    console.log(process.env.VUE_APP_BASE_API + '/oss/upload', this.isClose)
-
+    console.log(process.env.VUE_APP_BASE_API + "/oss/upload", this.isClose);
   },
   props: {
     isClose: {
@@ -259,8 +262,8 @@ export default {
   },
   watch: {
     isClose: function(newVal) {
-      if(!newVal) {
-        this.close()
+      if (!newVal) {
+        this.close();
       }
     }
   },
@@ -304,19 +307,20 @@ export default {
     },
     createData() {
       let _this = this;
-      console.log(this.imagTextForm);
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.imagTextForm.validate(valid => {
         if (valid) {
           _this.serviceList.forEach(function(v, i) {
             if (i == _this.serviceList.length - 1) {
-              _this.imagTextForm.service += v.id;
+              _this.imagTextForm.services += v.id;
             } else {
-              _this.imagTextForm.service += v.id + ",";
+              _this.imagTextForm.services += v.id + ",";
             }
           });
           // console.log("保存", _this.imagTextForm)
           addCard(_this.imagTextForm).then(function(res) {
             console.log("res --- >", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.close(); // 关闭弹窗
               _this.$notify({
@@ -330,6 +334,7 @@ export default {
             _this.$emit("fetchData");
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
@@ -346,7 +351,7 @@ export default {
       _this.deleteId = id + "";
     },
     close() {
-      console.log("关闭")
+      console.log("关闭");
       this.$emit("close");
       this.imagTextForm = {
         cardType: 3, // 图文卡片
@@ -357,7 +362,8 @@ export default {
         title: "",
         path: "", // 上传
         service: "" // 選中的服務
-      }
+      };
+      this.serviceList = []; // 清空服务
       this.fileList = [];
       this.$refs.imagTextForm.resetFields();
     },

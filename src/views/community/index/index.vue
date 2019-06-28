@@ -119,6 +119,7 @@
           <el-button
             type="primary"
             @click="dialogStatus==='create'?createData():updateData()"
+            :loading="buttonLoading"
           >{{ $t('table.confirm') }}</el-button>
         </div>
       </el-dialog>
@@ -204,6 +205,7 @@ export default {
       indexList: [], // 列表数据
       total: 0,
       listLoading: true,
+      buttonLoading: false, // 按钮加载请求
       dialogStatus: "", // 标示当前操作是添加、还是修改
       dialogFormVisible: false, // 是否展示dialog内容
       textMap: {
@@ -283,6 +285,7 @@ export default {
     // 创建数据
     createData() {
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.communityForm.validate(valid => {
         if (valid) {
           // 保存
@@ -294,6 +297,7 @@ export default {
             name: _this.communityForm.cname
           }).then(function(res) {
             console.log("res--- >", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false; // 关闭弹窗
               _this.$notify({
@@ -307,23 +311,16 @@ export default {
             _this.fetchData(); // 更新列表
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
     },
     updateData() {
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.communityForm.validate(valid => {
         if (valid) {
-          console.log("_this.communityForm - ", _this.communityForm);
-          console.log({
-            address: _this.communityForm.address,
-            province: _this.communityForm.areaOptionsVal[0],
-            city: _this.communityForm.areaOptionsVal[1],
-            area: _this.communityForm.areaOptionsVal[2],
-            name: _this.communityForm.cname,
-            id: _this.communityForm.id
-          });
           // 修改
           addCommuntity({
             address: _this.communityForm.address,
@@ -334,6 +331,7 @@ export default {
             id: _this.communityForm.id
           }).then(function(res) {
             console.log("res--- >", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false; // 关闭弹窗
               _this.$notify({
@@ -347,6 +345,7 @@ export default {
             _this.fetchData(); // 更新列表
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

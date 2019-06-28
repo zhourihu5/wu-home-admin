@@ -62,11 +62,7 @@
             slot-scope="scope"
           >{{ scope.row.addUser ? scope.row.addUser : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column
-          align="center"
-          :label="$t('table.createTime')"
-          width="200"
-        >
+        <el-table-column align="center" :label="$t('table.createTime')" width="200">
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
@@ -136,6 +132,7 @@
           <el-button
             type="primary"
             @click="dialogStatus==='create'?createData():updateData()"
+            :loading="buttonLoading"
           >{{ $t('table.confirm') }}</el-button>
         </div>
       </el-dialog>
@@ -171,6 +168,7 @@ export default {
       listLoading: true,
       dialogStatus: "", // 标示当前操作是添加、还是修改
       dialogFormVisible: false, // 是否展示dialog内容
+      buttonLoading: false, // 按钮加载请求
       total: 0, // 分页
       textMap: {
         // 弹窗展示的title
@@ -281,11 +279,13 @@ export default {
     // 创建数据
     createData() {
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.userForm.validate(valid => {
         if (valid) {
           console.log("创建", _this.temp);
           addUser(_this.userForm).then(function(res) {
             console.log("res --- >", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false; // 关闭弹窗
               // _this.$refs.userForm.resetFields(); // 重置表单
@@ -301,6 +301,7 @@ export default {
             _this.fetchData(); // 更新列表
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
@@ -308,12 +309,14 @@ export default {
     // 修改数据
     updateData() {
       console.log("修改");
+      _this.buttonLoading = true; // 按钮加载中
       let _this = this;
       _this.$refs.userForm.validate(valid => {
         console.log("res --- >", _this.userForm);
         if (valid) {
           addUser(_this.userForm).then(function(res) {
             console.log("res --- >", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false; // 关闭弹窗
               // 提示
@@ -328,6 +331,7 @@ export default {
             _this.fetchData(); // 更新列表
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
@@ -368,10 +372,13 @@ export default {
       }
     },
     getFlagText(flag) {
-      console.log(overall.user.options, flag);
-      return this.options.filter(function(v) {
-        return (v.flag = flag);
-      })[0].label;
+      let text = "";
+      this.options.forEach(function(v) {
+        if(v.value == flag) {
+          text = v.label;
+        }
+      })
+      return text;
     },
     close() {
       this.dialogFormVisible = false;

@@ -97,6 +97,7 @@
           <el-button
             type="primary"
             @click="dialogStatus==='create'?createData():updateData()"
+            :loading="buttonLoading"
           >{{ $t('table.confirm') }}</el-button>
         </div>
       </el-dialog>
@@ -124,6 +125,7 @@ export default {
       dialogStatus: "", // 标示当前操作是添加、还是修改
       dialogFormVisible: false, // 是否展示dialog内容
       total: 12, // 分页
+      buttonLoading: false, // 按钮加载请求
       textMap: {
         // 弹窗展示的title
         update: "Edit",
