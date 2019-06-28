@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
+const name = defaultSettings.title || '吾家管理平台' // page title
 const port = 8082 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/

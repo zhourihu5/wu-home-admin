@@ -18,6 +18,9 @@ export default {
       levelList: null
     }
   },
+  created() {
+    console.log("levelList --- ", levelList)
+  },
   watch: {
     $route() {
       this.getBreadcrumb()
