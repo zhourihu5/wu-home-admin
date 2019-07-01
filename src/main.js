@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import 'animate.css';
 
 import Element from 'element-ui'
 

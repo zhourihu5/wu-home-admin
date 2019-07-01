@@ -196,7 +196,7 @@ export default {
         onReplace: 'replace'
     },
     login: {
-        title: 'Login Form',
+        title: 'Login Platform',
         logIn: 'Login',
         username: 'Username',
         password: 'Password',
