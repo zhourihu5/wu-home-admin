@@ -58,12 +58,14 @@
           <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime') }}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.serviceProvider')" width="200">
-          <template slot-scope="scope">{{ scope.row.providerName ? scope.row.providerName : $t('table.noTime') }}</template>
+          <template
+            slot-scope="scope"
+          >{{ scope.row.providerName ? scope.row.providerName : $t('table.noTime') }}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.product')" width="254">
           <template
             slot-scope="scope"
-          >{{ scope.row.flag ? getFlagText(scope.row.flag) : $t('table.noTime') }}</template>
+          >{{ scope.row.flag != null && scope.row.flag != "" ? getFlagText(scope.row.flag) : $t('table.noTime') }}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.createTime')" width="255">
           <template
@@ -73,7 +75,7 @@
         <el-table-column align="center" :label="$t('table.state')" width="255">
           <template
             slot-scope="scope"
-          >{{ scope.row.status ? getStatusText(scope.row.status) : $t('table.noTime') }}</template>
+          >{{ scope.row.status != null  && scope.row.status != "" ? getStatusText(scope.row.status) : $t('table.noTime') }}</template>
         </el-table-column>
         <el-table-column :label="$t('table.operation')" align="center" width="250">
           <template slot-scope="{row}">
@@ -134,12 +136,12 @@
       margin-top: 5px;
     }
   }
-  .service-index-dialog {
-    .myForm {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-      padding: 10px;
-    }
-  }
+  // .service-index-dialog {
+  //   .myForm {
+  //     // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  //     // padding: 10px;
+  //   }
+  // }
 }
 </style>
 <script>
@@ -199,15 +201,23 @@ export default {
     },
     // 获取flag text文字
     getFlagText(flag) {
-      return this.flags.filter(function(v) {
-        return v.value == flag;
-      })[0].label;
+      let text = "";
+      this.flags.forEach(function(v) {
+        if (v.value == flag) {
+          text = v.label;
+        }
+      });
+      return text;
     },
     // 获取status text文字
     getStatusText(status) {
-      return this.status.filter(function(v) {
-        return v.value == status;
-      })[0].label;
+      let text = "";
+      this.status.forEach(function(v) {
+        if (v.value == status) {
+          text = v.label;
+        }
+      });
+      return text;
     },
     uploadH5() {},
     uploadApk() {},

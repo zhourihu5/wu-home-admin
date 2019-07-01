@@ -38,10 +38,10 @@
         <el-table-column align="center" :label="$t('table.title')" width="500">
           <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.type')" width="500">
+        <el-table-column :label="$t('table.type')" width="500" align="center">
           <template
             slot-scope="scope"
-          >{{ scope.row.type ? getTypeText(scope.row.type) : $t('table.noTime')}}</template>
+          >{{ scope.row.type != null ? getTypeText(scope.row.type) : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.deliveryTime')" width="574">
           <template slot-scope="scope">
@@ -63,14 +63,13 @@
     <el-dialog
       :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
       :visible.sync="dialogFormVisible"
-      :fullscreen="true"
       @close="close"
     >
       <el-form
         ref="systemForm"
         :rules="rules"
         :model="systemForm"
-        label-position="left"
+        label-position="right"
         label-width="100px"
         style="width: 800px; margin-left:50px;"
       >
@@ -83,7 +82,16 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('form.content')" prop="content">
-          <wangeditor ref="wangeditor"></wangeditor>
+          <!-- <wangeditor ref="wangeditor"></wangeditor> -->
+          <el-input
+            type="textarea"
+            :placeholder="$t('placeholder.textarea')"
+            :maxlength="textareaMaxLength"
+            show-word-limit
+            resize="none"
+            v-model="systemForm.content"
+            @input="onChange"
+          ></el-input>
         </el-form-item>
         <el-form-item :label="$t('form.area')" prop="areaOptionsVal">
           <el-cascader
@@ -124,6 +132,9 @@
 <style lang="scss">
 .system {
   padding: 20px;
+  textarea {
+    height: 100px;
+  }
   .el-transfer {
     margin: 20px 0 0 0;
   }
@@ -157,6 +168,8 @@ export default {
       listLoading: true,
       buttonLoading: false, // 按钮加载请求
       systemNewsList: [], // 列表数据
+      textareaMaxLength: 120, // textarea可输入的长度
+      textareaLength: 120, // textarea 已经输入的长度
       total: 0,
       textMap: {
         // 弹窗展示的title
@@ -196,7 +209,8 @@ export default {
           {
             required: true,
             trigger: "change",
-            validator: this.validateContent
+            // validator: this.validateContent
+            message: this.generatePoint("required")
           }
         ],
         areaOptionsVal: [
@@ -273,6 +287,13 @@ export default {
         callback();
       }
     },
+    // 更新 textarea 可输入的值
+    onChange(value) {
+      this.updateTextareaLength(value);
+    },
+    updateTextareaLength(value) {
+      this.textareaLength = this.textareaMaxLength - value.length;
+    },
     // 查询数据
     fetchData() {
       let _this = this;
@@ -286,10 +307,15 @@ export default {
     },
     // 获取类型 type 文本
     getTypeText(flag) {
-      return this.type.filter(function(v) {
-        return v.value == flag;
-      })[0].label;
+      let text = "";
+      this.type.forEach(function(v) {
+        if (v.value == flag.toString()) {
+          text = v.label;
+        }
+      });
+      return text;
     },
+
     querySystemNews() {
       this.fetchData();
     },
@@ -321,7 +347,7 @@ export default {
       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.systemForm.validate(valid => {
         if (valid) {
-          _this.systemForm.content = this.$refs.wangeditor.getContentHtml(); // 获取html格式
+          // _this.systemForm.content = this.$refs.wangeditor.getContentHtml(); // 获取html格式
           console.log(_this.systemForm);
           pushMessage({
             communtity: _this.systemForm.communtity.join(","),
@@ -358,7 +384,7 @@ export default {
         areaOptionsVal: [] // 清空省市区
       };
       this.data = []; // 清空穿梭框
-      this.$refs.wangeditor.initContent(); // 重置富文本内容
+      // this.$refs.wangeditor.initContent(); // 重置富文本内容
       this.$refs.systemForm.resetFields();
       this.dialogFormVisible = false;
     }

@@ -42,12 +42,12 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.nickName')" width="200">
+        <el-table-column align="center" :label="$t('table.nickName')" width="300">
           <template
             slot-scope="scope"
           >{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.userName')" width="210" align="center">
+        <el-table-column :label="$t('table.userName')" width="310" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.userName ? scope.row.userName : $t('table.noTime')}}</span>
           </template>
@@ -62,7 +62,7 @@
             slot-scope="scope"
           >{{ scope.row.addUser ? scope.row.addUser : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.createTime')" width="200">
+        <el-table-column align="center" :label="$t('table.createTime')" width="241">
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
@@ -99,7 +99,7 @@
           ref="userForm"
           :rules="rules"
           :model="userForm"
-          label-position="left"
+          label-position="right"
           label-width="100px"
           style="width: 400px; margin-left:50px;"
         >

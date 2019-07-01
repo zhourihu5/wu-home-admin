@@ -11,7 +11,7 @@ export default {
         homeCard: 'Home Card',
         news: 'News',
         property: 'Property News',
-        systemNews: 'System News',
+        systemNews: 'Message push',
         community: 'Community News',
         communityIndex: 'Community',
         onCommunity: 'Community',
@@ -128,6 +128,8 @@ export default {
         installer: 'Installer',
         installDate: 'Install Time',
         installaddres: 'Install Addres',
+        uptime: 'Uptime',
+        downtime: 'Downtime',
     },
     form: {
         title: 'Title',
@@ -245,7 +247,8 @@ export default {
         },
         login: {
             nickName: 'Please enter your account number.',
-            password: 'Please input a password'
+            password: 'Please input a password',
+            language: 'Switch Language Success'
         },
         notifyWarning: {
             title: 'warning',

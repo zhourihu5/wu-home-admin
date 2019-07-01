@@ -94,7 +94,7 @@
           ref="floorForm"
           :rules="rules"
           :model="floorForm"
-          label-position="left"
+          label-position="right"
           label-width="100px"
           style="width: 500px; margin-left:50px;"
         >

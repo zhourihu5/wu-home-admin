@@ -71,7 +71,7 @@
           ref="dataForm"
           :rules="rules"
           :model="temp"
-          label-position="left"
+          label-position="right"
           label-width="100px"
           style="width: 400px; margin-left:50px;"
         >

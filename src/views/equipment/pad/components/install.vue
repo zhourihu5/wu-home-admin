@@ -76,7 +76,7 @@
           ref="installForm"
           :rules="rules"
           :model="installForm"
-          label-position="left"
+          label-position="right"
           label-width="100px"
           style="width: 100%; margin-left:50px;"
         >

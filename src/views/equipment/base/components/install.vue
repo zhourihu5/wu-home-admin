@@ -43,7 +43,7 @@
         <el-table-column align="center" :label="$t('table.installaddres')" width="973">
           <template
             slot-scope="scope"
-          >{{ scope.row.operator ? scope.row.operator : $t('table.noTime')}}</template>
+          >{{ scope.row.address ? scope.row.address : $t('table.noTime')}}</template>
         </el-table-column>
         <!-- <el-table-column :label="$t('table.operation')" align="center" width="403">
           <template slot-scope="{row}">
@@ -76,7 +76,7 @@
           ref="installForm"
           :rules="rules"
           :model="installForm"
-          label-position="left"
+          label-position="right"
           label-width="100px"
           style="width: 100%; margin-left:50px;"
         >

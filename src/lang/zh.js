@@ -11,7 +11,7 @@ export default {
         homeCard: '首页卡片管理',
         news: '消息',
         property: '物业通知',
-        systemNews: '系统通知',
+        systemNews: '消息推送',
         community: '社区通知',
         communityIndex: '社区管理',
         onCommunity: '社区',
@@ -127,7 +127,9 @@ export default {
         outDate: '出库时间',
         installer: '安装人',
         installDate: '安装时间',
-        installaddres: '安装地址'
+        installaddres: '安装地址',
+        uptime: '上线时间',
+        downtime: '下线时间',
     },
     form: {
         title: '标题',
@@ -150,7 +152,7 @@ export default {
         icon: '添加Icon:',
         mainTitle: '主标题:',
         subheading: '副标题:',
-        link: '链接:',
+        link: '链接',
         modular: '模块',
         create: '创建',
         edit: '修改',
@@ -244,7 +246,8 @@ export default {
         },
         login: {
             nickName: '请输入账号',
-            password: '请输入密码'
+            password: '请输入密码',
+            language: '切换语言成功'
         },
         notifyWarning: {
             title: '警告',

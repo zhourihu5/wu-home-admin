@@ -4,7 +4,7 @@
       ref="uploadH5Form"
       :rules="rules"
       :model="uploadH5Form"
-      label-position="left"
+      label-position="right"
       label-width="100px"
       style="width: 600px; margin-left:50px;"
     >
@@ -53,7 +53,7 @@
       <el-button
         type="primary"
         @click="dialogStatus==='create'?createData():updateData()"
-         :loading="buttonLoading"
+        :loading="buttonLoading"
       >{{ $t('table.confirm') }}</el-button>
     </div>
   </div>
@@ -199,6 +199,7 @@ export default {
         if (valid) {
           console.log(" ---吃 吃吃 ", this.uploadH5Form);
           addService(this.uploadH5Form).then(function(res) {
+            _this.buttonLoading = false; // 清楚加载中
             console.log("res --- ", res);
             _this.dialogFormVisible = false;
             if (res.message == "SUCCESS") {
@@ -226,7 +227,7 @@ export default {
       _this.$refs.uploadH5Form.validate(valid => {
         if (valid) {
           addService(this.uploadH5Form).then(function(res) {
-             _this.buttonLoading = false; // 清楚加载中
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.close(); // 关闭弹窗
               _this.$notify({
@@ -240,7 +241,7 @@ export default {
             _this.$emit("fetchData");
           });
         } else {
-           _this.buttonLoading = false; // 清楚加载中
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

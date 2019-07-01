@@ -14,7 +14,7 @@
           :rules="loginRules"
           class="login-form"
           auto-complete="on"
-          label-position="left"
+          label-position="right"
         >
           <el-form-item prop="username">
             <el-input
@@ -129,6 +129,12 @@
       .my-button {
         width: 340px;
         height: 46px;
+      }
+      input {
+        &:-webkit-autofill {
+          box-shadow: 0 0 0px 1000px #fff inset !important;
+          -webkit-text-fill-color: #000 !important;
+        }
       }
     }
   }

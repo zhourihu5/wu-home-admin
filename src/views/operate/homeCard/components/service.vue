@@ -50,7 +50,7 @@
           <el-table-column align="center" :label="$t('table.product')" width="290">
             <template
               slot-scope="scope"
-            >{{ scope.row.flag ? getFlagText(scope.row.flag) : $t('table.noTime') }}</template>
+            >{{ scope.row.flag != null ? getFlagText(scope.row.flag) : $t('table.noTime') }}</template>
           </el-table-column>
           <el-table-column align="center" :label="$t('table.uploadTime')" width="200">
             <template
@@ -60,7 +60,7 @@
           <el-table-column align="center" :label="$t('table.state')" width="200">
             <template
               slot-scope="scope"
-            >{{ scope.row.status ? getStatusText(scope.row.status) : $t('table.noTime') }}</template>
+            >{{ scope.row.status != null ? getStatusText(scope.row.status) : $t('table.noTime') }}</template>
           </el-table-column>
         </el-table>
       </el-checkbox-group>
@@ -155,15 +155,24 @@ export default {
     queryService() {},
     // 获取flag text文字
     getFlagText(flag) {
-      return this.flags.filter(function(v) {
-        return v.value == flag;
-      })[0].label;
+      let text = "";
+      this.flags.forEach(function(v) {
+        if(v.value == flag) {
+          text = v.label;
+        }
+      })
+      return text;
     },
     // 获取status text文字
     getStatusText(status) {
-      return this.status.filter(function(v) {
-        return v.value == status;
-      })[0].label;
+      console.log("status -- ", status)
+      let text = "";
+      this.status.forEach(function(v) {
+        if(v.value == status) {
+          text = v.label;
+        }
+      })
+      return text;
     },
     // 提交
     onSubmit() {

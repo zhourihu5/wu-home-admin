@@ -41,30 +41,25 @@
         <el-table-column align="center" :label="$t('table.describe')" width="350">
           <template slot-scope="scope">{{ scope.row.memo ? scope.row.memo : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.type')" width="150">
-          <template slot-scope="scope">{{ scope.row.type ? scope.row.type : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.state')" width="150">
-          <template
-            slot-scope="scope"
-          >{{ scope.row.status ? getStatusText(scope.row.status) : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.url')" width="280">
-          <template slot-scope="scope">
-            <a
-              v-if="scope.row.url"
-              :href="scope.row.url"
-              target="_blank"
-              class="connect"
-            >{{ scope.row.url }}</a>
-            <p v-else>{{ $t('table.noTime') }}</p>
-          </template>
-        </el-table-column>
         <el-table-column align="center" :label="$t('table.icon')" width="244">
           <template slot-scope="scope">
             <img v-if="scope.row.icon" :src="scope.row.icon" :alt="$t('table.icon')" class="icon">
             <p v-else>{{ $t('table.noTime') }}</p>
           </template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.type')" width="150">
+          <template slot-scope="scope">{{ scope.row.type ? scope.row.type : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.deliveryTime')" width="280">
+          <template slot-scope="scope">
+            <i class="el-icon-time"/>
+            <span>{{ scope.row.pushDate ? scope.row.pushDate : $t('table.noTime')}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.state')" width="150">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.status != null ? getStatusText(scope.row.status) : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column :label="$t('table.operation')" align="center" width="200">
           <template slot-scope="{row}">
@@ -134,12 +129,12 @@
     width: 80px;
     height: 80px;
   }
-  .homeCard-dialog {
-    .myForm {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-      padding: 10px;
-    }
-  }
+  // .homeCard-dialog {
+  //   .myForm {
+  //     // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  //     // padding: 10px;
+  //   }
+  // }
 }
 </style>
 <script>
@@ -213,9 +208,14 @@ export default {
     },
     // 获取状态文字
     getStatusText(status) {
-      return this.status.filter(function(v) {
-        return v.value == status;
-      })[0].label;
+      console.log(status);
+      let text = "";
+      this.status.forEach(function(v) {
+        if (v.value == status) {
+          text = v.label;
+        }
+      });
+      return text;
     },
     // 停止推送
     stopPushing(row) {

@@ -35,26 +35,39 @@
         <el-table-column align="center" :label="$t('table.id')" width="100">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.advertTitle')" width="459">
+        <el-table-column align="center" :label="$t('table.advertTitle')" width="300">
           <template slot-scope="scope">{{ scope.row.title }}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.cover')" width="400" align="center">
+        <el-table-column :label="$t('table.cover')" width="250" align="center">
           <template slot-scope="scope">
             <img v-if="scope.row.cover" :src="scope.row.cover" :alt="$t('table.icon')" class="icon">
             <p v-else>{{ $t('table.noTime') }}</p>
           </template>
         </el-table-column>
-        <!-- <el-table-column :label="$t('table.viewAdvert')" width="300" align="center">
-          <template slot-scope="scope">
-            <a :href="scope.row.view" target="view_window">点击查看</a>
-          </template>
-        </el-table-column>-->
-        <el-table-column :label="$t('table.jumpPath')" width="400" align="center">
+        <el-table-column :label="$t('table.jumpPath')" width="171" align="center">
           <template slot-scope="scope">
             <a :href="scope.row.url" target="view_window">点击查看</a>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.operation')" align="center" width="310">
+        <el-table-column align="center" :label="$t('table.uptime')" width="190">
+          <template slot-scope="scope">
+            <i class="el-icon-time"/>
+            <span>{{ scope.row.startDate ? scope.row.startDate : $t('table.noTime')}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.downtime')" width="190">
+          <template slot-scope="scope">
+            <i class="el-icon-time"/>
+            <span>{{ scope.row.endDate ? scope.row.endDate : $t('table.noTime')}}</span>
+          </template>
+        </el-table-column>
+         <el-table-column align="center" :label="$t('table.deliveryTime')" width="150">
+          <template slot-scope="scope">
+            <i class="el-icon-time"/>
+            <span>{{ scope.row.dayTime ? scope.row.dayTime : $t('table.noTime')}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('table.operation')" align="center" width="318">
           <template slot-scope="{row}">
             <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.delete') }}</el-button>
           </template>
@@ -74,16 +87,16 @@
     <el-dialog
       :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
       :visible.sync="dialogFormVisible"
-      :fullscreen="true"
       @close="close"
     >
       <el-form
         ref="advertFormBottom"
         :rules="rules"
         :model="advertFormBottom"
-        label-position="left"
+        label-position="right"
         label-width="100px"
         style="width: 800px; margin-left:50px;"
+        
       >
         <el-form-item :label="$t('form.Cover')" prop="file">
           <el-upload
@@ -398,6 +411,7 @@ export default {
     },
     createData() {
       let _this = this;
+       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.advertFormBottom.validate(valid => {
         console.log(_this.advertFormBottom);
         if (valid) {
@@ -412,6 +426,7 @@ export default {
             dayTime: _this.advertFormBottom.dayTime
           }).then(function(res) {
             console.log("res ---- ", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false;
               _this.$notify({
@@ -425,6 +440,7 @@ export default {
             _this.fetchData();
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

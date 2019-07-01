@@ -4,7 +4,7 @@
       ref="uploadApkForm"
       :rules="rules"
       :model="uploadApkForm"
-      label-position="left"
+      label-position="right"
       label-width="100px"
       style="width: 600px; margin-left:50px;"
     >
@@ -73,6 +73,7 @@
       <el-button
         type="primary"
         @click="dialogStatus==='create'?createData():updateData()"
+        :loading="buttonLoading"
       >{{ $t('table.confirm') }}</el-button>
     </div>
   </div>
@@ -99,6 +100,7 @@ import { service } from "@/constant/service"; // 服务 常用常量
 export default {
   data() {
     return {
+      buttonLoading: false, // 按钮加载请求
       updateURL: overall.uploadUrl,
       uploadParams: {
         type: "service"
@@ -222,11 +224,13 @@ export default {
     },
     createData() {
       let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.uploadApkForm.validate(valid => {
         if (valid) {
           console.log(" --- ", this.uploadApkForm);
           addService(this.uploadApkForm).then(function(res) {
             console.log("res --- ", res);
+            _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.close(); // 关闭弹窗
               _this.$notify({
@@ -240,6 +244,7 @@ export default {
             _this.$emit("fetchData");
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });
@@ -248,9 +253,11 @@ export default {
       console.log("修改");
       let _this = this;
       _this.$refs.uploadApkForm.validate(valid => {
+        _this.buttonLoading = true; // 按钮加载中
         if (valid) {
           addService(this.uploadApkForm).then(function(res) {
             if (res.message == "SUCCESS") {
+              _this.buttonLoading = false; // 清楚加载中
               _this.close(); // 关闭弹窗
               _this.$notify({
                 title: _this.generatePoint("notifySuccess.title"),
@@ -263,6 +270,7 @@ export default {
             _this.$emit("fetchData");
           });
         } else {
+          _this.buttonLoading = false; // 清楚加载中
           return false;
         }
       });

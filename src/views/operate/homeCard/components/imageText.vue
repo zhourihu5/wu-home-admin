@@ -4,7 +4,7 @@
       ref="imagTextForm"
       :rules="rules"
       :model="imagTextForm"
-      label-position="left"
+      label-position="right"
       label-width="100px"
       style="width: 600px; margin-left:50px;"
     >
@@ -29,7 +29,7 @@
       <el-form-item :label="$t('form.cardAddress')" prop="location">
         <el-input-number v-model="imagTextForm.location"></el-input-number>
       </el-form-item>
-      <el-form-item :label="$t('form.uptime')" prop="pushDate">
+      <el-form-item :label="$t('form.deliveryTime')" prop="pushDate">
         <el-date-picker
           v-model="imagTextForm.pushDate"
           type="datetime"
@@ -43,7 +43,7 @@
           :placeholder="$t('table.temp.date')"
         />
       </el-form-item>-->
-      <el-form-item :label="$t('form.Summary')" prop="memo">
+      <el-form-item :label="$t('form.describe')" prop="memo">
         <el-input
           type="textarea"
           :placeholder="$t('placeholder.textarea')"
@@ -51,6 +51,17 @@
           show-word-limit
           resize="none"
           v-model="imagTextForm.memo"
+          @input="onChange"
+        ></el-input>
+      </el-form-item>
+       <el-form-item :label="$t('form.content')" prop="content">
+        <el-input
+          type="textarea"
+          :placeholder="$t('placeholder.textarea')"
+          :maxlength="textareaMaxLength"
+          show-word-limit
+          resize="none"
+          v-model="imagTextForm.content"
           @input="onChange"
         ></el-input>
       </el-form-item>
@@ -192,7 +203,8 @@ export default {
         memo: "", // 大文本
         title: "",
         path: "", // 上传
-        services: "" // 選中的服務
+        services: "", // 選中的服務
+        content: "", // 内容
       },
       // 验证规则
       rules: {
@@ -211,6 +223,13 @@ export default {
           }
         ],
         memo: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
+          }
+        ],
+        content: [
           {
             required: true,
             trigger: "change",
@@ -361,7 +380,8 @@ export default {
         memo: "", // 大文本
         title: "",
         path: "", // 上传
-        service: "" // 選中的服務
+        service: "", // 選中的服務
+        content: ""
       };
       this.serviceList = []; // 清空服务
       this.fileList = [];

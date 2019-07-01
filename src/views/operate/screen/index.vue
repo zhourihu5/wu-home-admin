@@ -46,7 +46,7 @@
         ref="screenForm"
         :rules="rules"
         :model="screenForm"
-        label-position="left"
+        label-position="right"
         label-width="100px"
         style="width: 800px; margin-left:50px;"
       >
@@ -235,9 +235,11 @@ export default {
     close() {
       console.log("关闭");
       this.screenForm = {
-        cover: ""
+        cover: "",
+        url: ""
       };
       this.$refs.screenForm.resetFields();
+      this.fileList = [];
       this.dialogFormVisible = false;
     }
   }

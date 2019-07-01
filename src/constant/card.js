@@ -4,19 +4,19 @@ export const card = {
     types: [
         {
             label: "功能",
-            value: "0"
+            value: 0
         },
         {
             label: "外链",
-            value: "1"
+            value: 1
         },
         {
             label: "内链",
-            value: "2"
+            value: 2
         },
         {
             label: "图文",
-            value: "3"
+            value: 3
         }
     ],
     // 状态

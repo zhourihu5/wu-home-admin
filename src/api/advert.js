@@ -12,7 +12,8 @@ export function getAdvertList(params) {
 // 保存广告
 export function addAdver(data) {
     return request({
-        url: '/v1/adv/saveAdv',
+        // url: '/v1/adv/saveAdv',
+        url: '/v1/adv/pushAdv',
         method: 'post',
         data: data,
     })

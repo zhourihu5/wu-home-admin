@@ -19,7 +19,13 @@
         <div class="item" v-for="(o, index) in serviceList" :key="index">
           <el-checkbox :class="{'no-display': isCheckedBox }" :label="o.id"></el-checkbox>
           <div class="icon">
-            <img :src="o.cover" :alt="o.title" class="image">
+            <img
+              v-if="o.cover != null && o.cover != ''"
+              :src="o.cover"
+              :alt="o.title"
+              class="image"
+            >
+            <img v-else src="./../../../../assets/apk.jpg" :alt="o.title" class="image">Í
           </div>
           <p class="title">{{o.title}}</p>
           <p class="content">{{o.memo}}</p>
@@ -87,7 +93,7 @@
         top: 5px;
         left: 5px;
         .el-checkbox__label {
-          display: none
+          display: none;
         }
       }
       .icon {

@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { generatePoint } from "@/utils/i18n";
 export default {
   computed: {
     language() {
@@ -25,11 +26,12 @@ export default {
     }
   },
   methods: {
+    generatePoint,
     handleSetLanguage(lang) {
       this.$i18n.locale = lang
       this.$store.dispatch('app/setLanguage', lang)
       this.$message({
-        message: 'Switch Language Success',
+        message: this.generatePoint("login.language"),
         type: 'success'
       })
     }

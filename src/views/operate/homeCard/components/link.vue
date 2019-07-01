@@ -4,7 +4,7 @@
       ref="linkForm"
       :rules="rules"
       :model="linkForm"
-      label-position="left"
+      label-position="right"
       label-width="100px"
       style="width: 600px; margin-left:50px;"
     >
@@ -29,7 +29,7 @@
       <el-form-item :label="$t('form.cardAddress')" prop="location">
         <el-input-number v-model="linkForm.location"></el-input-number>
       </el-form-item>
-      <el-form-item :label="$t('form.uptime')" prop="pushDate">
+      <el-form-item :label="$t('form.deliveryTime')" prop="pushDate">
         <el-date-picker
           v-model="linkForm.pushDate"
           type="datetime"
