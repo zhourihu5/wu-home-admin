@@ -94,7 +94,8 @@ export default {
             modular: 'Please choose the modular',
             title: 'Please choose the title',
             equipmentCoding: 'Enter the code, please.',
-            installer: 'Please enter the installer'
+            installer: 'Please enter the installer',
+            packageName: 'Please enter the package name'
         },
         platform: "Platform",
         roleName: 'RoleName',
@@ -195,7 +196,9 @@ export default {
         outDate: 'Out Time',
         install: 'install',
         notInstalled: 'Not installed',
-        onReplace: 'replace'
+        onReplace: 'replace',
+        apk: 'apk',
+        packageName: 'package Name'
     },
     login: {
         title: 'Login Platform',

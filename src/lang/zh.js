@@ -93,7 +93,8 @@ export default {
             modular: '请选择模块',
             title: '请输入标题',
             equipmentCoding: '请输入编码',
-            installer: '请输入安装人'
+            installer: '请输入安装人',
+            packageName: '请输入包名称'
         },
         platform: '平台',
         roleName: '角色名称',
@@ -130,6 +131,7 @@ export default {
         installaddres: '安装地址',
         uptime: '上线时间',
         downtime: '下线时间',
+        
     },
     form: {
         title: '标题',
@@ -194,7 +196,9 @@ export default {
         outDate: '出库时间',
         install: '已安装',
         notInstalled: '未安装',
-        onReplace: '替换'
+        onReplace: '替换',
+        packageName: '包名称',
+        apk: 'apk'
     },
     login: {
         title: '吾家运营管理平台',

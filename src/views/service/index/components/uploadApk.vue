@@ -8,20 +8,22 @@
       label-width="100px"
       style="width: 600px; margin-left:50px;"
     >
-      <el-form-item :label="$t('form.Cover')" prop="file">
-        <!-- <el-upload
+      <el-form-item :label="$t('form.Cover')" prop="cover">
+        <el-upload
           :action="updateURL"
           list-type="picture-card"
           :limit="1"
           :multiple="false"
-          :file-list="fileList"
-          :on-exceed="exceedUpload"
-          :before-upload="beforeAvatarUpload"
-          :on-success="handleAvatarSuccess"
-          :data="uploadParams"
+          :file-list="coverList"
+          :on-exceed="exceedCoverUpload"
+          :before-upload="beforeAvatarCoverUpload"
+          :on-success="handleAvatarCoverSuccess"
+          :data="uploadCoverParams"
         >
           <i class="el-icon-plus"></i>
-        </el-upload>-->
+        </el-upload>
+      </el-form-item>
+      <el-form-item :label="$t('form.apk')" prop="file">
         <el-upload
           class="upload-demo"
           drag
@@ -46,9 +48,13 @@
       <el-form-item :label="$t('form.serviceProviderName')" prop="providerName">
         <el-input v-model="uploadApkForm.providerName" :placeholder="$t('table.temp.title')"></el-input>
       </el-form-item>
-      <el-form-item :label="$t('form.link')" prop="url">
-        <el-input v-model="uploadApkForm.url" :placeholder="$t('table.temp.url')"/>
+      <el-form-item :label="$t('form.packageName')" prop="packageName">
+        <el-input v-model="uploadApkForm.packageName" :placeholder="$t('table.temp.packageName')"></el-input>
       </el-form-item>
+
+      <!-- <el-form-item :label="$t('form.link')" prop="url">
+        <el-input v-model="uploadApkForm.url" :placeholder="$t('table.temp.url')"/>
+      </el-form-item>-->
       <el-form-item :label="$t('form.describe')" prop="memo">
         <el-input
           type="textarea"
@@ -103,6 +109,9 @@ export default {
       buttonLoading: false, // 按钮加载请求
       updateURL: overall.uploadUrl,
       uploadParams: {
+        type: "apk"
+      },
+      uploadCoverParams: {
         type: "service"
       },
       uploadApkForm: {
@@ -113,22 +122,24 @@ export default {
         // createDate: "",
         flag: service.flags[0].value,
         providerName: "",
-        id: ""
+        id: "",
+        cover: ""
       },
       fileList: [], // 上传图片回显列表
+      coverList: [], // 封面
       rules: {
-        // createDate: [
-        //   {
-        //     required: true,
-        //     trigger: "change",
-        //     message: this.generatePoint("unitName")
-        //   }
-        // ],
         title: [
           {
             required: true,
             trigger: "change",
             message: this.generatePoint("title")
+          }
+        ],
+        packageName: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
           }
         ],
         url: [
@@ -139,11 +150,27 @@ export default {
             validator: this.validateUrl
           }
         ],
+        cover: [
+          {
+            required: true,
+            trigger: "change",
+            validator: (rule, value, callback) => {
+              console.log("验证头像");
+              if (this.uploadApkForm.cover == "") {
+                callback(this.generatePoint("upload"));
+              } else {
+                callback();
+              }
+            }
+          }
+        ],
         file: [
           {
+            required: true,
+            trigger: "change",
             validator: (rule, value, callback) => {
               console.log("验证");
-              if (this.uploadApkForm.providerName == "") {
+              if (this.uploadApkForm.url == "") {
                 callback(this.generatePoint("upload"));
               } else {
                 callback();
@@ -209,12 +236,31 @@ export default {
         type: "warning"
       });
     },
-    handleAvatarSuccess(res, file) {
-      console.log("上传成功 --- ", file);
-      this.uploadApkForm.packageName = res.data;
+    // 图片上传
+    exceedCoverUpload(file, fileList) {
+      // this.$message.error("超过最大上传数量,目前只可上传1张");
+      this.$notify({
+        title: this.generatePoint("notifyWarning.title"),
+        message: this.generatePoint("notifyWarning.message"),
+        type: "warning"
+      });
     },
+    // 图片上传
+    beforeAvatarCoverUpload(file) {
+      this.uploadCoverParams.file = file;
+    },
+    // 图片上传
+    handleAvatarCoverSuccess(res, file) {
+      this.uploadApkForm.cover = res.data;
+    },
+    // apk
     beforeAvatarUpload(file) {
       this.uploadParams.file = file;
+    },
+    // apk
+    handleAvatarSuccess(res, file) {
+      console.log("上传成功 --- ", file);
+      this.uploadApkForm.url = res.data;
     },
     onChange(value) {
       this.updateTextareaLength(value); // 更新 textarea 可输入的值
@@ -303,9 +349,11 @@ export default {
         path: "",
         memo: "",
         pushDate: "",
-        providerName: ""
+        providerName: "",
+        cover: ""
       };
       this.fileList = [];
+      this.coverList = [];
       this.$refs.uploadApkForm.resetFields();
     }
   }
