@@ -61,7 +61,7 @@
             <span>{{ scope.row.endDate ? scope.row.endDate : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-         <el-table-column align="center" :label="$t('table.deliveryTime')" width="150">
+        <el-table-column align="center" :label="$t('table.deliveryTime')" width="150">
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.dayTime ? scope.row.dayTime : $t('table.noTime')}}</span>
@@ -96,7 +96,6 @@
         label-position="right"
         label-width="100px"
         style="width: 800px; margin-left:50px;"
-        
       >
         <el-form-item :label="$t('form.Cover')" prop="file">
           <el-upload
@@ -152,6 +151,7 @@
             v-model="advertFormBottom.startDate"
             type="datetime"
             :placeholder="$t('table.temp.date')"
+            :picker-options="pickerOptions"
           />
         </el-form-item>
         <el-form-item :label="$t('form.downtime')" prop="endDate">
@@ -159,6 +159,7 @@
             v-model="advertFormBottom.endDate"
             type="datetime"
             :placeholder="$t('table.temp.date')"
+            :picker-options="pickerOptions"
           />
         </el-form-item>
         <el-form-item :label="$t('form.deliveryTime')" prop="dayTime">
@@ -172,7 +173,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">{{ $t('table.cancel') }}</el-button>
-        <el-button type="primary" @click="createData" :loading="buttonLoading">{{ $t('table.confirm') }}</el-button>
+        <el-button
+          type="primary"
+          @click="createData"
+          :loading="buttonLoading"
+        >{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -304,6 +309,12 @@ export default {
           }
         ]
       },
+      pickerOptions: {
+        disabledDate(time) {
+          // 只可选择大于当前时间的日期
+          return time.getTime() < Date.now();
+        }
+      },
       // 省市区
       areaProps: {
         label: "areaName",
@@ -411,7 +422,7 @@ export default {
     },
     createData() {
       let _this = this;
-       _this.buttonLoading = true; // 按钮加载中
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.advertFormBottom.validate(valid => {
         console.log(_this.advertFormBottom);
         if (valid) {

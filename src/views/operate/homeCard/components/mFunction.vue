@@ -23,8 +23,13 @@
           <i class="el-icon-plus"></i>
         </el-upload>
       </el-form-item>-->
-      <el-form-item :label="$t('form.title')" prop="title">
+      <!-- <el-form-item :label="$t('form.title')" prop="title">
         <el-input v-model="mfunctionForm.title" :placeholder="$t('table.temp.title')"></el-input>
+      </el-form-item>-->
+      <el-form-item :label="$t('form.modular')" prop="url">
+        <el-select v-model="mfunctionForm.url" :placeholder="$t('table.temp.modular')">
+          <el-option v-for="item in modulars" :key="item.id" :label="item.title" :value="item.flag"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item :label="$t('form.cardAddress')" prop="location">
         <el-input-number v-model="mfunctionForm.location"></el-input-number>
@@ -34,8 +39,20 @@
           v-model="mfunctionForm.pushDate"
           type="datetime"
           :placeholder="$t('table.temp.date')"
+          :picker-options="pickerOptions"
         />
       </el-form-item>
+      <!-- <el-form-item :label="$t('form.describe')" prop="memo">
+        <el-input
+          type="textarea"
+          :placeholder="$t('placeholder.textarea')"
+          :maxlength="textareaMaxLength"
+          show-word-limit
+          resize="none"
+          v-model="mfunctionForm.memo"
+          @input="onChange"
+        ></el-input>
+      </el-form-item> -->
       <!-- <el-form-item :label="$t('form.downtime')" prop="downtime">
         <el-date-picker
           v-model="mfunctionForm.downtime"
@@ -43,11 +60,6 @@
           :placeholder="$t('table.temp.date')"
         />
       </el-form-item>-->
-      <el-form-item :label="$t('form.modular')" prop="url">
-        <el-select v-model="mfunctionForm.url" :placeholder="$t('table.temp.modular')">
-          <el-option v-for="item in modulars" :key="item.id" :label="item.title" :value="item.flag"></el-option>
-        </el-select>
-      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="close">{{ $t('table.cancel') }}</el-button>
@@ -83,14 +95,21 @@ export default {
       updateURL: overall.uploadUrl,
       fileList: [], // 上传图片回显列表
       buttonLoading: false, // 按钮加载请求
+      pickerOptions: {
+        disabledDate(time) {
+          // 只可选择大于当前时间的日期
+          return time.getTime() < Date.now();
+        }
+      },
       mfunctionForm: {
-        cardType: 3, // 图文卡片
+        cardType: 2, // 功能型
         location: 0, // 位置
         pushDate: "", // 上线时间
         // downtime: "", // 下线时间
         title: "",
         path: "", // 上传
-        url: ""
+        url: "",
+        memo: ""
       },
       // 验证规则
       rules: {
@@ -101,13 +120,13 @@ export default {
             message: this.generatePoint("unitName")
           }
         ],
-        title: [
-          {
-            required: true,
-            trigger: "change",
-            message: this.generatePoint("title")
-          }
-        ],
+        // title: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     message: this.generatePoint("title")
+        //   }
+        // ],
         file: [
           {
             validator: (rule, value, callback) => {
@@ -126,12 +145,21 @@ export default {
             trigger: "change",
             message: this.generatePoint("required")
           }
+        ],
+        memo: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
+          }
         ]
       },
       modulars: [], // 模块
       uploadParams: {
         type: "card"
-      }
+      },
+      textareaMaxLength: 120, // textarea可输入的长度
+      textareaLength: 120, // textarea 已经输入的长度
     };
   },
   created() {
@@ -152,9 +180,12 @@ export default {
       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.mfunctionForm.validate(valid => {
         if (valid) {
+          console.log(" --- ", _this.modulars);
           // 取出用户选择的ICON
           _this.modulars.forEach(function(v, i) {
             if (v.flag == _this.mfunctionForm.url) {
+              _this.mfunctionForm.memo = v.memo;
+              _this.mfunctionForm.title = v.title;
               _this.mfunctionForm.path = v.icon;
             }
           });
@@ -193,6 +224,13 @@ export default {
       // console.log("handleAvatarSuccess --", res, file);
       this.mfunctionForm.path = res.data;
     },
+     // 更新 textarea 可输入的值
+    onChange(value) {
+      this.updateTextareaLength(value);
+    },
+    updateTextareaLength(value) {
+      this.textareaLength = this.textareaMaxLength - value.length;
+    },
     beforeAvatarUpload(file) {
       // console.log("beforeAvatarUpload --", file);
       this.uploadParams.file = file;
@@ -207,7 +245,8 @@ export default {
         // downtime: "", // 下线时间
         title: "",
         path: "", // 上传
-        url: ""
+        url: "",
+        memo: ""
       };
       this.fileList = [];
       this.$refs.mfunctionForm.resetFields();

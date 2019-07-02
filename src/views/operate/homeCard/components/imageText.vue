@@ -34,6 +34,7 @@
           v-model="imagTextForm.pushDate"
           type="datetime"
           :placeholder="$t('table.temp.date')"
+          :picker-options="pickerOptions"
         />
       </el-form-item>
       <!-- <el-form-item :label="$t('form.downtime')" prop="downtime">
@@ -54,7 +55,7 @@
           @input="onChange"
         ></el-input>
       </el-form-item>
-       <el-form-item :label="$t('form.content')" prop="content">
+      <el-form-item :label="$t('form.content')" prop="content">
         <el-input
           type="textarea"
           :placeholder="$t('placeholder.textarea')"
@@ -204,7 +205,7 @@ export default {
         title: "",
         path: "", // 上传
         services: "", // 選中的服務
-        content: "", // 内容
+        content: "" // 内容
       },
       // 验证规则
       rules: {
@@ -268,7 +269,13 @@ export default {
       dialogFormVisible: false, // 是否展示dialog内容
       serviceList: [], // 记录用户选中的服务
       deleteId: "", // 删除卡片的ID
-      serviceClose: false //
+      serviceClose: false, //
+      pickerOptions: {
+        disabledDate(time) {
+          // 只可选择大于当前时间的日期
+          return time.getTime() < Date.now();
+        }
+      }
     };
   },
   created() {

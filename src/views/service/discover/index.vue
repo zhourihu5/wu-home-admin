@@ -37,6 +37,7 @@
       <!-- <el-button type="primary" size="medium">{{ $t('table.preview') }}</el-button>
       <el-button type="primary" size="medium">{{ $t('table.preserveAndPutIn') }}</el-button>-->
     </div>
+    <!-- <el-button :plain="true" @click="open2">成功</el-button> -->
   </div>
 </template>
 <style lang="scss" >
@@ -221,7 +222,14 @@ export default {
           type: "warning"
         });
       }
-    }
+    },
+    // open2() {
+    //   this.$message({
+    //     message: "恭喜你，这是一条成功消息",
+    //     type: "warning",
+    //     duration: 0
+    //   });
+    // }
   }
 };
 </script>

@@ -64,7 +64,6 @@
         <el-table-column :label="$t('table.operation')" align="center" width="200">
           <template slot-scope="{row}">
             <el-button
-              type="danger"
               size="mini"
               @click="stopPushing(row)"
             >{{ $t('table.stopPushing') }}</el-button>

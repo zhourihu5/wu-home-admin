@@ -34,6 +34,7 @@
           v-model="linkForm.pushDate"
           type="datetime"
           :placeholder="$t('table.temp.date')"
+          :picker-options="pickerOptions"
         />
       </el-form-item>
       <!-- <el-form-item :label="$t('form.downtime')" prop="downtime">
@@ -45,6 +46,17 @@
       </el-form-item>-->
       <el-form-item :label="$t('form.link')" prop="url">
         <el-input v-model="linkForm.url" :placeholder="$t('table.temp.url')"/>
+      </el-form-item>
+      <el-form-item :label="$t('form.describe')" prop="memo">
+        <el-input
+          type="textarea"
+          :placeholder="$t('placeholder.textarea')"
+          :maxlength="textareaMaxLength"
+          show-word-limit
+          resize="none"
+          v-model="linkForm.memo"
+          @input="onChange"
+        ></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -81,14 +93,23 @@ export default {
       updateURL: overall.uploadUrl,
       fileList: [], // 上传图片回显列表
       buttonLoading: false, // 按钮加载请求
+      textareaMaxLength: 120, // textarea可输入的长度
+      textareaLength: 120, // textarea 已经输入的长度
+      pickerOptions: {
+        disabledDate(time) {
+          // 只可选择大于当前时间的日期
+          return time.getTime() < Date.now();
+        }
+      },
       linkForm: {
-        cardType: 3, // 图文卡片
+        cardType: 1, // 图文卡片
         location: 0, // 位置
         pushDate: "", // 上线时间
         title: "",
         path: "", // 上传
         // downtime: "", // 下线时间
-        url: "" // 链接
+        url: "", // 链接
+        memo: ""
       },
       uploadParams: {
         type: "card"
@@ -127,6 +148,13 @@ export default {
               }
             }
           }
+        ],
+        memo: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
+          }
         ]
       }
     };
@@ -150,7 +178,7 @@ export default {
     },
     createData() {
       let _this = this;
-       _this.buttonLoading = true; // 按钮加载中
+      _this.buttonLoading = true; // 按钮加载中
       _this.$refs.linkForm.validate(valid => {
         if (valid) {
           console.log(" -- ", _this.linkForm);
@@ -192,6 +220,13 @@ export default {
       // console.log("handleAvatarSuccess --", res, file);
       this.linkForm.path = res.data;
     },
+     // 更新 textarea 可输入的值
+    onChange(value) {
+      this.updateTextareaLength(value);
+    },
+    updateTextareaLength(value) {
+      this.textareaLength = this.textareaMaxLength - value.length;
+    },
     // 图片
     close() {
       console.log("关闭");
@@ -203,7 +238,8 @@ export default {
         title: "",
         path: "", // 上传
         // downtime: "", // 下线时间
-        url: "" // 链接
+        url: "", // 链接
+        memo: ""
       };
       this.fileList = [];
       this.$refs.linkForm.resetFields();
