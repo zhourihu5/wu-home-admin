@@ -6,7 +6,7 @@
       :model="linkForm"
       label-position="right"
       label-width="100px"
-      style="width: 600px; margin-left:50px;"
+      style="width: 60%"
     >
       <el-form-item :label="$t('form.Cover')" prop="file">
         <el-upload
@@ -56,6 +56,7 @@
           resize="none"
           v-model="linkForm.memo"
           @input="onChange"
+          rows=5
         ></el-input>
       </el-form-item>
     </el-form>
@@ -74,8 +75,12 @@
 .link {
   animation: mymove 0.5s ease-in;
   -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/
-  textarea {
-    height: 100px;
+  .el-textarea {
+    height: 100%;
+    width: 150%;
+    textarea {
+      height: 100%;
+    }
   }
   .dialog-footer {
     text-align: right;
@@ -220,7 +225,7 @@ export default {
       // console.log("handleAvatarSuccess --", res, file);
       this.linkForm.path = res.data;
     },
-     // 更新 textarea 可输入的值
+    // 更新 textarea 可输入的值
     onChange(value) {
       this.updateTextareaLength(value);
     },

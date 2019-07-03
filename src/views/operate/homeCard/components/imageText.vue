@@ -6,7 +6,7 @@
       :model="imagTextForm"
       label-position="right"
       label-width="100px"
-      style="width: 600px; margin-left:50px;"
+      style="width: 60%"
     >
       <el-form-item :label="$t('form.Cover')" prop="file">
         <el-upload
@@ -53,6 +53,7 @@
           resize="none"
           v-model="imagTextForm.memo"
           @input="onChange"
+          rows=5
         ></el-input>
       </el-form-item>
       <el-form-item :label="$t('form.content')" prop="content">
@@ -64,6 +65,7 @@
           resize="none"
           v-model="imagTextForm.content"
           @input="onChange"
+          rows=5
         ></el-input>
       </el-form-item>
       <el-form-item :label="$t('form.addModule')" prop="addModule">
@@ -115,8 +117,12 @@
 .imagText {
   animation: mymove 0.5s ease-in;
   -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/
-  textarea {
-    height: 100px;
+  .el-textarea {
+    height: 100%;
+    width: 150%;
+    textarea {
+      height: 100%;
+    }
   }
   .dialog-footer {
     text-align: right;

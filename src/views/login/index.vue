@@ -15,6 +15,7 @@
           class="login-form"
           auto-complete="on"
           label-position="right"
+          style="width: 60%"
         >
           <el-form-item prop="username">
             <el-input

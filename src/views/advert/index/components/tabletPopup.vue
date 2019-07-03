@@ -95,7 +95,7 @@
         :model="advertFormBottom"
         label-position="right"
         label-width="100px"
-        style="width: 800px; margin-left:50px;"
+        style="width: 80%"
       >
         <el-form-item :label="$t('form.Cover')" prop="file">
           <el-upload
@@ -112,10 +112,10 @@
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('form.title')" prop="title">
-          <el-input v-model="advertFormBottom.title" :placeholder="$t('table.temp.title')"></el-input>
+          <el-input style="width: 60%;" v-model="advertFormBottom.title" :placeholder="$t('table.temp.title')"></el-input>
         </el-form-item>
         <el-form-item :label="$t('form.link')" prop="url">
-          <el-input v-model="advertFormBottom.url" :placeholder="$t('table.temp.url')"/>
+          <el-input style="width: 60%;" v-model="advertFormBottom.url" :placeholder="$t('table.temp.url')"/>
         </el-form-item>
         <!-- <el-form-item :label="$t('form.link')" prop="url">
           <el-input :placeholder="$t('table.temp.url')" v-model="advertFormBottom.url">
@@ -197,8 +197,8 @@
     }
   }
   .icon {
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
   }
 }
 </style>
@@ -493,6 +493,7 @@ export default {
       // this.data = []; // 清空穿梭框
       // this.$refs.wangeditor.initContent(); // 重置富文本内容
       this.$refs.advertFormBottom.resetFields();
+      this.fileList = [];
       this.dialogFormVisible = false;
     }
   }

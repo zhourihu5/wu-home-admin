@@ -126,7 +126,7 @@
           :model="familyForm"
           label-position="right"
           label-width="100px"
-          style="width: 500px; margin-left:50px;"
+          style="width: 60%"
         >
           <el-form-item
             v-if="dialogStatus==='create'"
@@ -200,7 +200,7 @@
             </el-tooltip>
           </el-form-item>
           <el-form-item :label="$t('form.familyName')" prop="cname">
-            <el-input v-model="familyForm.cname" :placeholder="$t('table.temp.familyName')"/>
+            <el-input style="width: 60%;" v-model="familyForm.cname" :placeholder="$t('table.temp.familyName')"/>
           </el-form-item>
           <el-form-item :label="$t('form.addHousehold')">
             <el-radio-group v-model="isHousehold" @change="whetherHousehold">

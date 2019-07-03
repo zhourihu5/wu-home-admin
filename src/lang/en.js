@@ -131,6 +131,8 @@ export default {
         installaddres: 'Install Addres',
         uptime: 'Uptime',
         downtime: 'Downtime',
+        version: 'version',
+        content: 'content',
     },
     form: {
         title: 'Title',

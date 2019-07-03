@@ -97,7 +97,7 @@
           :model="communityForm"
           label-position="right"
           label-width="100px"
-          style="width: 400px; margin-left:50px;"
+          style="width: 60%"
         >
           <el-form-item :label="$t('form.area')" prop="areaOptionsVal">
             <el-cascader

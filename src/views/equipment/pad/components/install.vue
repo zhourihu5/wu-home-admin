@@ -78,7 +78,7 @@
           :model="installForm"
           label-position="right"
           label-width="100px"
-          style="width: 100%; margin-left:50px;"
+          style="width: 80%"
         >
           <el-form-item
             v-if="dialogStatus==='create'"

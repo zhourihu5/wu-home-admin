@@ -28,6 +28,7 @@
         resize="none"
         v-model="textarea"
         @input="onChange"
+        rows=5
       ></el-input>
       <div class="textarea-point">
         <p>{{ $t('other.remaining') }} {{textareaLength}} {{ $t('other.characters') }}</p>
@@ -59,6 +60,7 @@
     position: relative;
     .el-textarea {
       height: 100%;
+      width: 150%;
       textarea {
         height: 100%;
       }

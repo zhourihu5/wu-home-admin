@@ -71,28 +71,17 @@
         :model="systemForm"
         label-position="right"
         label-width="100px"
-        style="width: 800px; margin-left:50px;"
+        style="width: 80%"
       >
         <el-form-item :label="$t('form.title')" prop="title">
-          <el-input v-model="systemForm.title" :placeholder="$t('table.temp.title')"></el-input>
+          <el-input style="width: 60%;" v-model="systemForm.title" :placeholder="$t('table.temp.title')"></el-input>
         </el-form-item>
         <el-form-item :label="$t('form.type')" prop="type">
           <el-select v-model="systemForm.type" :placeholder="$t('table.temp.modular')">
             <el-option v-for="item in type" :key="item.id" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('form.content')" prop="content">
-          <!-- <wangeditor ref="wangeditor"></wangeditor> -->
-          <el-input
-            type="textarea"
-            :placeholder="$t('placeholder.textarea')"
-            :maxlength="textareaMaxLength"
-            show-word-limit
-            resize="none"
-            v-model="systemForm.content"
-            @input="onChange"
-          ></el-input>
-        </el-form-item>
+
         <el-form-item :label="$t('form.area')" prop="areaOptionsVal">
           <el-cascader
             :props="areaProps"
@@ -117,6 +106,19 @@
             ></el-transfer>
           </el-tooltip>
         </el-form-item>
+        <el-form-item :label="$t('form.content')" prop="content">
+          <!-- <wangeditor ref="wangeditor"></wangeditor> -->
+          <el-input
+            type="textarea"
+            :placeholder="$t('placeholder.textarea')"
+            :maxlength="textareaMaxLength"
+            show-word-limit
+            resize="none"
+            v-model="systemForm.content"
+            @input="onChange"
+            rows=5
+          ></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">{{ $t('table.cancel') }}</el-button>
@@ -132,8 +134,12 @@
 <style lang="scss">
 .system {
   padding: 20px;
-  textarea {
-    height: 100px;
+  .el-textarea {
+    height: 100%;
+    width: 100%;
+    textarea {
+      height: 100%;
+    }
   }
   .el-transfer {
     margin: 20px 0 0 0;

@@ -110,7 +110,7 @@
           :model="unitForm"
           label-position="right"
           label-width="100px"
-          style="width: 500px; margin-left:50px;"
+          style="width: 60%"
         >
           <el-form-item
             v-if="dialogStatus==='create'"

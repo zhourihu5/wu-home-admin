@@ -7,6 +7,7 @@
       class="login-form"
       auto-complete="on"
       label-position="right"
+      style="width: 60%"
     >
       <div class="title-container">
         <h3 class="title">{{ $t('login.title') }}</h3>

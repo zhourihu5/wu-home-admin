@@ -20,7 +20,7 @@ export default {
         unit: '单元管理',
         family: '家庭管理',
         system: '系统',
-        up: '设备升级管理',
+        up: '版本升级',
         user: '用户',
         userIndex: '用户管理',
         permission: '权限管理',
@@ -131,7 +131,8 @@ export default {
         installaddres: '安装地址',
         uptime: '上线时间',
         downtime: '下线时间',
-        
+        version: '版本号',
+        content: '内容',
     },
     form: {
         title: '标题',

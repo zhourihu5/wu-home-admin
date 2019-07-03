@@ -73,7 +73,7 @@
           :model="temp"
           label-position="right"
           label-width="100px"
-          style="width: 400px; margin-left:50px;"
+          style="width: 60%"
         >
           <el-form-item :label="$t('table.permissionName')" prop="userName">
             <el-input v-model="temp.userName"/>
@@ -113,7 +113,7 @@
 <script>
 import { getPermission } from "@/api/user";
 import { generateTitle } from "@/utils/i18n";
-import { formatRoutes, deepCopy} from '@/utils/base'
+import { formatRoutes, deepCopy } from "@/utils/base";
 import Pagination from "@/components/Pagination"; // 分页
 export default {
   components: { Pagination },

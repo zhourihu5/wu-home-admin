@@ -101,7 +101,7 @@
           :model="userForm"
           label-position="right"
           label-width="100px"
-          style="width: 400px; margin-left:50px;"
+          style="width: 60%"
         >
           <el-form-item :label="$t('table.userName')" prop="userName">
             <el-input v-model="userForm.userName" :placeholder="$t('table.temp.userName')"/>

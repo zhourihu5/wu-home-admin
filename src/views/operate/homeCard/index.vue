@@ -125,8 +125,8 @@
     }
   }
   .icon {
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
   }
   // .homeCard-dialog {
   //   .myForm {

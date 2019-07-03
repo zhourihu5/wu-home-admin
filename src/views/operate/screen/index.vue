@@ -48,7 +48,7 @@
         :model="screenForm"
         label-position="right"
         label-width="100px"
-        style="width: 800px; margin-left:50px;"
+        style="width: 60%"
       >
         <el-form-item :label="$t('form.Cover')" prop="file">
           <el-upload
@@ -102,8 +102,8 @@
       }
     }
     .icon {
-      width: 80px;
-      height: 80px;
+      width: 40px;
+      height: 40px;
     }
   }
 }

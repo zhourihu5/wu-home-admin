@@ -6,7 +6,7 @@
       :model="mfunctionForm"
       label-position="right"
       label-width="100px"
-      style="width: 600px; margin-left:50px;"
+      style="width: 60%"
     >
       <!-- <el-form-item :label="$t('form.Cover')" prop="file">
         <el-upload
@@ -52,7 +52,7 @@
           v-model="mfunctionForm.memo"
           @input="onChange"
         ></el-input>
-      </el-form-item> -->
+      </el-form-item>-->
       <!-- <el-form-item :label="$t('form.downtime')" prop="downtime">
         <el-date-picker
           v-model="mfunctionForm.downtime"
@@ -76,8 +76,12 @@
 .mfunction {
   animation: mymove 0.5s ease-in;
   -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/
-  textarea {
-    height: 100px;
+  .el-textarea {
+    height: 100%;
+    width: 150%;
+    textarea {
+      height: 100%;
+    }
   }
   .dialog-footer {
     text-align: right;
@@ -159,7 +163,7 @@ export default {
         type: "card"
       },
       textareaMaxLength: 120, // textarea可输入的长度
-      textareaLength: 120, // textarea 已经输入的长度
+      textareaLength: 120 // textarea 已经输入的长度
     };
   },
   created() {
@@ -224,7 +228,7 @@ export default {
       // console.log("handleAvatarSuccess --", res, file);
       this.mfunctionForm.path = res.data;
     },
-     // 更新 textarea 可输入的值
+    // 更新 textarea 可输入的值
     onChange(value) {
       this.updateTextareaLength(value);
     },
