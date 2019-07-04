@@ -205,7 +205,7 @@ export default {
       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.uploadH5Form.validate(valid => {
         if (valid) {
-          console.log(" ---吃 吃吃 ", this.uploadH5Form);
+          console.log(" ---吃 吃吃 ", _this.uploadH5Form);
           addService(this.uploadH5Form).then(function(res) {
             _this.buttonLoading = false; // 清楚加载中
             console.log("res --- ", res);

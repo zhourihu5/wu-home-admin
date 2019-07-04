@@ -17,7 +17,6 @@ export function addAdver(data) {
         method: 'post',
         data: data,
     })
-
 }
 
 // 删除广告

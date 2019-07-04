@@ -49,20 +49,20 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.category')" width="105">
+        <!-- <el-table-column align="center" :label="$t('table.category')" width="105">
           <template
             slot-scope="scope"
           >{{ scope.row.category ? scope.row.category : $t('table.noTime') }}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.applyName')" width="255">
+        </el-table-column> -->
+        <el-table-column align="center" :label="$t('table.applyName')" width="455">
           <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime') }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.serviceProvider')" width="200">
+        <el-table-column align="center" :label="$t('table.serviceProvider')" width="345">
           <template
             slot-scope="scope"
           >{{ scope.row.providerName ? scope.row.providerName : $t('table.noTime') }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.product')" width="254">
+        <el-table-column align="center" :label="$t('table.product')" width="269">
           <template
             slot-scope="scope"
           >{{ scope.row.flag != null && scope.row.flag != "" ? getFlagText(scope.row.flag) : $t('table.noTime') }}</template>
@@ -72,11 +72,11 @@
             slot-scope="scope"
           >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime') }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.state')" width="255">
+        <!-- <el-table-column align="center" :label="$t('table.state')" width="255">
           <template
             slot-scope="scope"
           >{{ scope.row.status != null  && scope.row.status != "" ? getStatusText(scope.row.status) : $t('table.noTime') }}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column :label="$t('table.operation')" align="center" width="250">
           <template slot-scope="{row}">
             <el-button

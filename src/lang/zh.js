@@ -134,6 +134,7 @@ export default {
         uptime: '上线时间',
         downtime: '下线时间',
         version: '版本号',
+        upgrade: '升级号',
         content: '内容',
         position: '位置',
         bannerImg: 'banner缩略图'
@@ -203,7 +204,9 @@ export default {
         notInstalled: '未安装',
         onReplace: '替换',
         packageName: '包名称',
-        apk: 'apk'
+        apk: 'apk',
+        version: '版本号',
+        upgrade: '升级号',
     },
     login: {
         title: '吾家运营管理平台',

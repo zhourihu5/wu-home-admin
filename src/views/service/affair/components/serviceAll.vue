@@ -139,7 +139,7 @@
 }
 </style>
 <script>
-import { getServiceAll } from "@/api/service";
+import { getServiceAllByNull } from "@/api/service";
 export default {
   data() {
     return {
@@ -165,7 +165,7 @@ export default {
     fetchData() {
       let _this = this;
       _this.listLoading = true;
-      getServiceAll(this.listQuery).then(function(res) {
+      getServiceAllByNull(this.listQuery).then(function(res) {
         console.log("res --- ", res);
         _this.listLoading = false;
         _this.serviceList = _this.serviceList.concat(res.data.content); // 列表数据

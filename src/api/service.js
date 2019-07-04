@@ -10,6 +10,15 @@ export function getServiceAll(params) {
   })
 }
 
+// 获取服务列表
+export function getServiceAllByNull(params) {
+  return request({
+    url: '/v1/service/findAllByNull',
+    method: 'get',
+    params,
+  })
+}
+
 // 添加服务
 export function addService(data) {
   return request({

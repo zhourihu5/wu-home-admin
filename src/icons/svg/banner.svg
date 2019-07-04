@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.1 (78136) - https://sketchapp.com -->
+    <title>切片</title>
+    <desc>Created with Sketch.</desc>
+    <g id="页面1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="编组-28" transform="translate(0.510742, 2.015039)">
+            <rect id="矩形备份-27" stroke="#FFFFFF" x="1.97506893" y="2.00695083" width="11" height="8" rx="1"></rect>
+            <path d="M2.37821691,9 L2.22593061,9 L1,9 C0.44771525,9 0,8.55228475 0,8 L0,1 C0,0.44771525 0.44771525,0 1,0 L11,0 C11.5522847,0 12,0.44771525 12,1 L12,2.44789752" id="路径" stroke="#FFFFFF" transform="translate(6.000000, 4.500000) rotate(-360.000000) translate(-6.000000, -4.500000) "></path>
+            <polyline id="路径-4" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" transform="translate(7.344551, 6.455600) scale(-1, 1) translate(-7.344551, -6.455600) " points="2.02585018 8.02892348 4.43512753 6.00695083 6.36383847 8.02892348 9.29465444 4.88227635 12.6632525 8.02892348"></polyline>
+            <circle id="椭圆形" fill="#FFFFFF" cx="10.225899" cy="4.01129653" r="1"></circle>
+        </g>
+    </g>
+</svg>

@@ -194,21 +194,21 @@ export default {
             }
           });
           console.log("保存", _this.mfunctionForm);
-          addCard(_this.mfunctionForm).then(function(res) {
-            console.log("res --- >", res);
-            _this.buttonLoading = false; // 清楚加载中
-            if (res.message == "SUCCESS") {
-              _this.close(); // 关闭弹窗
-              _this.$notify({
-                title: _this.generatePoint("notifySuccess.title"),
-                message: _this.generatePoint("notifySuccess.message"),
-                type: "success"
-              });
-            } else {
-              _this.$message.error(_this.generatePoint("system"));
-            }
-            _this.$emit("fetchData");
-          });
+          // addCard(_this.mfunctionForm).then(function(res) {
+          //   console.log("res --- >", res);
+          //   _this.buttonLoading = false; // 清楚加载中
+          //   if (res.message == "SUCCESS") {
+          //     _this.close(); // 关闭弹窗
+          //     _this.$notify({
+          //       title: _this.generatePoint("notifySuccess.title"),
+          //       message: _this.generatePoint("notifySuccess.message"),
+          //       type: "success"
+          //     });
+          //   } else {
+          //     _this.$message.error(_this.generatePoint("system"));
+          //   }
+          //   _this.$emit("fetchData");
+          // });
         } else {
           _this.buttonLoading = false; // 清楚加载中
           return false;

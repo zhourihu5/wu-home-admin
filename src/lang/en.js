@@ -134,6 +134,7 @@ export default {
         uptime: 'Uptime',
         downtime: 'Downtime',
         version: 'Version',
+        upgrade: 'Upgrade',
         content: 'Content',
         position: 'Position',
         bannerImg: 'Thumbnail'
@@ -204,7 +205,9 @@ export default {
         notInstalled: 'Not installed',
         onReplace: 'replace',
         apk: 'apk',
-        packageName: 'package Name'
+        packageName: 'package Name',
+        version: 'Version',
+        upgrade: 'Upgrade',
     },
     login: {
         title: 'Login Platform',
