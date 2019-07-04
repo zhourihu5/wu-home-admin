@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import router from "@/router"
 
 // create an axios instance
 const service = axios.create({
@@ -76,6 +77,7 @@ service.interceptors.response.use(
     // }
   },
   error => {
+    console.log("err -- ", error);
     if (error.response) {
       if (error.response.status) {
         switch (error.response.status) {
@@ -128,12 +130,17 @@ service.interceptors.response.use(
         }
       }
     } else {
-      router.replace({
-        path: '/login',
-        query: {
-          redirect: router.currentRoute.fullPath
-        }
-      });
+      Message({
+        message: '系统接口异常,请联系管理员' || 'error',
+        type: 'error',
+        duration: 5 * 1000
+      })
+      // router.replace({
+      //   path: '/login',
+      //   query: {
+      //     redirect: router.currentRoute.fullPath
+      //   }
+      // });
     }
   }
 )
