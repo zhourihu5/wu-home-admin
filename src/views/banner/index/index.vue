@@ -38,12 +38,12 @@
             <p v-else>{{ $t('table.noTime') }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.position')" width="485">
+        <el-table-column align="center" :label="$t('table.position')" width="560">
           <template
             slot-scope="scope"
           >{{ (scope.row.moduleType !=null && scope.row.moduleType != '') ? getModuleType(scope.row.moduleType) : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.url')" width="485">
+        <el-table-column align="center" :label="$t('table.url')" width="565">
           <template slot-scope="scope">{{ scope.row.url ? scope.row.url : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column :label="$t('table.operation')" align="center" width="304">
