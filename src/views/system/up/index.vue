@@ -22,16 +22,16 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.version')" width="200">
+        <el-table-column align="center" :label="$t('table.version')" width="394">
           <template slot-scope="scope">{{ scope.row.showVer }}</template>
         </el-table-column>
-         <el-table-column align="center" :label="$t('table.version')" width="200">
+         <el-table-column align="center" :label="$t('table.version')" width="390">
           <template slot-scope="scope">{{ scope.row.sysVer }}</template>
         </el-table-column>
-         <el-table-column align="center" :label="$t('table.content')" width="200">
+         <el-table-column align="center" :label="$t('table.content')" width="390">
           <template slot-scope="scope">{{ scope.row.versionDesc }}</template>
         </el-table-column>
-         <el-table-column align="center" :label="$t('table.uptime')" width="200">
+         <el-table-column align="center" :label="$t('table.uptime')" width="400">
           <template slot-scope="scope">{{ scope.row.createDate }}</template>
         </el-table-column>
       </el-table>

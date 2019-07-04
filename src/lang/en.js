@@ -30,7 +30,9 @@ export default {
         advertIndex: 'Advert',
         equipment: 'Equipment',
         base: 'base',
-        pad: 'pad'
+        pad: 'pad',
+        banner: 'banner',
+        bannerIndex: 'banner'
     },
     table: {
         id: 'ID',
@@ -131,8 +133,10 @@ export default {
         installaddres: 'Install Addres',
         uptime: 'Uptime',
         downtime: 'Downtime',
-        version: 'version',
-        content: 'content',
+        version: 'Version',
+        content: 'Content',
+        position: 'Position',
+        bannerImg: 'Thumbnail'
     },
     form: {
         title: 'Title',

@@ -30,7 +30,9 @@ export default {
         advertIndex: '广告管理',
         equipment: '设备管理',
         base: '底座机管理',
-        pad: '平板机管理'
+        pad: '平板机管理',
+        banner: 'banner管理',
+        bannerIndex: '轮播图管理'
     },
     table: {
         id: 'ID',
@@ -64,7 +66,7 @@ export default {
         title: '标题',
         describe: '描述',
         type: '类型',
-        url: '地址',
+        url: '访问地址',
         icon: '图标',
         stopPushing: '停止推送',
         temp: {
@@ -133,6 +135,8 @@ export default {
         downtime: '下线时间',
         version: '版本号',
         content: '内容',
+        position: '位置',
+        bannerImg: 'banner缩略图'
     },
     form: {
         title: '标题',

@@ -53,7 +53,7 @@
           resize="none"
           v-model="imagTextForm.memo"
           @input="onChange"
-          rows=5
+          rows="5"
         ></el-input>
       </el-form-item>
       <el-form-item :label="$t('form.content')" prop="content">
@@ -65,7 +65,7 @@
           resize="none"
           v-model="imagTextForm.content"
           @input="onChange"
-          rows=5
+          rows="5"
         ></el-input>
       </el-form-item>
       <el-form-item :label="$t('form.addModule')" prop="addModule">

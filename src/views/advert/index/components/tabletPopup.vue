@@ -112,10 +112,18 @@
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('form.title')" prop="title">
-          <el-input style="width: 60%;" v-model="advertFormBottom.title" :placeholder="$t('table.temp.title')"></el-input>
+          <el-input
+            style="width: 60%;"
+            v-model="advertFormBottom.title"
+            :placeholder="$t('table.temp.title')"
+          ></el-input>
         </el-form-item>
         <el-form-item :label="$t('form.link')" prop="url">
-          <el-input style="width: 60%;" v-model="advertFormBottom.url" :placeholder="$t('table.temp.url')"/>
+          <el-input
+            style="width: 60%;"
+            v-model="advertFormBottom.url"
+            :placeholder="$t('table.temp.url')"
+          />
         </el-form-item>
         <!-- <el-form-item :label="$t('form.link')" prop="url">
           <el-input :placeholder="$t('table.temp.url')" v-model="advertFormBottom.url">
@@ -364,10 +372,13 @@ export default {
       if (!value) {
         callback(new Error(this.generatePoint("required")));
       } else {
-        if (value.match(/http:\/\/.+/) == null) {
-          callback(new Error(this.generatePoint("urlInvalid")));
-        } else {
+        if (
+          value.match(/http:\/\/.+/) != null ||
+          value.match(/https:\/\/.+/) != null
+        ) {
           callback();
+        } else {
+          callback(new Error(this.generatePoint("urlInvalid")));
         }
       }
     },
