@@ -44,30 +44,30 @@
             <p v-else>{{ $t('table.noTime') }}</p>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.jumpPath')" width="171" align="center">
+        <el-table-column :label="$t('table.jumpPath')" width="180" align="center">
           <template slot-scope="scope">
             <a :href="scope.row.url" target="view_window">点击查看</a>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.uptime')" width="190">
+        <el-table-column align="center" :label="$t('table.uptime')" width="225">
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.startDate ? scope.row.startDate : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.downtime')" width="190">
+        <el-table-column align="center" :label="$t('table.downtime')" width="225">
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.endDate ? scope.row.endDate : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.deliveryTime')" width="150">
+        <el-table-column align="center" :label="$t('table.deliveryTime')" width="225">
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.dayTime ? scope.row.dayTime : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.operation')" align="center" width="318">
+        <el-table-column :label="$t('table.operation')" align="center" width="320">
           <template slot-scope="{row}">
             <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.delete') }}</el-button>
           </template>

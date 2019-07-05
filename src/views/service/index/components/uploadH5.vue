@@ -207,8 +207,8 @@ export default {
         if (valid) {
           console.log(" ---吃 吃吃 ", _this.uploadH5Form);
           addService(this.uploadH5Form).then(function(res) {
-            _this.buttonLoading = false; // 清楚加载中
             console.log("res --- ", res);
+            _this.buttonLoading = false; // 清楚加载中
             _this.dialogFormVisible = false;
             if (res.message == "SUCCESS") {
               _this.close(); // 关闭弹窗

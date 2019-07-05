@@ -61,25 +61,35 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.familyName')" width="256" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.num ? scope.row.num : $t('table.noTime')}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.belongToUnit')" width="260">
+        <el-table-column align="center" :label="$t('table.belongToCommunity')" width="300">
           <template
             slot-scope="scope"
-          >{{ scope.row.unitName ? scope.row.unitName : $t('table.noTime')}}</template>
+          >{{ scope.row.communtityName ? scope.row.communtityName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.belongToFloor')" width="335">
+        <el-table-column align="center" :label="$t('table.belongToFloor')" width="200">
           <template
             slot-scope="scope"
           >{{ scope.row.floorName ? scope.row.floorName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.belongToCommunity')" width="413">
+        <el-table-column align="center" :label="$t('table.belongToUnit')" width="210">
           <template
             slot-scope="scope"
-          >{{ scope.row.communtityName ? scope.row.communtityName : $t('table.noTime')}}</template>
+          >{{ scope.row.unitName ? scope.row.unitName : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column :label="$t('table.familyName')" width="210" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.num ? scope.row.num : $t('table.noTime')}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('table.phone')" width="200" align="center">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.userInfo.userName ? scope.row.userInfo.userName : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column :label="$t('table.household')" width="300" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.userInfo.nickName ? scope.row.userInfo.nickName : $t('table.noTime')}}</span>
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -200,7 +210,11 @@
             </el-tooltip>
           </el-form-item>
           <el-form-item :label="$t('form.familyName')" prop="cname">
-            <el-input style="width: 60%;" v-model="familyForm.cname" :placeholder="$t('table.temp.familyName')"/>
+            <el-input
+              style="width: 60%;"
+              v-model="familyForm.cname"
+              :placeholder="$t('table.temp.familyName')"
+            />
           </el-form-item>
           <el-form-item :label="$t('form.addHousehold')">
             <el-radio-group v-model="isHousehold" @change="whetherHousehold">

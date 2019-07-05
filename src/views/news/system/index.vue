@@ -35,15 +35,15 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.title')" width="500">
+        <el-table-column align="center" :label="$t('table.title')" width="565">
           <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.type')" width="500" align="center">
+        <el-table-column :label="$t('table.type')" width="565" align="center">
           <template
             slot-scope="scope"
           >{{ scope.row.type != null ? getTypeText(scope.row.type) : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.deliveryTime')" width="574">
+        <el-table-column align="center" :label="$t('table.deliveryTime')" width="600">
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>

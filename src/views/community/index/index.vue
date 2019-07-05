@@ -48,7 +48,7 @@
             <span>{{ (scope.row.provinceName + '/' + scope.row.cityName + '/' + scope.row.areaName) ? (scope.row.provinceName + '/' + scope.row.cityName + '/' + scope.row.areaName) : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.address')" width="360" align="center">
+        <el-table-column :label="$t('table.address')" width="480" align="center">
           <template
             slot-scope="scope"
           >{{ scope.row.address ? scope.row.address : $t('table.noTime')}}</template>
@@ -57,7 +57,7 @@
           align="center"
           prop="created_at"
           :label="$t('table.createTime')"
-          width="264"
+          width="300"
         >
           <template slot-scope="scope">
             <i class="el-icon-time"/>

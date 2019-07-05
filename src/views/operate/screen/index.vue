@@ -23,13 +23,13 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.cover')" width="787" align="center">
+        <el-table-column :label="$t('table.cover')" width="865" align="center">
           <template slot-scope="scope">
             <img v-if="scope.row.cover" :src="scope.row.cover" :alt="$t('table.icon')" class="icon">
             <p v-else>{{ $t('table.noTime') }}</p>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.jumpPath')" width="787" align="center">
+        <el-table-column :label="$t('table.jumpPath')" width="865" align="center">
           <template slot-scope="scope">
             <a :href="scope.row.url" target="view_window">点击查看</a>
           </template>

@@ -34,26 +34,31 @@
       >
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <!-- <template slot-scope="scope">{{ scope.row.id }}</template> -->
-          <template  slot-scope="{row}">
+          <template slot-scope="{row}">
             <el-radio v-model="userId" :label="row.id" @change="userChange(row)">{{row.id}}</el-radio>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.nickName')" width="330">
+        <el-table-column align="center" :label="$t('table.nickName')" width="300">
           <template
             slot-scope="scope"
           >{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.userName')" width="334" align="center">
+        <el-table-column :label="$t('table.userName')" width="300" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.userName ? scope.row.userName : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.community')" width="330" align="center">
+        <el-table-column :label="$t('table.platform')" width="200" align="center">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.flag ? getFlagText(scope.row.flag) : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column :label="$t('table.community')" width="353" align="center">
           <template
             slot-scope="scope"
           >{{ scope.row.community ? scope.row.community : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.addUser')" width="335" align="center">
+        <!-- <el-table-column :label="$t('table.addUser')" width="335" align="center">
           <template
             slot-scope="scope"
           >{{ scope.row.addUser ? scope.row.addUser : $t('table.noTime')}}</template>
@@ -68,16 +73,16 @@
             <i class="el-icon-time"/>
             <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
           </template>
-        </el-table-column>
+        </el-table-column>-->
       </el-table>
-       <!-- 分页 -->
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="fetchData"
-        />
+      <!-- 分页 -->
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.pageNum"
+        :limit.sync="listQuery.pageSize"
+        @pagination="fetchData"
+      />
     </div>
   </div>
 </template>
@@ -102,6 +107,7 @@
 <script>
 import Pagination from "@/components/Pagination"; // 分页
 import { getUserList } from "@/api/user";
+import { overall } from "@/constant/index"; // 服务 常用常量
 export default {
   components: { Pagination },
   data() {
@@ -116,21 +122,23 @@ export default {
         userName: "",
         pageNum: 1,
         pageSize: 10
-      }
+      },
+      // 平台标示选择
+      options: overall.user.options
     };
   },
   props: {
-      user: {
-          type: Object
-      }
+    user: {
+      type: Object
+    }
   },
   created() {
-    console.log("用户列表 --- ", this.user)
-    if(this.user) {
-        this.listQuery.nickName = this.user.nickName;
-        this.listQuery.userName = this.user.userName;
-        this.userId = this.user.id;
-        this.queryUser()
+    console.log("用户列表 --- ", this.user);
+    if (this.user) {
+      this.listQuery.nickName = this.user.nickName;
+      this.listQuery.userName = this.user.userName;
+      this.userId = this.user.id;
+      this.queryUser();
     }
     this.fetchData();
   },
@@ -147,12 +155,21 @@ export default {
       });
     },
     userChange(row) {
-        console.log(row)
-        this.$emit('transmitUser', row);
+      console.log(row);
+      this.$emit("transmitUser", row);
     },
     queryUser() {
       this.listQuery.pageNum = 1;
       this.fetchData();
+    },
+    getFlagText(flag) {
+      let text = "";
+      this.options.forEach(function(v) {
+        if (v.value == flag) {
+          text = v.label;
+        }
+      });
+      return text;
     }
   }
 };

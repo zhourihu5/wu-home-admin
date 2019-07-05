@@ -43,12 +43,12 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.floorName')" width="371" align="center">
+        <el-table-column :label="$t('table.floorName')" width="400" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.name ? scope.row.name : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.belongToCommunity')" width="400">
+        <el-table-column align="center" :label="$t('table.belongToCommunity')" width="500">
           <template
             slot-scope="scope"
           >{{ scope.row.communtityName ? scope.row.communtityName : $t('table.noTime')}}</template>
@@ -57,14 +57,14 @@
           align="center"
           prop="created_at"
           :label="$t('table.createTime')"
-          width="400"
+          width="430"
         >
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.operation')" align="center" width="403">
+        <el-table-column :label="$t('table.operation')" align="center" width="400">
           <template slot-scope="{row}">
             <el-button
               type="primary"

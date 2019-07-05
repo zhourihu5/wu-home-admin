@@ -137,7 +137,10 @@ export default {
         upgrade: 'Upgrade',
         content: 'Content',
         position: 'Position',
-        bannerImg: 'Thumbnail'
+        bannerImg: 'Thumbnail',
+        equipmentCoding: 'Extension',
+        household: 'Household',
+        phone: 'Phone'
     },
     form: {
         title: 'Title',

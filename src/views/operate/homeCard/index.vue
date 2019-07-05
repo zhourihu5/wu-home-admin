@@ -38,16 +38,16 @@
         <el-table-column align="center" :label="$t('table.title')" width="200">
           <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.describe')" width="350">
+        <el-table-column align="center" :label="$t('table.describe')" width="400">
           <template slot-scope="scope">{{ scope.row.memo ? scope.row.memo : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.icon')" width="244">
+        <el-table-column align="center" :label="$t('table.icon')" width="250">
           <template slot-scope="scope">
             <img v-if="scope.row.icon" :src="scope.row.icon" :alt="$t('table.icon')" class="icon">
             <p v-else>{{ $t('table.noTime') }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.type')" width="150">
+        <el-table-column align="center" :label="$t('table.type')" width="200">
           <template slot-scope="scope">{{ scope.row.type ? scope.row.type : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.deliveryTime')" width="280">
@@ -56,7 +56,7 @@
             <span>{{ scope.row.pushDate ? scope.row.pushDate : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.state')" width="150">
+        <el-table-column align="center" :label="$t('table.state')" width="200">
           <template
             slot-scope="scope"
           >{{ scope.row.status != null ? getStatusText(scope.row.status) : $t('table.noTime')}}</template>

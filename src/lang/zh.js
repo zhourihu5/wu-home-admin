@@ -137,7 +137,10 @@ export default {
         upgrade: '升级号',
         content: '内容',
         position: '位置',
-        bannerImg: 'banner缩略图'
+        bannerImg: 'banner缩略图',
+        equipmentCoding: '设备编码',
+        household: '户主',
+        phone: '手机号'
     },
     form: {
         title: '标题',

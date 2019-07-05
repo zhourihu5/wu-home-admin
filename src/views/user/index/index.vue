@@ -42,33 +42,22 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.nickName')" width="300">
-          <template
-            slot-scope="scope"
-          >{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column :label="$t('table.userName')" width="310" align="center">
+        <el-table-column :label="$t('table.userName')" width="470" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.userName ? scope.row.userName : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.platform')" width="210" align="center">
+        <el-table-column align="center" :label="$t('table.nickName')" width="500">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column :label="$t('table.platform')" width="400" align="center">
           <template
             slot-scope="scope"
           >{{ scope.row.flag ? getFlagText(scope.row.flag) : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.addUser')" width="210" align="center">
-          <template
-            slot-scope="scope"
-          >{{ scope.row.addUser ? scope.row.addUser : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.createTime')" width="241">
-          <template slot-scope="scope">
-            <i class="el-icon-time"/>
-            <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('table.operation')" align="center" width="303">
+        <el-table-column :label="$t('table.operation')" align="center" width="360">
           <template slot-scope="{row}">
             <el-button
               type="primary"
@@ -374,10 +363,10 @@ export default {
     getFlagText(flag) {
       let text = "";
       this.options.forEach(function(v) {
-        if(v.value == flag) {
+        if (v.value == flag) {
           text = v.label;
         }
-      })
+      });
       return text;
     },
     close() {

@@ -56,7 +56,7 @@
           resize="none"
           v-model="linkForm.memo"
           @input="onChange"
-          rows=5
+          rows="5"
         ></el-input>
       </el-form-item>
     </el-form>
@@ -174,10 +174,13 @@ export default {
       if (!value) {
         callback(new Error(this.generatePoint("required")));
       } else {
-        if (value.match(/http:\/\/.+/) == null) {
-          callback(new Error(this.generatePoint("urlInvalid")));
-        } else {
+        if (
+          value.match(/http:\/\/.+/) != null ||
+          value.match(/https:\/\/.+/) != null
+        ) {
           callback();
+        } else {
+          callback(new Error(this.generatePoint("urlInvalid")));
         }
       }
     },

@@ -23,37 +23,28 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.outDate')" width="200">
-          <template slot-scope="scope">
-            <i class="el-icon-time"/>
-            <span>{{ scope.row.outDate ? scope.row.outDate : $t('table.noTime')}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.installer')" width="200">
+        <el-table-column align="center" :label="$t('table.equipmentCoding')" width="315">
           <template
             slot-scope="scope"
-          >{{ scope.row.operator ? scope.row.operator : $t('table.noTime')}}</template>
+          >{{ scope.row.deviceKey ? scope.row.deviceKey : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.installDate')" width="200">
+        <el-table-column align="center" :label="$t('table.installDate')" width="315">
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.installDate ? scope.row.installDate : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.installaddres')" width="973">
+        <el-table-column align="center" :label="$t('table.installer')" width="300">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.operator ? scope.row.operator : $t('table.noTime')}}</template>
+        </el-table-column>
+
+        <el-table-column align="center" :label="$t('table.installaddres')" width="800">
           <template
             slot-scope="scope"
           >{{ scope.row.address ? scope.row.address : $t('table.noTime')}}</template>
         </el-table-column>
-        <!-- <el-table-column :label="$t('table.operation')" align="center" width="403">
-          <template slot-scope="{row}">
-            <el-button
-              type="primary"
-              size="mini"
-              @click="showEditFamilyView(row)"
-            >{{ $t('table.edit') }}</el-button>
-          </template>
-        </el-table-column>-->
       </el-table>
       <!-- 分页 -->
       <pagination
@@ -142,13 +133,13 @@
               ></el-cascader>
             </el-tooltip>
           </el-form-item>
-          <el-form-item :label="$t('form.extensionCoding')" prop="buttonKey">
+          <!-- <el-form-item :label="$t('form.extensionCoding')" prop="buttonKey">
             <el-input
               class="my-input"
               v-model="installForm.buttonKey"
               :placeholder="$t('table.temp.equipmentCoding')"
             />
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item :label="$t('form.equipmentCoding')" prop="deviceKey">
             <el-input
               class="my-input"
@@ -484,7 +475,7 @@ export default {
           console.log(this.installForm);
           addDevice({
             deviceKey: this.installForm.deviceKey,
-            buttonKey: this.installForm.buttonKey,
+            // buttonKey: this.installForm.buttonKey,
             familyId: this.installForm.familyOptionsVal[0],
             flag: this.installForm.flag,
             installDate: this.installForm.installDate,
