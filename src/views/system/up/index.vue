@@ -84,9 +84,9 @@
           <el-form-item :label="$t('form.link')" prop="url">
             <el-input v-model="upForm.url" :placeholder="$t('table.temp.url')"/>
           </el-form-item>
-          <el-form-item :label="$t('form.link')" prop="url">
+          <!-- <el-form-item :label="$t('form.link')" prop="url">
             <el-input v-model="upForm.url" :placeholder="$t('table.temp.url')"/>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item :label="$t('form.content')" prop="versionDesc">
             <el-input
               type="textarea"
@@ -99,6 +99,36 @@
               rows="5"
             ></el-input>
           </el-form-item>
+          <el-form-item :label="$t('form.content')" prop="upgrade">
+            <el-radio v-model="upgrade" label="1">全部升级</el-radio>
+            <el-radio v-model="upgrade" label="2">按社区升级</el-radio>
+          </el-form-item>
+          <div v-show="upgrade == 2" class="myCommunity">
+            <el-form-item :label="$t('form.area')" prop="areaOptionsVal">
+              <el-cascader
+                :props="areaProps"
+                @change="handleAreaForm"
+                v-model="upFormBottom.areaOptionsVal"
+                :placeholder="$t('table.temp.area')"
+              ></el-cascader>
+            </el-form-item>
+            <el-form-item :label="$t('form.community')" prop="communtity">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('point.addreCommunity')"
+                placement="top"
+              >
+                <el-transfer
+                  v-model="communtityArr"
+                  :titles="[$t('form.unchecked'), $t('form.select')]"
+                  :button-texts="[$t('table.delete'), $t('table.add')]"
+                  :data="data"
+                  @change="handleChange"
+                ></el-transfer>
+              </el-tooltip>
+            </el-form-item>
+          </div>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="close">{{ $t('table.cancel') }}</el-button>
@@ -124,30 +154,42 @@
       margin-top: 5px;
     }
   }
+  .myCommunity {
+    animation: mymove 0.5s ease-in;
+    -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/
+  }
 }
 </style>
 <script>
 import Pagination from "@/components/Pagination"; // 分页
 import { addVersion, getSystemAll } from "@/api/system";
 import { generatePoint } from "@/utils/i18n";
+import { getCommuntityByArea } from "@/api/community";
+import { getAreas } from "@/api/area";
 export default {
   components: { Pagination },
   data() {
     return {
+      data: [],
       listLoading: true,
       buttonLoading: false, // 按钮加载请求
       upList: [],
       total: 0,
+      
       listQuery: {
         pageNum: 1,
         pageSize: 10
       },
+      communtityArr: [], // 社区id集合
+      upgrade: "1", // 1全部升级 2按社区升级
       upForm: {
         showVer: "", // 版本号
         sysVer: "", // 升级号
         url: "", // 链接
-        versionDesc: "" // 版本描述
+        versionDesc: "", // 版本描述
+        communtityId: ""
       },
+      upFormBottom: { areaOptionsVal: "" },
       textMap: {
         // 弹窗展示的title
         update: "Edit",
@@ -187,14 +229,56 @@ export default {
             message: this.generatePoint("required")
           }
         ]
+      },
+      // 省市区
+      areaProps: {
+        label: "areaName",
+        value: "id",
+        children: "children",
+        lazy: true,
+        lazyLoad(node, resolve) {
+          const { level } = node;
+          switch (level) {
+            case 0:
+              getAreas().then(function(res) {
+                resolve(res.data);
+              });
+              break;
+            case 1:
+              getAreas({ pid: node.value }).then(function(res) {
+                resolve(res.data);
+              });
+              break;
+            case 2:
+              getAreas({ pid: node.value }).then(function(res) {
+                for (let i = 0; i < res.data.length; i++) {
+                  res.data[i].leaf = true;
+                }
+                resolve(res.data);
+              });
+              break;
+          }
+        }
       }
     };
   },
   created() {
     this.fetchData();
   },
+  watch: {
+    upgrade: {
+      handler: function(val, oldval) {
+        console.log("watch --- ", val, oldval);
+      },
+      immediate: false
+    }
+  },
   methods: {
     generatePoint,
+    handleChange(value, direction, movedKeys) {
+      console.log(" -- ", this.value);
+      console.log(value, direction, movedKeys);
+    },
     // 验证url
     validateUrl(rule, value, callback) {
       if (!value) {
@@ -238,6 +322,8 @@ export default {
         console.log(" --- ", _this.upForm);
         _this.buttonLoading = false; // 清楚加载中
         if (valid) {
+          _this.upForm.communtityId = _this.communtityArr.join(",");
+          console.log(_this.upgrade, _this.upForm);
           addVersion(_this.upForm).then(function(res) {
             console.log("res --- ", res);
             _this.buttonLoading = false; // 清楚加载中
@@ -260,17 +346,39 @@ export default {
         }
       });
     },
+    // 监听区域查询社区 表单
+    handleAreaForm(val) {
+      this.getCommuntity(1, val[2]); // 查询社区
+    },
+    // 更新社区
+    getCommuntity(code, val) {
+      let _this = this;
+      getCommuntityByArea({ areaCode: val }).then(function(res) {
+        let newData = [];
+        res.data.forEach(function(v) {
+          newData.push({
+            label: v.name,
+            key: v.id,
+            pinyin: v.name
+          });
+        });
+        _this.data = newData;
+      });
+    },
     // 修改数据
     updateData() {},
     // 关闭弹窗
     close() {
       this.dialogFormVisible = false; // 关闭弹窗
+      this.upgrade = "1"; // 1全部升级 2按社区升级
+      this.communtityArr = []; // 社区id集合
       this.$refs.upForm.resetFields();
       this.upForm = {
         showVer: "", // 版本号
         sysVer: "", // 升级号
         url: "", // 链接
-        versionDesc: "" // 版本描述
+        versionDesc: "", // 版本描述
+        communtityId: ""
       };
     }
   }
