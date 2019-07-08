@@ -43,7 +43,7 @@ export default {
         community: '社区',
         operation: '操作',
         edit: '编辑',
-        household: '添加户主',
+        addHousehold: '添加户主',
         delete: '删除',
         search: '查询',
         add: '添加',
@@ -140,6 +140,7 @@ export default {
         bannerImg: 'banner缩略图',
         equipmentCoding: '设备编码',
         household: '户主',
+        userList: '用户列表',
         phone: '手机号'
     },
     form: {

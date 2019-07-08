@@ -43,7 +43,7 @@ export default {
         community: 'Community',
         operation: 'Operation',
         edit: 'Edit',
-        household: 'Add household',
+        addHousehold: 'Add household',
         delete: 'Delete',
         search: 'Search',
         add: 'Add',
@@ -140,6 +140,7 @@ export default {
         bannerImg: 'Thumbnail',
         equipmentCoding: 'Extension',
         household: 'Household',
+        userList: 'User List',
         phone: 'Phone'
     },
     form: {

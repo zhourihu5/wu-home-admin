@@ -84,11 +84,11 @@
         <el-table-column :label="$t('table.phone')" width="200" align="center">
           <template
             slot-scope="scope"
-          >{{ scope.row.userInfo.userName ? scope.row.userInfo.userName : $t('table.noTime')}}</template>
+          >{{ scope.row.userInfo? scope.row.userInfo.userName : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column :label="$t('table.household')" width="300" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.userInfo.nickName ? scope.row.userInfo.nickName : $t('table.noTime')}}</span>
+            <span>{{ scope.row.userInfo ? scope.row.userInfo.nickName : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -103,15 +103,15 @@
           </template>
         </el-table-column>
 
-        <!-- <el-table-column :label="$t('table.operation')" align="center" width="300">
+        <el-table-column :label="$t('table.operation')" align="center" width="300">
           <template slot-scope="{row}">
             <el-button
               type="primary"
               size="mini"
               @click="showEditFamilyView(row)"
-            >{{ $t('table.edit') }}</el-button>
+            >{{ $t('table.addHousehold') }}</el-button>
           </template>
-        </el-table-column>-->
+        </el-table-column>
       </el-table>
       <!-- 分页 -->
       <pagination
@@ -209,20 +209,18 @@
               ></el-cascader>
             </el-tooltip>
           </el-form-item>
-          <el-form-item :label="$t('form.familyName')" prop="cname">
+          <el-form-item v-if="dialogStatus==='create'" :label="$t('form.familyName')" prop="cname">
             <el-input
               style="width: 60%;"
               v-model="familyForm.cname"
               :placeholder="$t('table.temp.familyName')"
             />
           </el-form-item>
-          <el-form-item :label="$t('form.addHousehold')">
-            <el-radio-group v-model="isHousehold" @change="whetherHousehold">
-              <el-radio :label="0">否</el-radio>
-              <el-radio :label="1">是</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item v-if="isHousehold==1" :label="$t('form.household')" prop="household">
+          <el-form-item
+            v-if="dialogStatus==='update'"
+            :label="$t('form.household')"
+            prop="household"
+          >
             <el-input
               v-model="familyForm.user.householdName"
               :disabled="true"
@@ -231,18 +229,14 @@
           </el-form-item>
         </el-form>
         <!-- 住戶列表-->
-        <transition name="el-zoom-in-top">
-          <user-List
-            v-if="isHousehold==1"
-            :user="familyForm.user"
-            @transmitUser="userChoiceHousehold"
-          ></user-List>
+        <transition v-if="dialogStatus==='update'" name="el-zoom-in-top">
+          <user-List :user="familyForm.user" @transmitUser="userChoiceHousehold"></user-List>
         </transition>
         <div slot="footer" class="dialog-footer">
           <el-button @click="close">{{ $t('table.cancel') }}</el-button>
           <el-button
             type="primary"
-            @click="dialogStatus==='create'?createData():updateData()"
+            @click="dialogStatus==='create'?createData():addHousehold()"
             :loading="buttonLoading"
           >{{ $t('table.confirm') }}</el-button>
         </div>
@@ -470,26 +464,9 @@ export default {
     // 修改页面
     showEditFamilyView(row) {
       let _this = this;
-      console.log(row);
-      findFamilyUser({ familyId: row.id }).then(function(res) {
-        // 获取家庭下的用户
-        console.log("家庭用户 res --- ", res);
-        // 判断是否有住户
-        if (res.data.length > 0) {
-          _this.familyForm.user = res.data[0];
-          _this.familyForm.user.householdName = res.data[0].nickName
-            ? res.data[0].nickName
-            : res.data[0].userName;
-          _this.isHousehold = 1;
-        } else {
-          _this.isHousehold = 0;
-        }
-        _this.familyForm.cname = row.num;
-        _this.familyForm.id = row.id;
-        _this.familyForm.unitOptionsVal.push(row.unitId);
-        _this.dialogStatus = "update"; // 标示创建
-        _this.dialogFormVisible = true; // 展示弹窗
-      });
+      _this.dialogStatus = "update"; // 标示创建
+      _this.dialogFormVisible = true; // 展示弹窗
+      _this.familyForm.id = row.id;
     },
     // 查询家庭
     queryFamily() {
@@ -605,15 +582,6 @@ export default {
     createData() {
       let _this = this;
       _this.buttonLoading = true; // 按钮加载中
-      // 最后处理函数
-      function lastHandel() {
-        _this.dialogFormVisible = false; // 关闭弹窗
-        _this.$notify({
-          title: _this.generatePoint("notifySuccess.title"),
-          message: _this.generatePoint("notifySuccess.message"),
-          type: "success"
-        });
-      }
       _this.$refs.familyForm.validate(valid => {
         if (valid) {
           addFamily({
@@ -623,30 +591,13 @@ export default {
           }).then(function(res) {
             _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
-              // 判断是否需要保存户主 0 不保存  1保存
-              if (_this.isHousehold == 1) {
-                addUserAndFamily({
-                  identity: 1,
-                  userFamily: {
-                    familyId: res.data.id,
-                    userId: _this.familyForm.user.id
-                  }
-                }).then(function(res1) {
-                  _this.buttonLoading = false; // 清楚加载中
-                  if (res1.message == "SUCCESS") {
-                    console.log("添加完关系 --  ", res1);
-                    lastHandel();
-                  } else {
-                    _this.$message.error(_this.generatePoint("system"));
-                  }
-                  _this.fetchData(); // 更新列表
-                });
-              } else {
-                _this.buttonLoading = false; // 清楚加载中
-                lastHandel();
-              }
+              _this.dialogFormVisible = false; // 关闭弹窗
+              _this.$notify({
+                title: _this.generatePoint("notifySuccess.title"),
+                message: _this.generatePoint("notifySuccess.message"),
+                type: "success"
+              });
             } else {
-              _this.buttonLoading = false; // 清楚加载中
               _this.$message.error(_this.generatePoint("system"));
             }
             _this.fetchData(); // 更新列表
@@ -658,66 +609,29 @@ export default {
       });
     },
     // 修改数据
-    updateData() {
+    addHousehold() {
       let _this = this;
       _this.buttonLoading = true; // 按钮加载中
-      // 最后处理函数
-      function lastHandel() {
-        _this.dialogFormVisible = false; // 关闭弹窗
-        _this.$notify({
-          title: _this.generatePoint("notifySuccess.title"),
-          message: _this.generatePoint("notifySuccess.message1"),
-          type: "success"
-        });
-      }
-      _this.$refs.familyForm.validate(valid => {
-        if (valid) {
-          addFamily({
-            id: _this.familyForm.id,
-            num: _this.familyForm.cname,
-            unitId: _this.familyForm.unitOptionsVal[0]
-          }).then(function(res) {
-            if (res.message == "SUCCESS") {
-              if (_this.isHousehold == 0) {
-                delUserAndFamily({
-                  familyId: res.data.id,
-                  userId: _this.familyForm.user.id
-                }).then(function(res1) {
-                  _this.buttonLoading = false; // 清楚加载中
-                  if (res1.message == "SUCCESS") {
-                    lastHandel();
-                  } else {
-                    _this.$message.error(_this.generatePoint("system"));
-                  }
-                });
-              } else {
-                addUserAndFamily({
-                  identity: 1,
-                  userFamily: {
-                    familyId: res.data.id,
-                    userId: _this.familyForm.user.id
-                  }
-                }).then(function(res1) {
-                  _this.buttonLoading = false; // 清楚加载中
-                  if (res1.message == "SUCCESS") {
-                    console.log("添加完关系 --  ", res1);
-                    lastHandel();
-                  } else {
-                    _this.$message.error(_this.generatePoint("system"));
-                  }
-                  _this.fetchData(); // 更新列表
-                });
-              }
-            } else {
-              _this.buttonLoading = false; // 清楚加载中
-              _this.$message.error(_this.generatePoint("system"));
-            }
-            _this.fetchData(); // 更新列表
+      // console.log("添加业主 --- ", _this.familyForm);
+      addUserAndFamily({
+        identity: 1,
+        userFamily: {
+          familyId: _this.familyForm.id,
+          userId: _this.familyForm.user.id
+        }
+      }).then(function(res) {
+        _this.buttonLoading = false; // 清楚加载中
+        if (res.message == "SUCCESS") {
+          _this.dialogFormVisible = false; // 关闭弹窗
+          _this.$notify({
+            title: _this.generatePoint("notifySuccess.title"),
+            message: _this.generatePoint("notifySuccess.message"),
+            type: "success"
           });
         } else {
-          _this.buttonLoading = false; // 清楚加载中
-          return false;
+          _this.$message.error(_this.generatePoint("system"));
         }
+        _this.fetchData(); // 更新列表
       });
     },
     // 关闭弹窗

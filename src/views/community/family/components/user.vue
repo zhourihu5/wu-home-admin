@@ -1,6 +1,6 @@
 <template>
   <div class="userList">
-    <h3 class="title">{{ $t('table.household') }}</h3>
+    <h3 class="title">{{ $t('table.userList') }}</h3>
     <div class="app-container">
       <!-- query -->
       <div class="filter-container">
@@ -58,22 +58,6 @@
             slot-scope="scope"
           >{{ scope.row.community ? scope.row.community : $t('table.noTime')}}</template>
         </el-table-column>
-        <!-- <el-table-column :label="$t('table.addUser')" width="335" align="center">
-          <template
-            slot-scope="scope"
-          >{{ scope.row.addUser ? scope.row.addUser : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="created_at"
-          :label="$t('table.createTime')"
-          width="300"
-        >
-          <template slot-scope="scope">
-            <i class="el-icon-time"/>
-            <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
-          </template>
-        </el-table-column>-->
       </el-table>
       <!-- 分页 -->
       <pagination
