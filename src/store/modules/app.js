@@ -3,7 +3,7 @@ import { getLanguage } from '@/lang/index'
 
 const state = {
   sidebar: {
-    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
+    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : false,
     withoutAnimation: false
   },
   device: 'desktop',
@@ -15,6 +15,7 @@ const mutations = {
   TOGGLE_SIDEBAR: state => {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
+    console.log("state ---- >", state.sidebar)
     if (state.sidebar.opened) {
       Cookies.set('sidebarStatus', 1)
     } else {
