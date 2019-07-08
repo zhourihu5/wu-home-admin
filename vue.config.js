@@ -46,15 +46,24 @@ module.exports = {
     after: require('./mock/mock-server.js'),
 
   },
-  configureWebpack: {
+  // configureWebpack: {
+  //   // provide the app's title in webpack's name field, so that
+  //   // it can be accessed in index.html to inject the correct title.
+  //   name: name,
+  //   resolve: {
+  //     alias: {
+  //       '@': resolve('src')
+  //     }
+  //   }
+  // },
+  configureWebpack:(config) => {
+    if (process.env.NODE_ENV === 'production') {
+      config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true // 打包到线上去除console.log
+    }
+    config.resolve.alias['@'] = resolve('src'),
+    config.name = name
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
-    name: name,
-    resolve: {
-      alias: {
-        '@': resolve('src')
-      }
-    }
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test

@@ -84,6 +84,9 @@
           <el-form-item :label="$t('form.link')" prop="url">
             <el-input v-model="upForm.url" :placeholder="$t('table.temp.url')"/>
           </el-form-item>
+          <el-form-item :label="$t('form.link')" prop="url">
+            <el-input v-model="upForm.url" :placeholder="$t('table.temp.url')"/>
+          </el-form-item>
           <el-form-item :label="$t('form.content')" prop="versionDesc">
             <el-input
               type="textarea"
