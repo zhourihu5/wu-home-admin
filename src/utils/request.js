@@ -44,7 +44,7 @@ service.interceptors.response.use(
               Message({
                 message: error.response.data.message || 'error',
                 type: 'error',
-                duration: 5 * 1000
+                duration: 2 * 1000
               })
             }
             break;
@@ -53,6 +53,7 @@ service.interceptors.response.use(
             Message({
               message: '登录过期，请重新登录' || 'error',
               type: 'error',
+              duration: 2 * 1000,
               onClose: function () {
                 store.dispatch('user/logout')
                 router.replace({
@@ -62,21 +63,21 @@ service.interceptors.response.use(
                   }
                 });
               },
-              duration: 5 * 1000
+              duration: 2 * 1000
             })
             break;
           case 404:
             Message({
               message: '网络请求不存在' || 'error',
               type: 'error',
-              duration: 5 * 1000
+              duration: 2 * 1000
             })
             break;
           default:
             Message({
               message: '系统异常、请重新登录' || 'error',
               type: 'error',
-              duration: 5 * 1000,
+              duration: 2 * 1000,
               onClose: function () {
                 router.replace({
                   path: '/login',
@@ -92,7 +93,7 @@ service.interceptors.response.use(
       Message({
         message: '系统接口异常,请联系管理员' || 'error',
         type: 'error',
-        duration: 5 * 1000
+        duration: 2 * 1000
       })
       // router.replace({
       //   path: '/login',
