@@ -1,6 +1,6 @@
 <template>
   <div class="userList">
-    <h3 class="title">{{ $t('table.userList') }}</h3>
+    <!-- <h3 class="title">{{ $t('table.userList') }}</h3> -->
     <div class="app-container">
       <!-- query -->
       <div class="filter-container">
@@ -38,26 +38,26 @@
             <el-radio v-model="userId" :label="row.id" @change="userChange(row)">{{row.id}}</el-radio>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.nickName')" width="300">
+        <el-table-column align="center" :label="$t('table.nickName')" width="422">
           <template
             slot-scope="scope"
           >{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.userName')" width="300" align="center">
+        <el-table-column :label="$t('table.userName')" width="422" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.userName ? scope.row.userName : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('table.platform')" width="200" align="center">
+        <el-table-column :label="$t('table.platform')" width="420" align="center">
           <template
             slot-scope="scope"
           >{{ scope.row.flag ? getFlagText(scope.row.flag) : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.community')" width="353" align="center">
+        <!-- <el-table-column :label="$t('table.community')" width="353" align="center">
           <template
             slot-scope="scope"
           >{{ scope.row.community ? scope.row.community : $t('table.noTime')}}</template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <!-- 分页 -->
       <pagination
@@ -72,16 +72,16 @@
 </template>
 <style lang="scss">
 .userList {
-  margin-left: 50px;
-  margin-right: 50px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  // margin-left: 20px;
+  // margin-right: 20px;
+  // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   .title {
     font-size: 14px;
     color: #606266;
     padding: 20px 20px 0 20px;
   }
   .app-container {
-    padding: 0 20px 20px 20px;
+    padding: 0;
     .filter-container {
       margin-bottom: 10px;
     }

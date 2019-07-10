@@ -324,22 +324,22 @@ export default {
         if (valid) {
           _this.upForm.communtityId = _this.communtityArr.join(",");
           console.log(_this.upgrade, _this.upForm);
-          addVersion(_this.upForm).then(function(res) {
-            console.log("res --- ", res);
-            _this.buttonLoading = false; // 清楚加载中
-            _this.dialogFormVisible = false;
-            if (res.message == "SUCCESS") {
-              _this.close(); // 关闭弹窗
-              _this.$notify({
-                title: _this.generatePoint("notifySuccess.title"),
-                message: _this.generatePoint("notifySuccess.message"),
-                type: "success"
-              });
-            } else {
-              _this.$message.error(_this.generatePoint("system"));
-            }
-            _this.fetchData();
-          });
+          // addVersion(_this.upForm).then(function(res) {
+          //   console.log("res --- ", res);
+          //   _this.buttonLoading = false; // 清楚加载中
+          //   _this.dialogFormVisible = false;
+          //   if (res.message == "SUCCESS") {
+          //     _this.close(); // 关闭弹窗
+          //     _this.$notify({
+          //       title: _this.generatePoint("notifySuccess.title"),
+          //       message: _this.generatePoint("notifySuccess.message"),
+          //       type: "success"
+          //     });
+          //   } else {
+          //     _this.$message.error(_this.generatePoint("system"));
+          //   }
+          //   _this.fetchData();
+          // });
         } else {
           _this.buttonLoading = false; // 清楚加载中
           return false;

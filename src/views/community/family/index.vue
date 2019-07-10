@@ -125,7 +125,7 @@
     <!-- dialog -->
     <div class="family--dialog">
       <el-dialog
-        :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
+        :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.addHousehold')"
         :visible.sync="dialogFormVisible"
         width="75%"
         @close="close"
@@ -216,7 +216,7 @@
               :placeholder="$t('table.temp.familyName')"
             />
           </el-form-item>
-          <el-form-item
+          <!-- <el-form-item
             v-if="dialogStatus==='update'"
             :label="$t('form.household')"
             prop="household"
@@ -226,7 +226,7 @@
               :disabled="true"
               :placeholder="$t('table.temp.addHousehold')"
             />
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <!-- 住戶列表-->
         <transition v-if="dialogStatus==='update'" name="el-zoom-in-top">
