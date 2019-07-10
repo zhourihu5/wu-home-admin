@@ -246,7 +246,9 @@ export default {
             trigger: "change",
             // message: this.generatePoint("required")
             validator: (rule, value, callback) => {
-              if (this.$refs.wangeditor.getContentText() == "") {
+              // console.log(" --- ", this.$refs.wangeditor.getContentText())
+              // console.log(" --- ", this.$refs.wangeditor.getContentHtml())
+              if (this.$refs.wangeditor.getContentHtml() == "<p><br></p>") {
                 callback(this.generatePoint("required"));
               } else {
                 callback();
@@ -362,27 +364,26 @@ export default {
               _this.imagTextForm.services += v.id + ",";
             }
           });
-          console.log(
-            "保存",
-            _this.imagTextForm,
-            _this.$refs.wangeditor.getContentHtml()
-          );
-
-          // addCard(_this.imagTextForm).then(function(res) {
-          //   console.log("res --- >", res);
-          //   _this.buttonLoading = false; // 清楚加载中
-          //   if (res.message == "SUCCESS") {
-          //     _this.close(); // 关闭弹窗
-          //     _this.$notify({
-          //       title: _this.generatePoint("notifySuccess.title"),
-          //       message: _this.generatePoint("notifySuccess.message"),
-          //       type: "success"
-          //     });
-          //   } else {
-          //     _this.$message.error(_this.generatePoint("system"));
-          //   }
-          //   _this.$emit("fetchData");
-          // });
+          // console.log(
+          //   "保存",
+          //   _this.imagTextForm,
+          //   _this.$refs.wangeditor.getContentHtml()
+          // );
+          addCard(_this.imagTextForm).then(function(res) {
+            console.log("res --- >", res);
+            _this.buttonLoading = false; // 清楚加载中
+            if (res.message == "SUCCESS") {
+              _this.close(); // 关闭弹窗
+              _this.$notify({
+                title: _this.generatePoint("notifySuccess.title"),
+                message: _this.generatePoint("notifySuccess.message"),
+                type: "success"
+              });
+            } else {
+              _this.$message.error(_this.generatePoint("system"));
+            }
+            _this.$emit("fetchData");
+          });
         } else {
           _this.buttonLoading = false; // 清楚加载中
           return false;
