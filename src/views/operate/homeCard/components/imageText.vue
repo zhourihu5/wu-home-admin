@@ -6,7 +6,7 @@
       :model="imagTextForm"
       label-position="right"
       label-width="100px"
-      style="width: 60%"
+      style="width: 90%"
     >
       <el-form-item :label="$t('form.Cover')" prop="file">
         <el-upload
@@ -24,7 +24,11 @@
         </el-upload>
       </el-form-item>
       <el-form-item :label="$t('form.title')" prop="title">
-        <el-input v-model="imagTextForm.title" :placeholder="$t('table.temp.title')"></el-input>
+        <el-input
+          v-model="imagTextForm.title"
+          :placeholder="$t('table.temp.title')"
+          style=" width: 60%;"
+        ></el-input>
       </el-form-item>
       <el-form-item :label="$t('form.cardAddress')" prop="location">
         <el-input-number v-model="imagTextForm.location"></el-input-number>
@@ -37,13 +41,6 @@
           :picker-options="pickerOptions"
         />
       </el-form-item>
-      <!-- <el-form-item :label="$t('form.downtime')" prop="downtime">
-        <el-date-picker
-          v-model="imagTextForm.downtime"
-          type="datetime"
-          :placeholder="$t('table.temp.date')"
-        />
-      </el-form-item>-->
       <el-form-item :label="$t('form.describe')" prop="memo">
         <el-input
           type="textarea"
@@ -57,7 +54,8 @@
         ></el-input>
       </el-form-item>
       <el-form-item :label="$t('form.content')" prop="content">
-        <el-input
+        <wangeditor ref="wangeditor"></wangeditor>
+        <!-- <el-input
           type="textarea"
           :placeholder="$t('placeholder.textarea')"
           :maxlength="textareaMaxLength"
@@ -66,7 +64,7 @@
           v-model="imagTextForm.content"
           @input="onChange"
           rows="5"
-        ></el-input>
+        ></el-input>-->
       </el-form-item>
       <el-form-item :label="$t('form.addModule')" prop="addModule">
         <div class="add-plate">
@@ -117,9 +115,14 @@
 .imagText {
   animation: mymove 0.5s ease-in;
   -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/
+  .community-dialog {
+    .el-dialog__wrapper {
+      z-index: 20000 !important;
+    }
+  }
   .el-textarea {
     height: 100%;
-    width: 150%;
+    width: 100%;
     textarea {
       height: 100%;
     }
@@ -195,8 +198,9 @@ import serviceList from "./service";
 import { generatePoint } from "@/utils/i18n";
 import { addCard } from "@/api/card";
 import { overall } from "@/constant/index";
+import wangeditor from "@/components/Wangeditor/index";
 export default {
-  components: { serviceList },
+  components: { serviceList, wangeditor },
   data() {
     return {
       updateURL: overall.uploadUrl,
@@ -240,7 +244,14 @@ export default {
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: (rule, value, callback) => {
+              if (this.$refs.wangeditor.getContentText() == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                callback();
+              }
+            }
           }
         ],
         file: [
@@ -301,6 +312,7 @@ export default {
   },
   methods: {
     generatePoint,
+    validateContent() {},
     // 增加板块
     addPlate() {
       this.dialogFormVisible = true;
@@ -341,6 +353,7 @@ export default {
       let _this = this;
       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.imagTextForm.validate(valid => {
+        _this.imagTextForm.content = _this.$refs.wangeditor.getContentHtml(); // 获取富文本信息
         if (valid) {
           _this.serviceList.forEach(function(v, i) {
             if (i == _this.serviceList.length - 1) {
@@ -349,22 +362,27 @@ export default {
               _this.imagTextForm.services += v.id + ",";
             }
           });
-          console.log("保存", _this.imagTextForm)
-          addCard(_this.imagTextForm).then(function(res) {
-            console.log("res --- >", res);
-            _this.buttonLoading = false; // 清楚加载中
-            if (res.message == "SUCCESS") {
-              _this.close(); // 关闭弹窗
-              _this.$notify({
-                title: _this.generatePoint("notifySuccess.title"),
-                message: _this.generatePoint("notifySuccess.message"),
-                type: "success"
-              });
-            } else {
-              _this.$message.error(_this.generatePoint("system"));
-            }
-            _this.$emit("fetchData");
-          });
+          console.log(
+            "保存",
+            _this.imagTextForm,
+            _this.$refs.wangeditor.getContentHtml()
+          );
+
+          // addCard(_this.imagTextForm).then(function(res) {
+          //   console.log("res --- >", res);
+          //   _this.buttonLoading = false; // 清楚加载中
+          //   if (res.message == "SUCCESS") {
+          //     _this.close(); // 关闭弹窗
+          //     _this.$notify({
+          //       title: _this.generatePoint("notifySuccess.title"),
+          //       message: _this.generatePoint("notifySuccess.message"),
+          //       type: "success"
+          //     });
+          //   } else {
+          //     _this.$message.error(_this.generatePoint("system"));
+          //   }
+          //   _this.$emit("fetchData");
+          // });
         } else {
           _this.buttonLoading = false; // 清楚加载中
           return false;
@@ -399,6 +417,7 @@ export default {
       this.serviceList = []; // 清空服务
       this.fileList = [];
       this.$refs.imagTextForm.resetFields();
+      this.$refs.wangeditor.initContent(); // 清空富文本
     },
     handleAvatarSuccess(res, file) {
       // console.log("handleAvatarSuccess --", res, file);

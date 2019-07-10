@@ -6,6 +6,7 @@ import { equipment } from './equipment'
 
 export const overall = {
     uploadUrl: process.env.VUE_APP_BASE_API + '/oss/upload',
+    uploadMult: process.env.VUE_APP_BASE_API + '/oss/uploadMult',
     card: card,
     service: service,
     user: user,
