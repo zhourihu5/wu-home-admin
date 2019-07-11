@@ -15,6 +15,8 @@ export default {
         community: '社区通知',
         communityIndex: '社区管理',
         onCommunity: '社区',
+        stage: '期管理',
+        area: '区管理',
         household: '住户管理',
         floor: '楼宇管理',
         unit: '单元管理',
@@ -96,7 +98,8 @@ export default {
             title: '请输入标题',
             equipmentCoding: '请输入编码',
             installer: '请输入安装人',
-            packageName: '请输入包名称'
+            packageName: '请输入包名称',
+            name: '请输入名称'
         },
         platform: '平台',
         roleName: '角色名称',
@@ -145,6 +148,7 @@ export default {
     },
     form: {
         title: '标题',
+        name: '名称',
         CoverAndSummary: '封面和摘要',
         Cover: '封面',
         cardAddress: '卡片位置',
@@ -296,7 +300,8 @@ export default {
         familyUnit: '选择单元后获取该项数据',
         uptime: '上线时间必选',
         title: '标题必填',
-        required: '必填',
+        required: '此项必填',
+        mandatory: '此项必选',
         upload: '必须上传',
         modular: '请选择模块',
         urlInvalid: 'url无效,请以http://开头'

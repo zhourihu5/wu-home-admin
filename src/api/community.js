@@ -129,3 +129,20 @@ export function findFamilyUser(params) {
     })
 }
 
+// 获取期
+export function getStageAll(params) {
+    return request({
+        url: '/v1/issue/findAll',
+        method: 'get',
+        params
+    })
+}
+
+// 添加期
+export function addStage(data) {
+    return request({
+        url: '/v1/issue/addIssue',
+        method: 'post',
+        data,
+    })
+}

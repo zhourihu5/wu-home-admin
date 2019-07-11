@@ -15,6 +15,8 @@ export default {
         community: 'Community News',
         communityIndex: 'Community',
         onCommunity: 'Community',
+        stage: 'stage',
+        area: 'area',
         household: 'household',
         floor: 'floor',
         unit: 'unit',
@@ -97,7 +99,8 @@ export default {
             title: 'Please choose the title',
             equipmentCoding: 'Enter the code, please.',
             installer: 'Please enter the installer',
-            packageName: 'Please enter the package name'
+            packageName: 'Please enter the package name',
+            name: 'Please enter the name'
         },
         platform: "Platform",
         roleName: 'RoleName',
@@ -145,6 +148,7 @@ export default {
     },
     form: {
         title: 'Title',
+        name: "Name",
         CoverAndSummary: 'Cover And Summary',
         Cover: 'Cover',
         cardAddress: 'Position',
@@ -293,6 +297,7 @@ export default {
         uptime: 'Uptime required',
         title: 'Title must be filled in',
         required: 'required',
+        mandatory: 'required',
         upload: 'Must upload',
         modular: 'Please choose modular',
         urlInvalid: 'The URL is invalid. Start with http://'
