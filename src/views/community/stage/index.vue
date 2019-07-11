@@ -63,6 +63,14 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页 -->
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.pageNum"
+        :limit.sync="listQuery.pageSize"
+        @pagination="fetchData"
+      />
     </div>
     <!-- dialog -->
     <div class="stage-dialog">
@@ -132,8 +140,9 @@ import { getStageAll, addStage } from "@/api/community";
 import { generatePoint } from "@/utils/i18n";
 import Province from "@/components/Linkage/province"; // 省市区三级联动
 import Community from "@/components/Linkage/community"; // 省市区三级联动
+import Pagination from "@/components/Pagination"; // 分页
 export default {
-  components: { Province, Community },
+  components: { Province, Community, Pagination },
   data() {
     return {
       list: {
@@ -222,6 +231,7 @@ export default {
     },
     // 查询
     queryStage() {
+      this.listQuery.communtityId = this.list.communityValue[0]; // 更新查询条件社区ID
       this.fetchData();
     },
     // 获取省市区数据
@@ -248,8 +258,6 @@ export default {
     },
     // 显示编辑页面
     showEditStageView(row) {
-      console.log("row --- ", row);
-      // this.stageForm = row;
       this.stageForm.name = row.name;
       this.stageForm.id = row.id;
       this.stageForm.communtityId = row.communtityId;
