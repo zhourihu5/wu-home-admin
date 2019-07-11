@@ -34,7 +34,10 @@ export default {
   watch: {
     "params.areaValue": {
       handler: function(val, oldval) {
-        this.getCommuntity();
+        // console.log("---- > 触发啦", val, oldval)
+        if(val.length > 0) {
+          this.getCommuntity();
+        }
       },
       deep: true,
       immediate: false
@@ -57,6 +60,10 @@ export default {
           console.log("res --- ", res);
         }
       );
+    },
+    initialization() {
+      this.communityOptions = [];
+      this.communityOptionsVal = ""
     }
   }
 };

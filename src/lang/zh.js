@@ -38,6 +38,7 @@ export default {
     },
     table: {
         id: 'ID',
+        name: '名称',
         nickName: '昵称',
         userName: '账号',
         createTime: '创建时间',

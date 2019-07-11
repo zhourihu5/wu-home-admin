@@ -38,6 +38,7 @@ export default {
     },
     table: {
         id: 'ID',
+        name: 'Name',
         nickName: 'NickName',
         userName: 'UserName',
         createTime: 'CreateTime',

@@ -19,7 +19,51 @@
       >{{ $t('table.add') }}</el-button>
     </div>
     <!-- table --->
-    <div class="stage-table"></div>
+    <div class="stage-table">
+      <el-table
+        v-loading="listLoading"
+        :data="stageList"
+        element-loading-text="Loading"
+        border
+        fit
+        highlight-current-row
+      >
+        <el-table-column align="center" :label="$t('table.id')" width="95">
+          <template slot-scope="scope">{{ scope.row.id }}</template>
+        </el-table-column>
+        <el-table-column :label="$t('table.name')" width="400" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.name ? scope.row.name : $t('table.noTime')}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.belongToCommunity')" width="500">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.communtityName ? scope.row.communtityName : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="created_at"
+          :label="$t('table.createTime')"
+          width="430"
+        >
+          <template slot-scope="scope">
+            <i class="el-icon-time"/>
+            <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('table.operation')" align="center" width="400">
+          <template slot-scope="{row}">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="showEditStageView(row)"
+            >{{ $t('table.edit') }}</el-button>
+            <!-- <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.delete') }}</el-button> -->
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <!-- dialog -->
     <div class="stage-dialog">
       <el-dialog
@@ -35,7 +79,7 @@
           label-width="100px"
           style="width: 60%"
         >
-          <el-form-item :label="$t('form.area')" prop="areaValue">
+          <el-form-item v-if="dialogStatus==='create'" :label="$t('form.area')" prop="areaValue">
             <province ref="provinceForm" :params="stageForm" @getProvinceVal="getProvinceVal"></province>
           </el-form-item>
           <el-form-item
@@ -45,10 +89,10 @@
           >
             <community ref="communityForm" :params="stageForm" @getCommunityVal="getCommunityVal"></community>
           </el-form-item>
-          <el-form-item v-if="dialogStatus==='create'" :label="$t('form.name')" prop="num">
+          <el-form-item :label="$t('form.name')" prop="name">
             <el-input
               style="width: 60%;"
-              v-model="stageForm.num"
+              v-model="stageForm.name"
               :placeholder="$t('table.temp.name')"
             />
           </el-form-item>
@@ -115,7 +159,8 @@ export default {
       },
       stageForm: {
         code: "form",
-        num: "", // 名称
+        id: "",
+        name: "", // 名称
         areaValue: [], // 区域信息
         communityValue: [] // 社区信息
       },
@@ -147,7 +192,6 @@ export default {
                 callback();
               }
             }
-            // message: this.generatePoint("mandatory")
           }
         ],
         name: [
@@ -202,13 +246,64 @@ export default {
       this.dialogStatus = "create"; // 标示创建
       this.dialogFormVisible = true; // 展示弹窗
     },
+    // 显示编辑页面
+    showEditStageView(row) {
+      console.log("row --- ", row);
+      // this.stageForm = row;
+      this.stageForm.name = row.name;
+      this.stageForm.id = row.id;
+      this.stageForm.communtityId = row.communtityId;
+      this.dialogStatus = "update"; // 标示创建
+      this.dialogFormVisible = true; // 展示弹窗
+    },
     // 创建数据
     createData() {
       let _this = this;
       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.stageForm.validate(valid => {
         if (valid) {
-          console.log(_this.stageForm);
+          _this.stageForm.communtityId = _this.stageForm.communityValue[0];
+          addStage(_this.stageForm).then(function(res) {
+            console.log(" 添加期: ", res);
+            _this.buttonLoading = false; // 清楚加载中
+            if (res.message == "SUCCESS") {
+              _this.close(); // 关闭弹窗
+              _this.$notify({
+                title: _this.generatePoint("notifySuccess.title"),
+                message: _this.generatePoint("notifySuccess.message"),
+                type: "success"
+              });
+            } else {
+              _this.$message.error(_this.generatePoint("system"));
+            }
+            _this.fetchData(); // 更新列表
+          });
+        } else {
+          _this.buttonLoading = false; // 清楚加载中
+          return false;
+        }
+      });
+    },
+    updateData() {
+      let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
+      _this.$refs.stageForm.validate(valid => {
+        if (valid) {
+          addStage(_this.stageForm).then(function(res) {
+            console.log(" 添加期: ", res);
+            _this.buttonLoading = false; // 清楚加载中
+            if (res.message == "SUCCESS") {
+              _this.close(); // 关闭弹窗
+              _this.$notify({
+                title: _this.generatePoint("notifySuccess.title"),
+                message: _this.generatePoint("notifySuccess.message1"),
+                type: "success"
+              });
+            } else {
+              _this.$message.error(_this.generatePoint("system"));
+            }
+            _this.fetchData(); // 更新列表
+          });
         } else {
           _this.buttonLoading = false; // 清楚加载中
           return false;
@@ -219,20 +314,12 @@ export default {
     close() {
       this.dialogFormVisible = false; // 关闭弹窗
       this.$refs.stageForm.resetFields(); // 重置表单
-      this.stageForm.num = ""
-      this.$refs.provinceForm.initialization()
-    //   this.stageForm = {
-    //     code: "form",
-    //     num: "", // 名称
-    //     areaValue: [], // 区域信息
-    //     communityValue: [] // 社区信息
-    //   };
-      //   console.log(this.$refs, this.temp);
-      //   this.dialogFormVisible = false; // 关闭弹窗
-      //   this.$refs.communityForm.resetFields(); // 重置表单
-      //   this.communityForm.cname = "";
-      //   this.communityForm.address = "";
-      //   this.communityForm.optionsVal = [];
+      this.stageForm.name = "";
+      this.stageForm.communtityId = "";
+      if (this.dialogStatus == "create") {
+        this.$refs.provinceForm.initialization();
+        this.$refs.communityForm.initialization();
+      }
     }
   }
 };
