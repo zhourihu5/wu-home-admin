@@ -1,12 +1,8 @@
 <template>
-  <div class="community-index">
+  <div class="community">
     <!-- search --->
     <div class="community-index-container">
-      <el-cascader
-        :props="areaProps"
-        v-model="list.areaOptionsVal"
-        :placeholder="$t('table.temp.area')"
-      ></el-cascader>
+      <province ref="provinceList" :params="myList" @getProvinceVal="getProvinceVal"></province>
       <el-input
         v-model="listQuery.name"
         :placeholder="$t('table.temp.community')"
@@ -17,21 +13,21 @@
         class="filter-item"
         type="primary"
         icon="el-icon-search"
-        @click="queryCommunityIndex"
+        @click="queryCommunity"
       >{{ $t('table.search') }}</el-button>
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
-        @click="showAddIndexView"
+        @click="showAddView"
       >{{ $t('table.add') }}</el-button>
     </div>
     <!-- table --->
     <div class="community-table">
       <el-table
         v-loading="listLoading"
-        :data="indexList"
+        :data="communityList"
         element-loading-text="Loading"
         border
         fit
@@ -69,7 +65,7 @@
             <el-button
               type="primary"
               size="mini"
-              @click="showEditUserView(row)"
+              @click="showEditView(row)"
             >{{ $t('table.edit') }}</el-button>
             <!-- <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.delete') }}</el-button> -->
           </template>
@@ -89,45 +85,17 @@
       <el-dialog
         :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
         :visible.sync="dialogFormVisible"
+        width="90%"
         @close="close"
+        :close-on-click-modal="false"
       >
-        <el-form
-          ref="communityForm"
-          :rules="rules"
-          :model="communityForm"
-          label-position="right"
-          label-width="100px"
-          style="width: 60%"
-        >
-          <el-form-item :label="$t('form.area')" prop="areaOptionsVal">
-            <el-cascader
-              :props="areaProps"
-              v-model="communityForm.areaOptionsVal"
-              :options="options"
-              :placeholder="$t('table.temp.area')"
-            ></el-cascader>
-          </el-form-item>
-          <el-form-item :label="$t('form.communityName')" prop="cname">
-            <el-input v-model="communityForm.cname" :placeholder="$t('table.temp.community')"/>
-          </el-form-item>
-          <el-form-item :label="$t('form.address')" prop="address">
-            <el-input v-model="communityForm.address" :placeholder="$t('table.temp.address')"/>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="close">{{ $t('table.cancel') }}</el-button>
-          <el-button
-            type="primary"
-            @click="dialogStatus==='create'?createData():updateData()"
-            :loading="buttonLoading"
-          >{{ $t('table.confirm') }}</el-button>
-        </div>
+        <save-communtity ref="savaCommuntity" @close="close" :cid="cid" @fetchData="fetchData"></save-communtity>
       </el-dialog>
     </div>
   </div>
 </template>
 <style lang="scss">
-.community-index {
+.community {
   padding: 20px;
   .community-index-container {
     margin-bottom: 20px;
@@ -141,51 +109,32 @@
       margin-top: 5px;
     }
   }
+  .community-dialog {
+    .el-dialog {
+      max-height: 780px;
+    }
+  }
 }
 </style>
 <script>
-import Pagination from "@/components/Pagination"; // 分页
-import { getAreas } from "@/api/area";
-import { generatePoint } from "@/utils/i18n";
 import { addCommuntity, getCommuntityAll } from "@/api/community";
+import Pagination from "@/components/Pagination"; // 分页
+import Province from "@/components/Linkage/province"; // 省市区三级联动
+import saveCommuntity from "./components/add";
 export default {
-  components: { Pagination },
+  components: { Province, Pagination, saveCommuntity },
   data() {
     return {
-      // 省市区
-      areaProps: {
-        label: "areaName",
-        value: "id",
-        children: "children",
-        lazy: true,
-        lazyLoad(node, resolve) {
-          const { level } = node;
-          switch (level) {
-            case 0:
-              getAreas().then(function(res) {
-                resolve(res.data);
-              });
-              break;
-            case 1:
-              getAreas({ pid: node.value }).then(function(res) {
-                resolve(res.data);
-              });
-              break;
-            case 2:
-              getAreas({ pid: node.value }).then(function(res) {
-                for (let i = 0; i < res.data.length; i++) {
-                  res.data[i].leaf = true;
-                }
-                resolve(res.data);
-              });
-              break;
-          }
-        }
+      cid: "",
+      myList: {
+        code: "list",
+        areaValue: [],
+        communityValue: []
       },
-      areaProps1: {
-        label: "areaName",
-        value: "id",
-        children: "children"
+      myForm: {
+        code: "form",
+        areaValue: [],
+        communityValue: []
       },
       listQuery: {
         name: "",
@@ -193,171 +142,60 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      list: {
-        areaOptionsVal: []
-      },
-      communityForm: {
-        cname: "", // 社区名称
-        address: "", // 详细地址
-        id: "",
-        areaOptionsVal: []
-      },
-      indexList: [], // 列表数据
-      total: 0,
-      listLoading: true,
-      buttonLoading: false, // 按钮加载请求
-      dialogStatus: "", // 标示当前操作是添加、还是修改
-      dialogFormVisible: false, // 是否展示dialog内容
       textMap: {
         // 弹窗展示的title
         update: "Edit",
         create: "Create"
       },
-      rules: {},
-      options: [] // 用于数据回显
+      listLoading: false, // 列表加载
+      communityList: [], // 列表数据
+      total: 0, // 列表分页
+      dialogStatus: "", // 标示当前操作是添加、还是修改
+      dialogFormVisible: false // 是否展示dialog内容
     };
   },
   created() {
     this.fetchData(); // 获取列表数据
   },
   methods: {
-    generatePoint,
-    // 查询数据
     fetchData() {
       let _this = this;
       _this.listLoading = true;
-      getCommuntityAll(this.listQuery).then(function(res) {
+      getCommuntityAll(_this.listQuery).then(function(res) {
+        console.log("res ---- ", res);
         _this.listLoading = false;
-        _this.indexList = res.data.content; // 列表数据
+        _this.communityList = res.data.content; // 列表数据
         _this.total = res.data.totalPages; // 总页数
       });
     },
-    // 添加页面
-    showAddIndexView() {
+    // 获取省市区数据
+    getProvinceVal(val, code) {
+      if (code == "list") {
+        this.myList.areaValue = val;
+        this.listQuery.areaCode = val[2];
+      } else {
+        this.myForm.areaValue = val;
+      }
+    },
+    // 搜索
+    queryCommunity() {
+      this.fetchData();
+    },
+    showAddView() {
       this.dialogStatus = "create"; // 标示创建
       this.dialogFormVisible = true; // 展示弹窗
     },
-    showEditUserView(row) {
-      let _this = this;
-      console.log(row);
-      // 回显数据
-      Promise.all([
-        getAreas(),
-        getAreas({ pid: row.province }),
-        getAreas({ pid: row.city })
-      ]).then(function(res) {
-        for (let i = 0; i < res[0].data.length; i++) {
-          if (res[0].data[i].id == row.province) {
-            res[0].data[i].children = [];
-            for (let j = 0; j < res[1].data.length; j++) {
-              if (res[1].data[j].id == row.city) {
-                res[1].data[j].children = [];
-                for (let k = 0; k < res[2].data.length; k++) {
-                  res[2].data[k].leaf = true;
-                  if (res[2].data[k].id == row.area) {
-                    res[1].data[j].children = res[2].data;
-                    res[0].data[i].children = res[1].data;
-                    console.log(res[0].data[i]);
-                  }
-                }
-              }
-            }
-          }
-        }
-        _this.options = res[0].data;
-        _this.dialogFormVisible = true; // 展示弹窗
-        _this.communityForm.cname = row.name;
-        _this.communityForm.address = row.address;
-        _this.communityForm.optionsVal = [];
-        _this.communityForm.id = row.id;
-        _this.communityForm.areaOptionsVal.push(row.province);
-        _this.communityForm.areaOptionsVal.push(row.city);
-        _this.communityForm.areaOptionsVal.push(row.area);
-        _this.dialogStatus = "update"; // 标示创建
-      });
+    showEditView(row) {
+      console.log("row --- >", row);
+      this.cid = row.id.toString();
+      this.dialogStatus = "update"; // 标示创建
+      this.dialogFormVisible = true; // 展示弹窗
     },
-    // 查询
-    queryCommunityIndex() {
-      this.listQuery.areaCode = this.list.areaOptionsVal[2];
-      console.log(this.listQuery);
-      this.fetchData();
-    },
-    // 创建数据
-    createData() {
-      let _this = this;
-      _this.buttonLoading = true; // 按钮加载中
-      _this.$refs.communityForm.validate(valid => {
-        if (valid) {
-          // 保存
-          addCommuntity({
-            address: _this.communityForm.address,
-            province: _this.communityForm.areaOptionsVal[0],
-            city: _this.communityForm.areaOptionsVal[1],
-            area: _this.communityForm.areaOptionsVal[2],
-            name: _this.communityForm.cname
-          }).then(function(res) {
-            console.log("res--- >", res);
-            _this.buttonLoading = false; // 清楚加载中
-            if (res.message == "SUCCESS") {
-              _this.dialogFormVisible = false; // 关闭弹窗
-              _this.$notify({
-                title: _this.generatePoint("notifySuccess.title"),
-                message: _this.generatePoint("notifySuccess.message"),
-                type: "success"
-              });
-            } else {
-              _this.$message.error(_this.generatePoint("system"));
-            }
-            _this.fetchData(); // 更新列表
-          });
-        } else {
-          _this.buttonLoading = false; // 清楚加载中
-          return false;
-        }
-      });
-    },
-    updateData() {
-      let _this = this;
-      _this.buttonLoading = true; // 按钮加载中
-      _this.$refs.communityForm.validate(valid => {
-        if (valid) {
-          // 修改
-          addCommuntity({
-            address: _this.communityForm.address,
-            province: _this.communityForm.areaOptionsVal[0],
-            city: _this.communityForm.areaOptionsVal[1],
-            area: _this.communityForm.areaOptionsVal[2],
-            name: _this.communityForm.cname,
-            id: _this.communityForm.id
-          }).then(function(res) {
-            console.log("res--- >", res);
-            _this.buttonLoading = false; // 清楚加载中
-            if (res.message == "SUCCESS") {
-              _this.dialogFormVisible = false; // 关闭弹窗
-              _this.$notify({
-                title: _this.generatePoint("notifySuccess.title"),
-                message: _this.generatePoint("notifySuccess.message1"),
-                type: "success"
-              });
-            } else {
-              _this.$message.error(_this.generatePoint("system"));
-            }
-            _this.fetchData(); // 更新列表
-          });
-        } else {
-          _this.buttonLoading = false; // 清楚加载中
-          return false;
-        }
-      });
-    },
-    // 关闭弹窗
     close() {
-      console.log(this.$refs, this.temp);
+      console.log("关闭")
+      this.$refs.savaCommuntity.initialization();
+      this.cid = "";
       this.dialogFormVisible = false; // 关闭弹窗
-      this.$refs.communityForm.resetFields(); // 重置表单
-      this.communityForm.cname = "";
-      this.communityForm.address = "";
-      this.communityForm.optionsVal = [];
     }
   }
 };

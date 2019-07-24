@@ -1,55 +1,45 @@
 <template>
-  <el-cascader
-    :props="areaProps"
-    v-model="areaOptionsVal"
-    :placeholder="$t('table.temp.area')"
-    @change="handleAreaList"
-  ></el-cascader>
+  <div class="area">
+    <el-cascader
+      :options="options"
+      :props="areaProps"
+      @change="handleAreaList"
+      v-model="areaOptionsVal"
+      :placeholder="$t('table.temp.area')"
+    ></el-cascader>
+  </div>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
+.area {
+  display: inline-block
+}
 </style>
 <script>
-import { getAreas } from "@/api/area";
+import { getAreasAll } from "@/api/area";
 export default {
   data() {
     return {
-      areaOptionsVal: "",
+      areaOptionsVal: [],
+      options: [],
       // 省市区
       areaProps: {
         label: "areaName",
-        value: "id",
         children: "children",
-        lazy: true,
-        lazyLoad(node, resolve) {
-          const { level } = node;
-          switch (level) {
-            case 0:
-              getAreas().then(function(res) {
-                resolve(res.data);
-              });
-              break;
-            case 1:
-              getAreas({ pid: node.value }).then(function(res) {
-                resolve(res.data);
-              });
-              break;
-            case 2:
-              getAreas({ pid: node.value }).then(function(res) {
-                for (let i = 0; i < res.data.length; i++) {
-                  res.data[i].leaf = true;
-                }
-                resolve(res.data);
-              });
-              break;
-          }
-        }
+        value: "id"
       }
     };
-  }, 
+  },
   props: {
     params: {
-      type: Object,
+      type: Object
     }
+  },
+  created() {
+    let _this = this;
+    // 获取所有的省市区
+    getAreasAll().then(function(res) {
+      _this.options = res.data;
+    });
   },
   methods: {
     // 监听区域查询社区 列表
@@ -57,7 +47,14 @@ export default {
       this.$emit("getProvinceVal", val, this.params.code); // 返回省市区ID
     },
     initialization() {
-      this.areaOptionsVal = ""
+      this.areaOptionsVal = ""; // 重置用户选择的省市区
+    },
+    echoArea(areaValue) {
+      this.areaOptionsVal = areaValue;
+      // this.areaOptionsVal.push(city);
+      // this.areaOptionsVal.push(province);
+      // this.areaOptionsVal.push(area);
+      // console.log("areaOptionsVal - ", this.areaOptionsVal)
     }
   }
 };

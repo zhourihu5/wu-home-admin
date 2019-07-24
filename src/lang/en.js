@@ -115,7 +115,7 @@ export default {
         noTime: 'no time',
         communityName: 'Community Name',
         belongToCommunity: 'Belong To Community',
-        belongToFloor: 'Belong To Floor', 
+        belongToFloor: 'Belong To Floor',
         belongToUnit: 'Belong To Unit',
         floorName: 'Floor Name',
         unitName: 'Unit Name',
@@ -155,7 +155,7 @@ export default {
         cardAddress: 'Position',
         Summary: 'Summary',
         addModule: 'Add Module',
-        applicationAudit: 'Application Audit', 
+        applicationAudit: 'Application Audit',
         PutIn: 'Put In Time',
         affairsAll: 'Affairs All',
         upperShelfAffairs: 'Upper Shelf Affairs',
@@ -217,6 +217,13 @@ export default {
         packageName: 'package Name',
         version: 'Version',
         upgrade: 'Upgrade',
+        unitNum: 'Number',
+        layerNum: 'Number',
+        familyNum: 'Number',
+        myArea: 'area',
+        stage: 'stage',
+        floor: 'floor',
+        unit: 'unit'
     },
     login: {
         title: 'Login Platform',
@@ -300,7 +307,17 @@ export default {
         required: 'required',
         mandatory: 'required',
         upload: 'Must upload',
+        num: 'Positive integers must be filled in',
         modular: 'Please choose modular',
         urlInvalid: 'The URL is invalid. Start with http://'
+    },
+    steps: {
+        community: 'community',
+        stage: 'state',
+        area: 'area',
+        floor: 'floor',
+        unit: 'unit',
+        layer: 'layer',
+        family: 'family'
     }
 }

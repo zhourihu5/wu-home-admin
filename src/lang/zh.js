@@ -100,7 +100,8 @@ export default {
             equipmentCoding: '请输入编码',
             installer: '请输入安装人',
             packageName: '请输入包名称',
-            name: '请输入名称'
+            name: '请输入名称',
+            num: '请输入总数'
         },
         platform: '平台',
         roleName: '角色名称',
@@ -216,6 +217,13 @@ export default {
         apk: 'apk',
         version: '版本号',
         upgrade: '升级号',
+        unitNum: '单元总数',
+        layerNum: '层总数',
+        familyNum: '家庭总数',
+        myArea: '区',
+        stage: '期',
+        floor: '楼',
+        unit: '单元'
     },
     login: {
         title: '吾家运营管理平台',
@@ -304,7 +312,17 @@ export default {
         required: '此项必填',
         mandatory: '此项必选',
         upload: '必须上传',
+        num: '此项必须填写正整数',
         modular: '请选择模块',
         urlInvalid: 'url无效,请以http://开头'
+    },
+    steps: {
+        community: '添加社区',
+        stage: '添加期',
+        area: '添加区',
+        floor: '添加楼宇',
+        unit: '添加单元',
+        layer: '添加层',
+        family: '添加家庭'
     }
 }

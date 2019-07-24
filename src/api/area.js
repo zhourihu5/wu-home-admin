@@ -9,9 +9,10 @@ export function getAreas(params) {
   })
 }
 
+// 获取所有的省市区
 export function getAreasAll(params) {
   return request({
-    url: '/v1/area/findProByPid',
+    url: '/v1/area/all',
     method: 'get',
     params
   })
