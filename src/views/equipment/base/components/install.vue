@@ -23,27 +23,27 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.equipmentCoding')" width="315">
+        <el-table-column align="center" :label="$t('table.equipmentCoding')" width="570">
           <template
             slot-scope="scope"
           >{{ scope.row.deviceKey ? scope.row.deviceKey : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.installDate')" width="315">
+        <el-table-column align="center" :label="$t('table.installDate')" width="580">
           <template slot-scope="scope">
             <i class="el-icon-time"/>
             <span>{{ scope.row.installDate ? scope.row.installDate : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.installer')" width="300">
+        <el-table-column align="center" :label="$t('table.installer')" width="580">
           <template
             slot-scope="scope"
           >{{ scope.row.operator ? scope.row.operator : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.installaddres')" width="800">
+        <!-- <el-table-column align="center" :label="$t('table.installaddres')" width="800">
           <template
             slot-scope="scope"
           >{{ scope.row.address ? scope.row.address : $t('table.noTime')}}</template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <!-- 分页 -->
       <pagination

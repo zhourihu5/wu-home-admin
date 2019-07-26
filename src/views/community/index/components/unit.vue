@@ -133,7 +133,7 @@
   }
   .unit-table {
     .my-list {
-      // height: 200px;
+      max-height: 175px;
       overflow: auto;
       margin: 0 30px 0 30px;
       .el-button--medium {

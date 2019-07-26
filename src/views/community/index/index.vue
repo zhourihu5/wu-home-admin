@@ -109,11 +109,11 @@
       margin-top: 5px;
     }
   }
-  .community-dialog {
-    .el-dialog {
-      max-height: 780px;
-    }
-  }
+  // .community-dialog {
+  //   .el-dialog {
+  //     max-height: 780px;
+  //   }
+  // }
 }
 </style>
 <script>

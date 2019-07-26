@@ -112,7 +112,7 @@
       text-align: center;
     }
     .my-list {
-      // height: 200px;
+      max-height: 175px;
       overflow: auto;
       margin: 0 30px 0 30px;
       .el-button--medium {
@@ -245,21 +245,21 @@ export default {
   watch: {
     dynamic: {
       handler: function(val, oldval) {
-        if(val == 0) {
+        if (val == 0) {
           this.pageLoading = false;
         }
       }
     },
     stageList: {
       handler: function(val, oldval) {
-        if(val.length > 0) {
+        if (val.length > 0) {
           this.dynamic--;
         }
       }
     },
     areaList: {
       handler: function(val, oldval) {
-        if(val.length > 0) {
+        if (val.length > 0) {
           this.dynamic--;
         }
       }

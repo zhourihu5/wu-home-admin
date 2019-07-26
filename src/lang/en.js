@@ -145,7 +145,9 @@ export default {
         equipmentCoding: 'Extension',
         household: 'Household',
         userList: 'User List',
-        phone: 'Phone'
+        phone: 'Phone',
+        ipad: 'ipadCode',
+        base: 'baseCode'
     },
     form: {
         title: 'Title',
@@ -309,7 +311,9 @@ export default {
         upload: 'Must upload',
         num: 'Positive integers must be filled in',
         modular: 'Please choose modular',
-        urlInvalid: 'The URL is invalid. Start with http://'
+        urlInvalid: 'The URL is invalid. Start with http://',
+        communityStage: 'At present, the community has not entered (stage), so there is no (stage) data in this community.',
+        communityArea: 'At present, the community has not entered (district), so there is no (district) data in this community.'
     },
     steps: {
         community: 'community',

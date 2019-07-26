@@ -72,8 +72,8 @@
 </template>
 <style lang="scss">
 .userList {
-  // margin-left: 20px;
-  // margin-right: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
   // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   .title {
     font-size: 14px;

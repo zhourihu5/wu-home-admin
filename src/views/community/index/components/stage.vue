@@ -66,7 +66,7 @@
       text-align: center;
     }
     .my-list {
-      // height: 410px;
+      max-height: 175px;
       overflow: auto;
       margin: 0 30px 0 30px;
       .el-button--medium {

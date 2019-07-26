@@ -76,6 +76,7 @@ import unit from "./unit";
 import family from "./family";
 import layer from "./layer";
 import { getCommuntityById } from "@/api/community";
+import { generatePoint } from "@/utils/i18n";
 export default {
   components: { community, stage, myarea, floor, unit, layer, family },
   data() {
@@ -124,6 +125,7 @@ export default {
     }
   },
   methods: {
+    generatePoint,
     next() {
       // 下一步 按钮
       this.buttonLoading = true;
@@ -282,14 +284,16 @@ export default {
       this.communityStatus = "success";
       if (flag) {
         if (flag.indexOf("期") == -1) {
-          this.stateDesc = "当前社区未录入（期），所以本社区无（期）数据。";
+          // this.stateDesc = "当前社区未录入（期），所以本社区无（期）数据。";
+          this.stateDesc = this.generatePoint("communityStage")
           this.stateStatus = "finish";
         } else {
           this.stateStatus = "success";
         }
         if (flag.indexOf("区") == -1) {
           if (flag.indexOf("楼") != -1) {
-            this.areaDesc = "当前社区未录入（区），所以本社区无（区）数据。";
+            // this.areaDesc = "当前社区未录入（区），所以本社区无（区）数据。";
+            this.areaDesc = this.generatePoint("communityArea")
             this.areaStatus = "finish";
           }
         } else {

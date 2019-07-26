@@ -146,7 +146,9 @@ export default {
         equipmentCoding: '设备编码',
         household: '户主',
         userList: '用户列表',
-        phone: '手机号'
+        phone: '手机号',
+        ipad: 'pad编码',
+        base: '底座编码'
     },
     form: {
         title: '标题',
@@ -314,7 +316,9 @@ export default {
         upload: '必须上传',
         num: '此项必须填写正整数',
         modular: '请选择模块',
-        urlInvalid: 'url无效,请以http://开头'
+        urlInvalid: 'url无效,请以http://开头',
+        communityStage: '当前社区未录入（期），所以本社区无（期）数据。',
+        communityArea: '当前社区未录入（区），所以本社区无（区）数据。'
     },
     steps: {
         community: '添加社区',

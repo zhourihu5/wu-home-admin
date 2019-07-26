@@ -1,5 +1,5 @@
 <template>
-  <div class="add-area"  v-loading="pageLoading">
+  <div class="add-area" v-loading="pageLoading">
     <!-- form --->
     <h3>{{ $t('steps.area') }}</h3>
     <div class="area-form">
@@ -75,7 +75,7 @@
       text-align: center;
     }
     .my-list {
-      // height: 410px;
+      max-height: 175px;
       overflow: auto;
       margin: 0 30px 0 30px;
       .el-button--medium {

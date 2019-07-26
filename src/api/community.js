@@ -202,3 +202,12 @@ export function findFamilyListByCode(params) {
         params
     })
 }
+
+// 获取家庭的绑定信息
+export function findBindInfo(params) {
+    return request({
+        url: '/v1/family/bindInfo',
+        method: 'get',
+        params
+    })
+}
