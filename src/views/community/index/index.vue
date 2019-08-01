@@ -94,7 +94,7 @@
     </div>
   </div>
 </template>
-<style lang="scss">
+<style lang="scss" >
 .community {
   padding: 20px;
   .community-index-container {

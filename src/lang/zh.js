@@ -34,7 +34,11 @@ export default {
         base: '底座机管理',
         pad: '平板机管理',
         banner: 'banner管理',
-        bannerIndex: '轮播图管理'
+        bannerIndex: '轮播图管理',
+        business: '活动管理',
+        buying: '团购管理',
+        commodity: '商品管理',
+        label: '团购商品标签库'
     },
     table: {
         id: 'ID',
@@ -42,6 +46,7 @@ export default {
         nickName: '昵称',
         userName: '账号',
         createTime: '创建时间',
+        businessTime: '活动时间',
         addUser: '创建人',
         community: '社区',
         operation: '操作',
@@ -101,7 +106,12 @@ export default {
             installer: '请输入安装人',
             packageName: '请输入包名称',
             name: '请输入名称',
-            num: '请输入总数'
+            num: '请输入总数',
+            id: '请输入ID',
+            groupBuying: '请输入团购价格',
+            price: '请输入价格',
+            stock: '请输入库存',
+            content: '请输入内容'
         },
         platform: '平台',
         roleName: '角色名称',
@@ -128,6 +138,7 @@ export default {
         serviceProvider: '服务商',
         product: '产品端',
         uploadTime: '上传时间',
+        date: '时间',
         deliveryTime: '发送时间',
         cover: '封面',
         upperShelf: '上架',
@@ -148,7 +159,8 @@ export default {
         userList: '用户列表',
         phone: '手机号',
         ipad: 'pad编码',
-        base: '底座编码'
+        base: '底座编码',
+        addTime: '新增时间'
     },
     form: {
         title: '标题',
@@ -158,6 +170,8 @@ export default {
         cardAddress: '卡片位置',
         Summary: '摘要',
         addModule: '添加模块',
+        addCommodity: '添加商品',
+        addCondition: '添加条件',
         applicationAudit: '应用审核专区',
         PutIn: '投放时间',
         affairsAll: '全部政务',
@@ -190,6 +204,8 @@ export default {
         household: '户主',
         addHousehold: '添加户主',
         uptime: '上线时间',
+        startTime: '开始时间',
+        endTime: "结束时间",
         downtime: '下线时间',
         serviceList: '服务列表',
         describe: '描述',
@@ -225,7 +241,23 @@ export default {
         myArea: '区',
         stage: '期',
         floor: '楼',
-        unit: '单元'
+        unit: '单元',
+        commodity: "商品",
+        groupBuying: "团购价格",
+        reductionRule: '满减规则',
+        reductionType: '满减类型',
+        deliveryTime: '配送时效',
+        commodityType: '商品类型',
+        price: '价格',
+        initPrice: '上货价格',
+        stock: '库存',
+        origin: '产地',
+        specifications: '规格',
+        weight: '重量',
+        packing: '包装',
+        guarantee: '保质期',
+        storageMode: '存储方式',
+        details: '详情'
     },
     login: {
         title: '吾家运营管理平台',
@@ -284,6 +316,7 @@ export default {
             title: '警告',
             title1: '提示',
             message: '最多只可上传一张,请删除后重新上传',
+            message1: '请选择上面的选项,选择后会自动刷新列表数据'
         },
         notifyError: {
             title: '错误',
@@ -318,7 +351,8 @@ export default {
         modular: '请选择模块',
         urlInvalid: 'url无效,请以http://开头',
         communityStage: '当前社区未录入（期），所以本社区无（期）数据。',
-        communityArea: '当前社区未录入（区），所以本社区无（区）数据。'
+        communityArea: '当前社区未录入（区），所以本社区无（区）数据。',
+        numOk: "只能输入数字"
     },
     steps: {
         community: '添加社区',

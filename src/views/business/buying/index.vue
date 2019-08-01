@@ -1,0 +1,762 @@
+<template>
+  <div class="buying">
+    <!-- search --->
+    <div class="buying-container">
+      <el-date-picker
+        v-model="queryDate"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+      ></el-date-picker>
+      <el-select v-model="listQuery.status" :placeholder="$t('table.temp.status')">
+        <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
+      </el-select>
+      <el-input
+        v-model="listQuery.title"
+        :placeholder="$t('table.temp.name')"
+        style="width: 200px;"
+        class="filter-item"
+      />
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="queryBuying"
+      >{{ $t('table.search') }}</el-button>
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="primary"
+        icon="el-icon-edit"
+        @click="showAddView"
+      >{{ $t('table.add') }}</el-button>
+    </div>
+    <!-- table --->
+    <div class="buying-table">
+      <el-table
+        v-loading="listLoading"
+        :data="buyingList"
+        element-loading-text="Loading"
+        border
+        fit
+        highlight-current-row
+      >
+        <el-table-column align="center" :label="$t('table.id')" width="95">
+          <template slot-scope="scope">{{ scope.row.id }}</template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.title')" width="300">
+          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.businessTime')" width="600">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.startDate ? (scope.row.startDate + ' - ' + scope.row.endDate) : $t('table.noTime')}}</template>
+        </el-table-column>
+        <!-- <el-table-column align="center" :label="$t('table.createTime')" width="300">
+          <template slot-scope="scope">{{ scope.row.name ? scope.row.name : $t('table.noTime')}}</template>
+        </el-table-column>-->
+        <el-table-column align="center" :label="$t('table.state')" width="300">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.status ? getStatusText(scope.row.status) : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column :label="$t('table.operation')" align="center" width="360">
+          <template slot-scope="{row}">
+            <el-button type="primary" size="mini" @click="showEditView(row)">{{ $t('table.edit') }}</el-button>
+            <!-- <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.delete') }}</el-button> -->
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.pageNum"
+        :limit.sync="listQuery.pageSize"
+        @pagination="fetchData"
+      />
+    </div>
+    <!-- dialog -->
+    <el-dialog
+      :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
+      :visible.sync="dialogFormVisible"
+      @close="close"
+    >
+      <el-form
+        ref="buyingForm"
+        :rules="rules"
+        :model="buyingForm"
+        label-position="right"
+        label-width="100px"
+        style="width: 60%"
+      >
+        <el-form-item :label="$t('table.community')" prop="communityId">
+          <province ref="provinceForm" :params="myForm" @getProvinceVal="getProvinceVal"></province>
+          <el-select v-model="buyingForm.communityId" placeholder="请选择">
+            <el-option
+              v-for="item in communityList"
+              :key="item.code"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('table.title')" prop="title">
+          <el-input v-model="buyingForm.title" :placeholder="$t('table.temp.title')"/>
+        </el-form-item>
+        <el-form-item :label="$t('form.startTime')" prop="startDate">
+          <el-date-picker
+            v-model="buyingForm.startDate"
+            align="right"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="pickerOptions"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item :label="$t('form.endTime')" prop="endDate">
+          <el-date-picker
+            v-model="buyingForm.endDate"
+            align="right"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="pickerOptions"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item :label="$t('form.commodity')" prop="commodityName">
+          <el-input
+            :disabled="true"
+            v-model="buyingForm.commodityName"
+            :placeholder="$t('table.temp.id')"
+          />
+          <el-button type="text" @click="dialogCommodityVisible = true">{{ $t('form.addCommodity') }}</el-button>
+        </el-form-item>
+        <el-form-item :label="$t('form.groupBuying')" prop="price">
+          <el-input v-model="buyingForm.price" :placeholder="$t('table.temp.groupBuying')"/>
+        </el-form-item>
+        <el-form-item :label="$t('form.Cover')" prop="file">
+          <el-upload
+            :action="updateURL"
+            list-type="picture-card"
+            :limit="1"
+            :multiple="false"
+            :file-list="fileList"
+            :on-exceed="exceedUpload"
+            :before-upload="beforeAvatarUpload"
+            :on-success="handleAvatarSuccess"
+            :data="uploadParams"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item :label="$t('form.reductionType')" prop="saleType">
+          <el-select v-model="buyingForm.saleType" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('form.reductionRule')" prop="saleRules">
+          <el-button type="text" @click="addRule">{{ $t('form.addCondition') }}</el-button>
+          <div class="rule" v-for="(item, index) in myRules" :key="index">
+            <span class>团购活动达到</span>
+            <el-input type="number" v-model="item.num"/>
+            <span>人后，商品满减</span>
+            <el-input type="number" v-model="item.rmb"/>
+            {{buyingForm.reductionType}}
+          </div>
+        </el-form-item>
+        <el-form-item :label="$t('form.deliveryTime')" prop="deliveryHour" class="delivery-time">
+          <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')"/>
+          <span>小时</span>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="close">{{ $t('table.cancel') }}</el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus==='create'?createData():updateData()"
+          :loading="buttonLoading"
+        >{{ $t('table.confirm') }}</el-button>
+      </div>
+      <!-- 内部dialog -->
+      <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
+        <!-- 住戶列表-->
+        <transition name="el-zoom-in-top">
+          <commodity-List :commodity="buyingForm.commodity" @transmitUser="userChoiceCommodity"></commodity-List>
+        </transition>
+      </el-dialog>
+    </el-dialog>
+  </div>
+</template>
+<style lang="scss" scoped>
+.buying {
+  padding: 20px;
+  .buying-container {
+    margin-bottom: 20px;
+    .el-cascader {
+      margin-top: 5px;
+    }
+    .el-button--medium {
+      margin-top: 5px;
+    }
+    .el-input--medium {
+      margin-top: 5px;
+    }
+  }
+  .rule {
+    margin: 10px;
+    .el-input {
+      width: 80px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+  }
+  .delivery-time {
+    .el-input {
+      width: 200px;
+    }
+  }
+}
+</style>
+<style lang="scss">
+.buying-container {
+  .el-date-editor .el-range-separator {
+    padding: 0 !important;
+  }
+}
+</style>
+
+<script>
+import Pagination from "@/components/Pagination"; // 分页
+import Province from "@/components/Linkage/province"; // 省市区三级联动
+import { getCommuntityByArea } from "@/api/community";
+import { getActivityAll, saveActivity } from "@/api/business";
+import { overall } from "@/constant/index";
+import { generatePoint } from "@/utils/i18n";
+import commodityList from "./components/commodity";
+export default {
+  components: { Pagination, Province, commodityList },
+  data() {
+    return {
+      // 时间快捷方式
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "最近一周",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近一个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近三个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            }
+          }
+        ]
+      },
+      // 状态
+      status: overall.buying.status,
+      options: [
+        {
+          label: "元",
+          value: "1"
+        },
+        {
+          label: "折",
+          value: "2"
+        }
+      ],
+      queryDate: "",
+      // 查询参数
+      listQuery: {
+        status: "", // 状态
+        title: "",
+        endDate: null, // 结束时间
+        startDate: null, // 开始时间
+        pageNum: 1,
+        pageSize: 10
+      },
+      dialogStatus: "", // 标示当前操作是添加、还是修改
+      dialogFormVisible: false, // 是否展示dialog内容
+      dialogCommodityVisible: false, // 是否展示商品集合dialog内容
+      textMap: {
+        // 弹窗展示的title
+        update: "Edit",
+        create: "Create"
+      },
+      listLoading: false, // 列表加载
+      buttonLoading: false, // 按钮加载请求
+      buyingList: [], // 列表数据
+      total: 0, // 列表分页
+      buyingForm: {
+        id: "",
+        communityId: "", // 用户选择的社区
+        commodityCode: "", // 社区code
+        title: "", // 标题
+        startDate: "", // 开始时间
+        endDate: "", // 结束时间
+        // commodityId: "", // 商品ID
+        // communityCode: "", // 商品code
+        commodityName: "", // 商品名称回显示
+        commodity: null, // 回显实体
+        cover: "", // 封面
+        saleType: "", // 满减类型
+        saleRules: "", // 满减规则
+        deliveryHour: "", // 配送时效
+        price: "", // 金额
+        area: "",
+        city: "",
+        province: ""
+      },
+      rules: {
+        file: [
+          {
+            required: true,
+            trigger: "change",
+            validator: (rule, value, callback) => {
+              if (this.buyingForm.cover == "") {
+                callback(this.generatePoint("upload"));
+              } else {
+                callback();
+              }
+            }
+          }
+        ],
+        communityId: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("mandatory")
+          }
+        ],
+        title: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("mandatory")
+          }
+        ],
+        startDate: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("mandatory")
+          }
+        ],
+        endtDate: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("mandatory")
+          }
+        ],
+        saleType: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("mandatory")
+          }
+        ],
+        commodityName: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("mandatory")
+          }
+        ],
+        deliveryHour: [
+          {
+            required: true,
+            trigger: "change",
+            validator: (rule, value, callback) => {
+              if (this.buyingForm.deliveryHour == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                if (!re.test(value)) {
+                  falg = false;
+                }
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("numOk"));
+                }
+              }
+            }
+          }
+        ],
+        price: [
+          {
+            required: true,
+            trigger: "change",
+            validator: (rule, value, callback) => {
+              console.log("dkkdkdk");
+              if (this.buyingForm.price == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                if (!re.test(value)) {
+                  falg = false;
+                }
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("numOk"));
+                }
+              }
+            }
+          }
+        ],
+        saleRules: [
+          {
+            required: true,
+            trigger: "change",
+            validator: (rule, value, callback) => {
+              if (this.myRules.length == 0) {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                for (let i = 0; i < this.myRules.length; i++) {
+                  if (!this.myRules[i].num || !this.myRules[i].rmb) {
+                    falg = false;
+                    break;
+                  } else {
+                    let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                    if (
+                      !re.test(this.myRules[i].num) ||
+                      !re.test(this.myRules[i].rmb)
+                    ) {
+                      falg = false;
+                      break;
+                    }
+                  }
+                }
+                console.log("falg -- ", falg);
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("numOk"));
+                }
+              }
+            }
+          }
+        ]
+      },
+      myForm: {
+        code: "form",
+        areaValue: [],
+        communityValue: []
+      },
+      communityList: [], // 社区集合
+      updateURL: overall.uploadUrl,
+      fileList: [], // 上传图片回显列表
+      uploadParams: {
+        type: "activity"
+      },
+      myRules: [] // 规则
+    };
+  },
+  created() {
+    this.fetchData(); // 查询数据
+  },
+  watch: {
+    queryDate: {
+      handler: function(val, oldval) {
+        this.listQuery.startDate = val[0];
+        this.listQuery.endDate = val[1];
+      }
+    }
+  },
+  methods: {
+    generatePoint,
+    // 查询数据
+    fetchData() {
+      let _this = this;
+      _this.listLoading = true;
+      getActivityAll(this.listQuery).then(function(res) {
+        console.log("res --- ", res);
+        _this.listLoading = false;
+        _this.buyingList = res.data.content; // 列表数据
+        _this.total = res.data.totalPages; // 总页数
+      });
+    },
+    // 搜索
+    queryBuying() {
+      this.fetchData();
+    },
+    // 显示添加页面
+    showAddView() {
+      this.dialogStatus = "create"; // 标示创建
+      this.dialogFormVisible = true; // 展示弹窗
+    },
+    // 修改页面
+    showEditView(row) {
+      let _this = this;
+      console.log("row --- >", row);
+      _this.dialogStatus = "update"; // 标示创建
+      _this.dialogFormVisible = true; // 展示弹窗
+      _this.buyingForm.title = row.title;
+      _this.fileList.push({ url: row.cover });
+      _this.buyingForm.startDate = row.startDate;
+      _this.buyingForm.endDate = row.endDate;
+      _this.buyingForm.price = row.price;
+      _this.buyingForm.saleType = row.saleType;
+      _this.buyingForm.deliveryHour = row.deliveryHour;
+      _this.buyingForm.communityId = row.communityId;
+      _this.buyingForm.communityCode = row.communityCode;
+      _this.buyingForm.id = row.id;
+      _this.buyingForm.cover = row.cover;
+      _this.buyingForm.area = row.area;
+      _this.buyingForm.city = row.city;
+      _this.buyingForm.province = row.province;
+      _this.buyingForm.commodity = row.commodity;
+      _this.buyingForm.commodityName = row.commodity.name;
+      // 回显示 省市区
+      _this.$nextTick(() => {
+        _this.$refs.provinceForm.echoArea([
+          parseInt(row.province),
+          parseInt(row.city),
+          parseInt(row.area)
+        ]);
+        getCommuntityByArea({ areaCode: row.area }).then(function(res) {
+          _this.communityList = res.data;
+          console.log(_this.buyingForm.communityId, _this.communityList);
+        });
+      });
+      // 回显规则
+      if (row.saleRules) {
+        if (row.saleRules.indexOf(",") == -1) {
+          // 不包含
+          let item = row.saleRules.split("|");
+          _this.myRules.push({ num: item[0], rmb: item[1] }); // 追加规则
+        } else {
+          // 包含
+          let arr = row.saleRules.split(",");
+          // 处理回显规则
+          for (let i = 0; i < arr.length; i++) {
+            let item = arr[i].split("|");
+            console.log("item -- >", item);
+            _this.myRules.push({ num: item[0], rmb: item[1] }); // 追加规则
+          }
+        }
+      }
+    },
+    userChoiceCommodity(commodity) {
+      console.log("选择 商品", commodity);
+      this.buyingForm.commodityName = commodity.name; // 商品名称  回显
+      this.buyingForm.commodity = commodity;
+      this.dialogCommodityVisible = false;
+    },
+
+    // 获取省市区数据
+    getProvinceVal(val, code) {
+      let _this = this;
+      console.log("用户选择了 ", val, code);
+      _this.buyingForm.province = val[0];
+      _this.buyingForm.city = val[1];
+      _this.buyingForm.area = val[2];
+      // _this.buyingForm.area =
+      getCommuntityByArea({ areaCode: val[2] }).then(function(res) {
+        _this.communityList = res.data;
+      });
+    },
+    // 超出文件上传个数时触发
+    exceedUpload(file, fileList) {
+      // this.$message.error("超过最大上传数量,目前只可上传1张");
+      this.$notify({
+        title: this.generatePoint("notifyWarning.title"),
+        message: this.generatePoint("notifyWarning.message"),
+        type: "warning"
+      });
+    },
+    beforeAvatarUpload(file) {
+      this.uploadParams.file = file;
+    },
+    handleAvatarSuccess(res, file) {
+      this.buyingForm.cover = res.data;
+    },
+    // 添加数据
+    createData() {
+      let _this = this;
+      // _this.buttonLoading = true;
+      _this.$refs.buyingForm.validate(valid => {
+        if (valid) {
+          try {
+            let params = _this.buildParmas(); // 构建参数
+            console.log("params --- ", params);
+            saveActivity(params).then(function(res) {
+              console.log("res --- ", res);
+              if (res.message == "SUCCESS") {
+                _this.buttonLoading = false; // 清空按钮加载状态
+                _this.$notify({
+                  title: _this.generatePoint("notifySuccess.title"),
+                  message: _this.generatePoint("notifySuccess.message"),
+                  type: "success"
+                });
+                _this.dialogFormVisible = false; // 关闭弹窗
+                _this.fetchData();
+              } else {
+                _this.buttonLoading = false; // 清空按钮加载状态
+                _this.$message.error(_this.generatePoint("system"));
+              }
+            });
+          } catch (err) {
+            console.error("err --- ", err); // 控制台打印异常
+            _this.buttonLoading = false; // 清空按钮加载状态
+            _this.$message.error(_this.generatePoint("system"));
+          }
+        } else {
+          _this.buttonLoading = false; // 清楚加载中
+          return false;
+        }
+      });
+    },
+    // 修改数据
+    updateData() {
+      console.log("修改");
+      let _this = this;
+      _this.buttonLoading = true; // 按钮加载中
+      _this.$refs.buyingForm.validate(valid => {
+        if (valid) {
+          try {
+            let params = _this.buildParmas(); // 构建参数
+            console.log("params --- ", params);
+            saveActivity(params).then(function(res) {
+              console.log("res --- ", res);
+              if (res.message == "SUCCESS") {
+                _this.buttonLoading = false; // 清空按钮加载状态
+                _this.$notify({
+                  title: _this.generatePoint("notifySuccess.title"),
+                  message: _this.generatePoint("notifySuccess.message"),
+                  type: "success"
+                });
+                _this.dialogFormVisible = false; // 关闭弹窗
+                _this.fetchData();
+              } else {
+                _this.buttonLoading = false; // 清空按钮加载状态
+                _this.$message.error(_this.generatePoint("system"));
+              }
+            });
+          } catch (err) {
+            console.error("err --- ", err); // 控制台打印异常
+            _this.buttonLoading = false; // 清空按钮加载状态
+            _this.$message.error(_this.generatePoint("system"));
+          }
+        } else {
+          _this.buttonLoading = false; // 清楚加载中
+          return false;
+        }
+      });
+    },
+    // 构架修改 添加params参数
+    buildParmas() {
+      let _this = this;
+      // 添加规则
+      if (_this.myRules.length > 0) {
+        _this.myRules.forEach(function(v, i) {
+          _this.buyingForm.saleRules += v.num + "|" + v.rmb;
+          if (i + 1 < _this.myRules.length) {
+            _this.buyingForm.saleRules += ",";
+          }
+        });
+      }
+      // 获取社区code
+      if (_this.communityList.length > 0) {
+        for (let i = 0; i < _this.communityList.length; i++) {
+          if (_this.buyingForm.communityId == _this.communityList[i].id) {
+            _this.buyingForm.communityCode = _this.communityList[i].code;
+          }
+        }
+      }
+      let params = {
+        communityId: _this.buyingForm.communityId,
+        communityCode: _this.buyingForm.communityCode,
+        cover: _this.buyingForm.cover,
+        deliveryHour: _this.buyingForm.deliveryHour,
+        endDate: _this.buyingForm.endDate,
+        startDate: _this.buyingForm.startDate,
+        title: _this.buyingForm.title,
+        saleRules: _this.buyingForm.saleRules,
+        saleType: _this.buyingForm.saleType,
+        price: _this.buyingForm.price,
+        area: _this.buyingForm.area,
+        city: _this.buyingForm.city,
+        province: _this.buyingForm.province
+      };
+      if (_this.buyingForm.id) {
+        params.id = _this.buyingForm.id;
+      }
+
+      if (_this.buyingForm.commodity) {
+        params.commodityId = _this.buyingForm.commodity.id; // 商品ID
+        params.commodityCode = _this.buyingForm.commodity.code; // 商品code
+      }
+      return params;
+    },
+    // 添加规则
+    addRule() {
+      this.myRules.push({ num: "", rmb: "" }); // 追加
+      console.log(" myRules -- ", this.myRules);
+    },
+    // 获取状态中文
+    getStatusText(status) {
+      for (let i = 0; i < this.status.length; i++) {
+        // console.log(this.status[i]);
+        if (this.status[i].value == status) {
+          return this.status[i].label;
+        }
+      }
+    },
+    close() {
+      this.dialogFormVisible = false;
+      this.buyingForm = {
+        id: "",
+        communityId: "", // 用户选择的社区
+        commodityCode: "", // 社区code
+        title: "", // 标题
+        startDate: "", // 开始时间
+        endDate: "", // 结束时间
+        commodityName: "", // 商品名称回显示
+        commodity: null, // 回显实体
+        cover: "", // 封面
+        saleType: "", // 满减类型
+        saleRules: "", // 满减规则
+        deliveryHour: "", // 配送时效
+        price: "", // 金额
+        area: "",
+        city: "",
+        province: ""
+      };
+      this.fileList = []; // 清空回显
+      this.$refs.provinceForm.initialization(); // 重置省市区
+      this.myRules = []; // 重置规则
+      this.$refs.buyingForm.resetFields();
+    }
+  }
+};
+</script>

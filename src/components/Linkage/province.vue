@@ -38,6 +38,7 @@ export default {
     let _this = this;
     // 获取所有的省市区
     getAreasAll().then(function(res) {
+    
       _this.options = res.data;
     });
   },
@@ -50,6 +51,7 @@ export default {
       this.areaOptionsVal = ""; // 重置用户选择的省市区
     },
     echoArea(areaValue) {
+      console.log("回显示 --- ", areaValue)
       this.areaOptionsVal = areaValue;
       // this.areaOptionsVal.push(city);
       // this.areaOptionsVal.push(province);

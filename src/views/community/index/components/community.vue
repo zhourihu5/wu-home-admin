@@ -111,6 +111,7 @@ export default {
         _this.communityForm.areaValue.push(res.data.city);
         _this.communityForm.areaValue.push(res.data.province);
         _this.communityForm.areaValue.push(res.data.area);
+        console.log("sheng -- ",  _this.communityForm.areaValue)
         _this.$nextTick(() => {
           _this.$refs.provinceForm.echoArea(_this.communityForm.areaValue);
         });

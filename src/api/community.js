@@ -18,8 +18,6 @@ export function getCommuntityById(params) {
     })
 }
 
-
-
 // 获取所有的社区
 export function getCommuntityAll(params) {
     return request({

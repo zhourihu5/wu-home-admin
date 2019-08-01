@@ -12,10 +12,15 @@
     </div>
     <!-- table --->
     <div class="family-table" v-loading="listLoading">
-      <div v-if="familyList.length == 0" class="not-date">
-        <p>{{ $t('table.noData') }}</p>
+      <div v-if="familyList.length == 0">
+        <div v-if="myTips" class="my-tips">
+          <el-alert :title="$t('point.notifyWarning.title1')" type="info" :description="$t('point.notifyWarning.message1')" show-icon></el-alert>
+        </div>
+        <div v-if="!myTips" class="not-date">
+          <p>{{ $t('table.noData') }}</p>
+        </div>
       </div>
-      <el-collapse class="switch" v-else v-model="activeNames">
+      <el-collapse v-else class="switch" v-model="activeNames">
         <el-collapse-item
           v-for="(item, index) in familyList"
           :key="index"
@@ -96,6 +101,10 @@
     }
   }
   .family-table {
+    .my-tips {
+      width: 50%;
+      margin: 15% auto;
+    }
     .not-date {
       font-size: 14px;
       text-align: center;
@@ -166,7 +175,8 @@ export default {
         baseId: "", // 绑定底座的ID
         userId: "", // 业主ID
         userAndFamilyId: "", // 绑定业主家庭ID
-        householdName: ""
+        householdName: "",
+        user: null // 回显实体
       },
       rules: {
         paidCode: {
@@ -184,8 +194,12 @@ export default {
           trigger: "change",
           message: this.generatePoint("mandatory")
         }
-      }
+      },
+      myTips: false, // 操作提示
     };
+  },
+  created() {
+    this.myTips = true;
   },
   methods: {
     generatePoint,
@@ -205,6 +219,7 @@ export default {
         console.log("查询家庭结果 --- ", res);
         _this.familyList = res.data;
         _this.listLoading = false;
+        _this.myTips = false;
       });
     },
     // 绑定用户与设备
@@ -232,7 +247,7 @@ export default {
           _this.familyForm.householdName = res.data.user.nickName
             ? res.data.user.nickName
             : res.data.user.userName;
-          _this.familyForm.userId = res.data.user.id;
+          _this.familyForm.user = res.data.user;
         }
         _this.dialogFormVisible = true;
       });
@@ -243,7 +258,7 @@ export default {
       this.familyForm.householdName = user.nickName
         ? user.nickName
         : user.userName;
-      this.familyForm.userId = user.id;
+      this.familyForm.ueser = user;
       this.dialogInnerVisible = false;
     },
     // 创建数据
@@ -273,11 +288,11 @@ export default {
             identity: 1,
             userFamily: {
               familyId: _this.familyForm.familyId,
-              userId: _this.familyForm.userId
+              userId: _this.familyForm.user.id
             }
           };
           // if(_this.familyForm.userAndFamilyId) userParams.id = _this.familyForm.userAndFamilyId;
-          console.log(ipadParams, boasParams, userParams)
+          console.log(ipadParams, boasParams, userParams);
           // 绑定ipad、底座、用户与家庭
           Promise.all([
             addDevice(ipadParams),
@@ -320,7 +335,8 @@ export default {
         baseId: "", // 绑定底座的ID
         userId: "", // 业主ID
         userAndFamilyId: "", // 绑定业主家庭ID
-        householdName: ""
+        householdName: "",
+        user: null // 回显实体
       };
       this.dialogFormVisible = false;
       this.$refs.familyForm.resetFields();

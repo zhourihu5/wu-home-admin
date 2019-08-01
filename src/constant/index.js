@@ -3,6 +3,7 @@ import { service } from './service'
 import { user } from './user'
 import { message } from './message'
 import { equipment } from './equipment'
+import { buying } from  './buying'
 
 export const overall = {
     uploadUrl: process.env.VUE_APP_BASE_API + '/oss/upload',
@@ -11,5 +12,6 @@ export const overall = {
     service: service,
     user: user,
     message: message,
-    equipment: equipment
+    equipment: equipment,
+    buying: buying
 } 
