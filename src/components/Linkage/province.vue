@@ -38,7 +38,6 @@ export default {
     let _this = this;
     // 获取所有的省市区
     getAreasAll().then(function(res) {
-    
       _this.options = res.data;
     });
   },

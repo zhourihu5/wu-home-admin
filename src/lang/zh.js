@@ -38,7 +38,9 @@ export default {
         business: '活动管理',
         buying: '团购管理',
         commodity: '商品管理',
-        label: '团购商品标签库'
+        label: '团购商品标签库',
+        yellow: "黄页配置与访客邀请",
+        yellowIndex: '黄页配置与访客邀请',
     },
     table: {
         id: 'ID',
@@ -160,7 +162,8 @@ export default {
         phone: '手机号',
         ipad: 'pad编码',
         base: '底座编码',
-        addTime: '新增时间'
+        addTime: '新增时间',
+        address: '地址',
     },
     form: {
         title: '标题',
@@ -257,7 +260,8 @@ export default {
         packing: '包装',
         guarantee: '保质期',
         storageMode: '存储方式',
-        details: '详情'
+        details: '详情',
+        phone: '手机号',
     },
     login: {
         title: '吾家运营管理平台',

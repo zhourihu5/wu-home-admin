@@ -209,3 +209,33 @@ export function findBindInfo(params) {
         params
     })
 }
+
+// 保存社区黄页
+export function addCommondityInfo(data) {
+    return request({
+        url: '/v1/communtity/saveCommondityInfo',
+        method: 'post',
+        data
+    })
+}
+
+// 根据社区查询黄页
+export function getComInfoList(params) {
+    return request({
+        url: '/v1/communtity/getComInfoList',
+        method: 'get',
+        params
+    })
+}
+
+// 删除社区黄页
+export function deleteCommondityInfo(params) {
+    return request({
+        url: '/v1/communtity/removeCommondityInfo',
+        method: 'get',
+        params
+    })
+}
+
+
+

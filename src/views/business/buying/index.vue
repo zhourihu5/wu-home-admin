@@ -106,7 +106,7 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('table.title')" prop="title">
-          <el-input v-model="buyingForm.title" :placeholder="$t('table.temp.title')"/>
+          <el-input v-model="buyingForm.title" :placeholder="$t('table.temp.title')" />
         </el-form-item>
         <el-form-item :label="$t('form.startTime')" prop="startDate">
           <el-date-picker
@@ -132,10 +132,13 @@
             v-model="buyingForm.commodityName"
             :placeholder="$t('table.temp.id')"
           />
-          <el-button type="text" @click="dialogCommodityVisible = true">{{ $t('form.addCommodity') }}</el-button>
+          <el-button
+            type="text"
+            @click="dialogCommodityVisible = true"
+          >{{ $t('form.addCommodity') }}</el-button>
         </el-form-item>
         <el-form-item :label="$t('form.groupBuying')" prop="price">
-          <el-input v-model="buyingForm.price" :placeholder="$t('table.temp.groupBuying')"/>
+          <el-input v-model="buyingForm.price" :placeholder="$t('table.temp.groupBuying')" />
         </el-form-item>
         <el-form-item :label="$t('form.Cover')" prop="file">
           <el-upload
@@ -166,14 +169,14 @@
           <el-button type="text" @click="addRule">{{ $t('form.addCondition') }}</el-button>
           <div class="rule" v-for="(item, index) in myRules" :key="index">
             <span class>团购活动达到</span>
-            <el-input type="number" v-model="item.num"/>
+            <el-input type="number" v-model="item.num" />
             <span>人后，商品满减</span>
-            <el-input type="number" v-model="item.rmb"/>
+            <el-input type="number" v-model="item.rmb" />
             {{buyingForm.reductionType}}
           </div>
         </el-form-item>
         <el-form-item :label="$t('form.deliveryTime')" prop="deliveryHour" class="delivery-time">
-          <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')"/>
+          <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')" />
           <span>小时</span>
         </el-form-item>
       </el-form>
@@ -518,8 +521,6 @@ export default {
     showEditView(row) {
       let _this = this;
       console.log("row --- >", row);
-      _this.dialogStatus = "update"; // 标示创建
-      _this.dialogFormVisible = true; // 展示弹窗
       _this.buyingForm.title = row.title;
       _this.fileList.push({ url: row.cover });
       _this.buyingForm.startDate = row.startDate;
@@ -565,6 +566,8 @@ export default {
           }
         }
       }
+      _this.dialogStatus = "update"; // 标示创建
+      _this.dialogFormVisible = true; // 展示弹窗
     },
     userChoiceCommodity(commodity) {
       console.log("选择 商品", commodity);

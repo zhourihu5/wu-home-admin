@@ -38,7 +38,9 @@ export default {
         business: 'Business',
         buying: 'Buying',
         commodity: 'Commodity',
-        label: 'Label'
+        label: 'Label',
+        yellow: "Yellow Pages",
+        yellowIndex: 'Yellow Pages',
     },
     table: {
         id: 'ID',
@@ -159,7 +161,8 @@ export default {
         phone: 'Phone',
         ipad: 'IpadCode',
         base: 'BaseCode',
-        addTime: 'Add Time'
+        addTime: 'Add Time',
+        address: 'address',
     },
     form: {
         title: 'Title',
@@ -257,7 +260,8 @@ export default {
         packing: 'Packing',
         guarantee: 'Guarantee',
         storageMode: 'Storage Mode',
-        details: 'details'
+        details: 'details',
+        phone: 'phone',
     },
     login: {
         title: 'Login Platform',
