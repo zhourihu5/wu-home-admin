@@ -14,7 +14,12 @@
     <div class="family-table" v-loading="listLoading">
       <div v-if="familyList.length == 0">
         <div v-if="myTips" class="my-tips">
-          <el-alert :title="$t('point.notifyWarning.title1')" type="info" :description="$t('point.notifyWarning.message1')" show-icon></el-alert>
+          <el-alert
+            :title="$t('point.notifyWarning.title1')"
+            type="info"
+            :description="$t('point.notifyWarning.message1')"
+            show-icon
+          ></el-alert>
         </div>
         <div v-if="!myTips" class="not-date">
           <p>{{ $t('table.noData') }}</p>
@@ -55,10 +60,10 @@
           class="my-form"
         >
           <el-form-item :label="$t('table.ipad')" prop="paidCode">
-            <el-input v-model="familyForm.paidCode" :placeholder="$t('table.temp.userName')"/>
+            <el-input v-model="familyForm.paidCode" :placeholder="$t('table.temp.userName')" />
           </el-form-item>
           <el-form-item :label="$t('table.base')" prop="baseCode">
-            <el-input v-model="familyForm.baseCode" :placeholder="$t('table.temp.userName')"/>
+            <el-input v-model="familyForm.baseCode" :placeholder="$t('table.temp.userName')" />
           </el-form-item>
           <el-form-item :label="$t('table.household')" prop="householdName">
             <el-input
@@ -195,7 +200,7 @@ export default {
           message: this.generatePoint("mandatory")
         }
       },
-      myTips: false, // 操作提示
+      myTips: false // 操作提示
     };
   },
   created() {
@@ -224,7 +229,8 @@ export default {
     },
     // 绑定用户与设备
     bindingUser(item, it) {
-      console.log("item -- ", item, it);
+      console.log("item -- ", item);
+      console.log("it -- ", it);
       let _this = this;
       _this.dialogStatus = "update";
       _this.familyForm.flagStr = item.name + it.num;
@@ -235,12 +241,10 @@ export default {
         // ipad
         if (res.data.padDevice) {
           _this.familyForm.paidCode = res.data.padDevice.deviceKey;
-          // _this.familyForm.paidId = res.data.padDevice.id;
         }
         // 底座
         if (res.data.pedestalDevice) {
           _this.familyForm.baseCode = res.data.pedestalDevice.deviceKey;
-          // _this.familyForm.baseId = res.data.pedestalDevice.id;
         }
         // 业主
         if (res.data.user) {
@@ -258,7 +262,7 @@ export default {
       this.familyForm.householdName = user.nickName
         ? user.nickName
         : user.userName;
-      this.familyForm.ueser = user;
+      this.familyForm.user = user;
       this.dialogInnerVisible = false;
     },
     // 创建数据
@@ -270,6 +274,7 @@ export default {
           console.log(" --- ", this.familyForm, this.user);
           let ipadParams = {
             deviceKey: _this.familyForm.paidCode,
+            buttonKey: "01",
             familyId: _this.familyForm.familyId,
             flag: overall.equipment.flag[1].value, // 底座
             status: overall.equipment.status[1].value, // 已安装
@@ -278,6 +283,7 @@ export default {
           // if(_this.familyForm.paidId) ipadParams.id = _this.familyForm.paidId;
           let boasParams = {
             deviceKey: _this.familyForm.baseCode,
+            buttonKey: "01",
             familyId: _this.familyForm.familyId,
             flag: overall.equipment.flag[0].value, // 底座
             status: overall.equipment.status[1].value, // 已安装
@@ -311,6 +317,7 @@ export default {
                   message: _this.generatePoint("notifySuccess.message"),
                   type: "success"
                 });
+                _this.dialogFormVisible = false;
               } else {
                 _this.$message.error(_this.generatePoint("system"));
               }

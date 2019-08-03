@@ -11,6 +11,7 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         :picker-options="pickerOptions"
+        value-format="yyyy-MM-dd HH:mm:ss"
       ></el-date-picker>
       <el-select v-model="listQuery.status" :placeholder="$t('table.temp.status')">
         <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -51,7 +52,7 @@
         <el-table-column align="center" :label="$t('table.title')" width="300">
           <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.businessTime')" width="600">
+        <el-table-column align="center" :label="$t('table.businessTime')" width="770">
           <template
             slot-scope="scope"
           >{{ scope.row.startDate ? (scope.row.startDate + ' - ' + scope.row.endDate) : $t('table.noTime')}}</template>
@@ -112,7 +113,7 @@
           <el-date-picker
             v-model="buyingForm.startDate"
             align="right"
-            type="date"
+            type="datetime"
             placeholder="选择日期"
             :picker-options="pickerOptions"
           ></el-date-picker>
@@ -121,7 +122,7 @@
           <el-date-picker
             v-model="buyingForm.endDate"
             align="right"
-            type="date"
+            type="datetime"
             placeholder="选择日期"
             :picker-options="pickerOptions"
           ></el-date-picker>
@@ -490,6 +491,7 @@ export default {
   watch: {
     queryDate: {
       handler: function(val, oldval) {
+        console.log(val[0] instanceof Date);
         this.listQuery.startDate = val[0];
         this.listQuery.endDate = val[1];
       }

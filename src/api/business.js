@@ -63,6 +63,15 @@ export function getCommodityAll(params) {
     })
 }
 
+// 查询订单列表
+export function getOrderAll(params) {
+    return request({
+        url: '/v1/order/list',
+        method: 'get',
+        params
+    })
+}
+
 
 
 

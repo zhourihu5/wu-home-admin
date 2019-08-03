@@ -39,8 +39,11 @@ export default {
         buying: '团购管理',
         commodity: '商品管理',
         label: '团购商品标签库',
-        yellow: "黄页配置与访客邀请",
+        yellow: '黄页配置与访客邀请',
         yellowIndex: '黄页配置与访客邀请',
+        order: '订单管理',
+        examine: '审核管理',
+        examineIndex: '社区入驻审核'
     },
     table: {
         id: 'ID',
@@ -53,6 +56,8 @@ export default {
         community: '社区',
         operation: '操作',
         edit: '编辑',
+        adopt: '通过',
+        reject: '驳回',
         addHousehold: '添加户主',
         delete: '删除',
         search: '查询',
@@ -164,6 +169,13 @@ export default {
         base: '底座编码',
         addTime: '新增时间',
         address: '地址',
+        orderNumber: '订单编号',
+        orderTime: '下单时间',
+        originalPrice: '原价',
+        presentPrice: '现价',
+        consignee: '收货人',
+        payment: '支付方式',
+        money: '金额'
     },
     form: {
         title: '标题',
@@ -262,6 +274,9 @@ export default {
         storageMode: '存储方式',
         details: '详情',
         phone: '手机号',
+        notAudited: '未审核',
+        failed: '审核未通过',
+        adopt: '审核已通过'
     },
     login: {
         title: '吾家运营管理平台',
@@ -309,7 +324,8 @@ export default {
             message3: '恭喜您,上架成功',
             message4: '恭喜您,操作成功',
             message5: '恭喜您,删除成功',
-            message6: '恭喜您,下架成功'
+            message6: '恭喜您,下架成功',
+            message7: '恭喜您,操作成功'
         },
         login: {
             nickName: '请输入账号',

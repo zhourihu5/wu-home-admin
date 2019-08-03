@@ -41,6 +41,12 @@ export default {
         label: 'Label',
         yellow: "Yellow Pages",
         yellowIndex: 'Yellow Pages',
+        order: 'order',
+        examine: 'examine',
+        examineIndex: 'Residence Audit',
+        notAudited: '未审核',
+        failed: '审核未通过',
+        adopt: '审核已通过'
     },
     table: {
         id: 'ID',
@@ -53,6 +59,8 @@ export default {
         community: 'Community',
         operation: 'Operation',
         edit: 'Edit',
+        adopt: 'Adopt',
+        reject: 'Reject',
         addHousehold: 'Add household',
         delete: 'Delete',
         search: 'Search',
@@ -162,7 +170,14 @@ export default {
         ipad: 'IpadCode',
         base: 'BaseCode',
         addTime: 'Add Time',
-        address: 'address',
+        address: 'Address',
+        orderNumber: 'Order Number',
+        orderTime: 'Order Time',
+        originalPrice: 'Original Price',
+        presentPrice: 'Present Price',
+        consignee: 'Consignee',
+        payment: 'payment',
+        money: 'money'
     },
     form: {
         title: 'Title',
@@ -260,8 +275,11 @@ export default {
         packing: 'Packing',
         guarantee: 'Guarantee',
         storageMode: 'Storage Mode',
-        details: 'details',
-        phone: 'phone',
+        details: 'Details',
+        phone: 'Phone',
+        notAudited: 'Not Audited',
+        failed: 'Failed',
+        adopt: 'Adopt'
     },
     login: {
         title: 'Login Platform',
@@ -309,7 +327,8 @@ export default {
             message3: 'Congratulations on your success',
             message4: 'Congratulations on your successful operation',
             message5: 'Congratulations on the success of deletion',
-            message6: 'Congratulations on your success'
+            message6: 'Congratulations on your success',
+            message7: 'Congratulations on your success'
         },
         login: {
             nickName: 'Please enter your account number.',

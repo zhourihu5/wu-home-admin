@@ -43,7 +43,7 @@
             slot-scope="scope"
           >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.operation')" align="center" width="530">
+        <el-table-column :label="$t('table.operation')" align="center" width="515">
           <template slot-scope="{row}">
             <el-button type="primary" size="mini" @click="showEditView(row)">{{ $t('table.edit') }}</el-button>
             <!-- <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.delete') }}</el-button> -->
