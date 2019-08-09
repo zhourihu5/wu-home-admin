@@ -68,7 +68,19 @@
         <el-table-column :label="$t('table.operation')" align="center" width="360">
           <template slot-scope="{row}">
             <el-button type="primary" size="mini" @click="showEditView(row)">{{ $t('table.edit') }}</el-button>
-            <!-- <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.delete') }}</el-button> -->
+            <el-button
+              v-if="row.isShow == 0"
+              type="primary"
+              size="mini"
+              @click="updateShow(row)"
+            >{{ $t('table.upperShelf') }}</el-button>
+            <el-button
+              v-if="row.isShow == 1"
+              type="danger"
+              size="mini"
+              @click="updateShow(row)"
+            >{{ $t('table.lowerShelf') }}</el-button>
+            <!-- type="danger" -->
           </template>
         </el-table-column>
       </el-table>
@@ -93,7 +105,7 @@
         :model="buyingForm"
         label-position="right"
         label-width="100px"
-        style="width: 60%"
+        style="width: 90%"
       >
         <el-form-item :label="$t('table.community')" prop="communityId">
           <province ref="provinceForm" :params="myForm" @getProvinceVal="getProvinceVal"></province>
@@ -107,7 +119,11 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('table.title')" prop="title">
-          <el-input v-model="buyingForm.title" :placeholder="$t('table.temp.title')" />
+          <el-input
+            class="my-input"
+            v-model="buyingForm.title"
+            :placeholder="$t('table.temp.title')"
+          />
         </el-form-item>
         <el-form-item :label="$t('form.startTime')" prop="startDate">
           <el-date-picker
@@ -116,6 +132,7 @@
             type="datetime"
             placeholder="选择日期"
             :picker-options="pickerOptions"
+            value-format=" yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
         </el-form-item>
         <el-form-item :label="$t('form.endTime')" prop="endDate">
@@ -125,6 +142,7 @@
             type="datetime"
             placeholder="选择日期"
             :picker-options="pickerOptions"
+            value-format=" yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
         </el-form-item>
         <el-form-item :label="$t('form.commodity')" prop="commodityName">
@@ -132,6 +150,7 @@
             :disabled="true"
             v-model="buyingForm.commodityName"
             :placeholder="$t('table.temp.id')"
+            class="my-input"
           />
           <el-button
             type="text"
@@ -139,7 +158,11 @@
           >{{ $t('form.addCommodity') }}</el-button>
         </el-form-item>
         <el-form-item :label="$t('form.groupBuying')" prop="price">
-          <el-input v-model="buyingForm.price" :placeholder="$t('table.temp.groupBuying')" />
+          <el-input
+            class="my-input"
+            v-model="buyingForm.price"
+            :placeholder="$t('table.temp.groupBuying')"
+          />
         </el-form-item>
         <el-form-item :label="$t('form.Cover')" prop="file">
           <el-upload
@@ -180,6 +203,9 @@
           <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')" />
           <span>小时</span>
         </el-form-item>
+        <el-form-item :label="$t('form.details')" prop="remark">
+          <wangeditor ref="wangeditor"></wangeditor>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">{{ $t('table.cancel') }}</el-button>
@@ -202,6 +228,9 @@
 <style lang="scss" scoped>
 .buying {
   padding: 20px;
+  .my-input {
+    width: 55%;
+  }
   .buying-container {
     margin-bottom: 20px;
     .el-cascader {
@@ -230,9 +259,11 @@
 }
 </style>
 <style lang="scss">
-.buying-container {
-  .el-date-editor .el-range-separator {
-    padding: 0 !important;
+.buying {
+  .buying-container {
+    .el-date-editor .el-range-separator {
+      padding: 0 !important;
+    }
   }
 }
 </style>
@@ -241,12 +272,13 @@
 import Pagination from "@/components/Pagination"; // 分页
 import Province from "@/components/Linkage/province"; // 省市区三级联动
 import { getCommuntityByArea } from "@/api/community";
-import { getActivityAll, saveActivity } from "@/api/business";
+import { getActivityAll, saveActivity, modityIsShow } from "@/api/business";
 import { overall } from "@/constant/index";
 import { generatePoint } from "@/utils/i18n";
 import commodityList from "./components/commodity";
+import wangeditor from "@/components/Wangeditor/index";
 export default {
-  components: { Pagination, Province, commodityList },
+  components: { Pagination, Province, commodityList, wangeditor },
   data() {
     return {
       // 时间快捷方式
@@ -333,7 +365,8 @@ export default {
         price: "", // 金额
         area: "",
         city: "",
-        province: ""
+        province: "",
+        remark: "" // 详情
       },
       rules: {
         file: [
@@ -469,6 +502,19 @@ export default {
               }
             }
           }
+        ],
+        remark: [
+          {
+            required: true,
+            trigger: "change",
+            validator: (rule, value, callback) => {
+              if (this.$refs.wangeditor.getContentHtml() == "<p><br></p>") {
+                callback(this.generatePoint("required"));
+              } else {
+                callback();
+              }
+            }
+          }
         ]
       },
       myForm: {
@@ -539,6 +585,11 @@ export default {
       _this.buyingForm.province = row.province;
       _this.buyingForm.commodity = row.commodity;
       _this.buyingForm.commodityName = row.commodity.name;
+      if (row.infos) {
+        _this.$nextTick(() => {
+          _this.$refs.wangeditor.setContent(row.remark);
+        });
+      }
       // 回显示 省市区
       _this.$nextTick(() => {
         _this.$refs.provinceForm.echoArea([
@@ -711,7 +762,8 @@ export default {
         price: _this.buyingForm.price,
         area: _this.buyingForm.area,
         city: _this.buyingForm.city,
-        province: _this.buyingForm.province
+        province: _this.buyingForm.province,
+        remark: this.$refs.wangeditor.getContentHtml()
       };
       if (_this.buyingForm.id) {
         params.id = _this.buyingForm.id;
@@ -736,6 +788,28 @@ export default {
           return this.status[i].label;
         }
       }
+    },
+    // 上下架
+    updateShow(row) {
+      console.log("row --- >", row.isShow);
+      let _this = this;
+      let onShow = row.isShow == 1 ? 0 : 1;
+      modityIsShow({ id: row.id, isShow: onShow }).then(function(res) {
+        console.log("res --- >", res);
+        if (res.message == "SUCCESS") {
+          _this.buttonLoading = false; // 清空按钮加载状态
+          _this.$notify({
+            title: _this.generatePoint("notifySuccess.title"),
+            message: _this.generatePoint("notifySuccess.message4"),
+            type: "success"
+          });
+          _this.dialogFormVisible = false; // 关闭弹窗
+          _this.fetchData();
+        } else {
+          _this.buttonLoading = false; // 清空按钮加载状态
+          _this.$message.error(_this.generatePoint("system"));
+        }
+      });
     },
     close() {
       this.dialogFormVisible = false;
