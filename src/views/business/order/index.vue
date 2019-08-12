@@ -42,35 +42,47 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.orderNumber')" width="200">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+        <el-table-column align="center" :label="$t('table.orderNumber')" width="300">
+          <template slot-scope="scope">{{ scope.row.code ? scope.row.code : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.orderTime')" width="200">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+          <template
+            slot-scope="scope"
+          >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.name')" width="200">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+        <el-table-column align="center" :label="$t('table.name')" width="150">
+          <template slot-scope="scope">{{ scope.row.activityName ? scope.row.activityName : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.originalPrice')" width="150">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+          <template slot-scope="scope">{{ scope.row.price ? scope.row.price : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.presentPrice')" width="150">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+          <template slot-scope="scope">{{scope.row.favPrice }}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.state')" width="150">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+          <template
+            slot-scope="scope"
+          >{{ scope.row.status ? getStatusText(scope.row.status) : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.consignee')" width="180">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+          <template
+            slot-scope="scope"
+          >{{ scope.row.deliveryUname ? scope.row.deliveryUname : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.phone')" width="200">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+        <el-table-column align="center" :label="$t('table.phone')" width="150">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.deliveryUphone ? scope.row.deliveryUphone : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.payment')" width="150">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+          <template
+            slot-scope="scope"
+          >{{ scope.row.payType ? scope.row.payType : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.money')" width="150">
-          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
+          <template
+            slot-scope="scope"
+          >{{ scope.row.realPrice ? scope.row.realPrice : $t('table.noTime')}}</template>
         </el-table-column>
       </el-table>
       <!-- 分页 -->
@@ -147,7 +159,7 @@ export default {
   watch: {
     queryDate: {
       handler: function(val, oldval) {
-          console.log(val, oldval )
+        console.log(val, oldval);
         this.listQuery.startDate = val[0];
         this.listQuery.endDate = val[1];
       }
@@ -169,6 +181,16 @@ export default {
     queryOrder() {
       console.log("_this.listQuery  ", this.listQuery);
       this.fetchData();
+    },
+    // 获取状态中文
+    getStatusText(status) {
+      let text = "";
+      this.status.forEach(function(v) {
+        if (v.value == status) {
+          text = v.label;
+        }
+      });
+      return text;
     }
   }
 };

@@ -121,7 +121,8 @@ export default {
             groupBuying: "Please enter the Price",
             price: "Please enter the Price",
             stock: "Please enter the Stock",
-            content: 'Please enter the ontent'
+            content: 'Please enter the ontent',
+            identityCard: 'Please enter the identityCard'
         },
         platform: "Platform",
         roleName: 'RoleName',
@@ -177,7 +178,8 @@ export default {
         presentPrice: 'Present Price',
         consignee: 'Consignee',
         payment: 'payment',
-        money: 'money'
+        money: 'money',
+        identityCard: 'identityCard'
     },
     form: {
         title: 'Title',
@@ -370,7 +372,8 @@ export default {
         urlInvalid: 'The URL is invalid. Start with http://',
         communityStage: 'At present, the community has not entered (stage), so there is no (stage) data in this community.',
         communityArea: 'At present, the community has not entered (district), so there is no (district) data in this community.',
-        numOk: "Only numbers can be entered"
+        numOk: "Only numbers can be entered",
+        identityCard: "The ID card format is incorrect"
     },
     steps: {
         community: 'community',

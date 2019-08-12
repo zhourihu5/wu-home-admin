@@ -93,10 +93,13 @@
           style="width: 60%"
         >
           <el-form-item :label="$t('table.userName')" prop="userName">
-            <el-input v-model="userForm.userName" :placeholder="$t('table.temp.userName')"/>
+            <el-input v-model="userForm.userName" :placeholder="$t('table.temp.userName')" />
           </el-form-item>
           <el-form-item :label="$t('table.nickName')" prop="nickName">
-            <el-input v-model="userForm.nickName" :placeholder="$t('table.temp.nickName')"/>
+            <el-input v-model="userForm.nickName" :placeholder="$t('table.temp.nickName')" />
+          </el-form-item>
+          <el-form-item :label="$t('table.identityCard')" prop="identityCard">
+            <el-input v-model="userForm.identityCard" :placeholder="$t('table.temp.identityCard')" />
           </el-form-item>
           <el-form-item :label="$t('login.password')" prop="password">
             <el-input
@@ -178,7 +181,8 @@ export default {
         userId: "",
         password: "",
         nickName: "",
-        id: ""
+        id: "",
+        identityCard: "" // 身份证号
       },
       // 平台标示选择
       options: overall.user.options,
@@ -210,6 +214,13 @@ export default {
         flag: [
           { required: true, trigger: "change" },
           { validator: this.validatePlatform }
+        ],
+        identityCard: [
+          {
+            required: true,
+            trigger: "change",
+            validator: this.validateIdentityCard
+          }
         ]
       },
       pickerOptions: {
@@ -360,6 +371,14 @@ export default {
         callback();
       }
     },
+    // 验证身份证格式
+    validateIdentityCard(rule, value, callback) {
+      if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value)) {
+        callback();
+      } else {
+        callback(new Error(this.generatePoint("identityCard")));
+      }
+    },
     getFlagText(flag) {
       let text = "";
       this.options.forEach(function(v) {
@@ -377,7 +396,8 @@ export default {
         userId: "",
         password: "",
         nickName: "",
-        id: ""
+        id: "",
+        identityCard: "" // 身份证号
       };
       this.$refs.userForm.resetFields();
     }

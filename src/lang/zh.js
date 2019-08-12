@@ -118,7 +118,8 @@ export default {
             groupBuying: '请输入团购价格',
             price: '请输入价格',
             stock: '请输入库存',
-            content: '请输入内容'
+            content: '请输入内容',
+            identityCard: '请输入身份证号'
         },
         platform: '平台',
         roleName: '角色名称',
@@ -172,10 +173,11 @@ export default {
         orderNumber: '订单编号',
         orderTime: '下单时间',
         originalPrice: '原价',
-        presentPrice: '现价',
+        presentPrice: '优惠金额',
         consignee: '收货人',
         payment: '支付方式',
-        money: '金额'
+        money: '金额',
+        identityCard: '身份证'
     },
     form: {
         title: '标题',
@@ -372,7 +374,9 @@ export default {
         urlInvalid: 'url无效,请以http://开头',
         communityStage: '当前社区未录入（期），所以本社区无（期）数据。',
         communityArea: '当前社区未录入（区），所以本社区无（区）数据。',
-        numOk: "只能输入数字"
+        numOk: "只能输入数字",
+        identityCard: "身份证格式不正确"
+
     },
     steps: {
         community: '添加社区',

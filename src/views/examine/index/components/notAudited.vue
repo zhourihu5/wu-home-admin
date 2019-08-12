@@ -83,6 +83,7 @@
 import Pagination from "@/components/Pagination"; // 分页
 import { getApplyAll, audit } from "@/api/examine";
 import { overall } from "@/constant/index";
+import { generatePoint } from "@/utils/i18n";
 export default {
   components: { Pagination },
   data() {
@@ -147,6 +148,7 @@ export default {
     console.log(1);
   },
   methods: {
+    generatePoint,
     // 查询数据
     fetchData() {
       let _this = this;
@@ -166,22 +168,35 @@ export default {
     // 审核通过
     onAdopt(row) {
       console.log("row --- >", row);
+      let _this = this;
       audit({
         id: row.id,
         status: overall.examine.status[1].value.toString()
       }).then(function(res) {
         console.log("res -- ", res);
+        if (res.message == "SUCCESS") {
+          _this.$notify({
+            title: _this.generatePoint("notifySuccess.title"),
+            message: _this.generatePoint("notifySuccess.message7"),
+            type: "success"
+          });
+          _this.fetchData();
+        } else {
+          _this.$message.error(_this.generatePoint("system"));
+        }
       });
     },
     // 审核驳回
     onReject(row) {
-      this.$prompt("驳回原因", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        inputPattern: /\S/,
-        inputErrorMessage: "内容不能为空",
-        inputType: "textarea"
-      })
+      let _this = this;
+      _this
+        .$prompt("驳回原因", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          inputPattern: /\S/,
+          inputErrorMessage: "内容不能为空",
+          inputType: "textarea"
+        })
         .then(({ value }) => {
           audit({
             id: row.id,

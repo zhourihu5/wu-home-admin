@@ -12,6 +12,10 @@ export const user = {
         {
             value: 2,
             label: "Pad"
+        },
+        {
+            value: 5,
+            label: "配送员"
         }
     ]
 

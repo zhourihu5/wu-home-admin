@@ -21,6 +21,7 @@
             @clear="inputClear"
             @keyup.enter.native="createData"
           />
+          <!-- <span class="stage-content">/期</span> -->
           <el-button
             :loading="buttonLoading"
             @click="createData"
@@ -109,7 +110,15 @@ export default {
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: (rule, value, callback) => {
+              console.log("rule -- ", rule, value)
+              if( /^[1-9]+$/.test(value)){
+                 callback();
+              } else {
+                 callback(this.generatePoint("numOk"));
+              }
+            }
           }
         ]
       },
@@ -153,13 +162,14 @@ export default {
             // 参数
             let params = {
               communtityId: _this.community.id,
-              name: _this.stageForm.name
+              name: _this.stageForm.name + "期"
             };
             // 修改
             if (this.dialogStatus == "update") {
               params.id = _this.stageForm.id;
               params.code = _this.stageForm.code;
             }
+            console.log("params --- >", params)
             addStage(params).then(function(res) {
               if (res.message == "SUCCESS") {
                 _this.$notify({

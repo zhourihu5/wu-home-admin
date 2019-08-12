@@ -241,10 +241,12 @@ export default {
         // ipad
         if (res.data.padDevice) {
           _this.familyForm.paidCode = res.data.padDevice.deviceKey;
+          _this.familyForm.paidId = res.data.padDevice.id;
         }
         // 底座
         if (res.data.pedestalDevice) {
           _this.familyForm.baseCode = res.data.pedestalDevice.deviceKey;
+          _this.familyForm.baseId = res.data.pedestalDevice.id;
         }
         // 业主
         if (res.data.user) {
@@ -280,7 +282,7 @@ export default {
             status: overall.equipment.status[1].value, // 已安装
             type: overall.equipment.types[0].value // 主机
           };
-          // if(_this.familyForm.paidId) ipadParams.id = _this.familyForm.paidId;
+          if (_this.familyForm.paidId) ipadParams.id = _this.familyForm.paidId;
           let boasParams = {
             deviceKey: _this.familyForm.baseCode,
             buttonKey: "01",
@@ -289,15 +291,16 @@ export default {
             status: overall.equipment.status[1].value, // 已安装
             type: overall.equipment.types[0].value // 主机
           };
-          // if(_this.familyForm.baseId) boasParams.id = _this.familyForm.baseId;
+          if (_this.familyForm.baseId) boasParams.id = _this.familyForm.baseId;
           let userParams = {
-            identity: 1,
+            identity: 1, // 代表业主
             userFamily: {
               familyId: _this.familyForm.familyId,
               userId: _this.familyForm.user.id
             }
           };
-          // if(_this.familyForm.userAndFamilyId) userParams.id = _this.familyForm.userAndFamilyId;
+          // if (_this.familyForm.userAndFamilyId)
+          //   userParams.id = _this.familyForm.userAndFamilyId;
           console.log(ipadParams, boasParams, userParams);
           // 绑定ipad、底座、用户与家庭
           Promise.all([
