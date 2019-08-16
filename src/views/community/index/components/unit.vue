@@ -337,6 +337,8 @@ export default {
         pareams.floorCode = _this.unitForm.floorCode;
       }
       getUnitByFloor(pareams).then(function(res) {
+        console.log("res -- ", res , _this.dynamic);
+         if(_this.dynamic == 0) _this.pageLoading = false;
         _this.listLoading = false;
         _this.listTags = res.data; // 列表数据
       });

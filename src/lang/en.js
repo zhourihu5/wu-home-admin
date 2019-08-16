@@ -281,7 +281,8 @@ export default {
         phone: 'Phone',
         notAudited: 'Not Audited',
         failed: 'Failed',
-        adopt: 'Adopt'
+        adopt: 'Adopt',
+        activityExplain: 'Explain'
     },
     login: {
         title: 'Login Platform',

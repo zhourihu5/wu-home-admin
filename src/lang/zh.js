@@ -278,7 +278,8 @@ export default {
         phone: '手机号',
         notAudited: '未审核',
         failed: '审核未通过',
-        adopt: '审核已通过'
+        adopt: '审核已通过',
+        activityExplain: '活动说明'
     },
     login: {
         title: '吾家运营管理平台',

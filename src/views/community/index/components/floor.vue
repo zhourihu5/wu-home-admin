@@ -296,6 +296,7 @@ export default {
       }
       getFloorByCommuntity(params).then(function(res) {
         console.log("res 查詢的嘍--- >", res);
+        if(_this.dynamic == 0) _this.pageLoading = false;
         _this.listLoading = false;
         _this.listTags = res.data; // 列表数据
       });

@@ -203,7 +203,7 @@
           <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')" />
           <span>小时</span>
         </el-form-item>
-        <el-form-item :label="$t('form.details')" prop="remark">
+        <el-form-item :label="$t('form.activityExplain')" prop="remark">
           <wangeditor ref="wangeditor"></wangeditor>
         </el-form-item>
       </el-form>
