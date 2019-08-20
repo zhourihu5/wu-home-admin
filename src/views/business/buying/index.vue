@@ -366,7 +366,8 @@ export default {
         area: "",
         city: "",
         province: "",
-        remark: "" // 详情
+        remark: "", // 详情
+        isShow: ""
       },
       rules: {
         file: [
@@ -585,6 +586,7 @@ export default {
       _this.buyingForm.province = row.province;
       _this.buyingForm.commodity = row.commodity;
       _this.buyingForm.commodityName = row.commodity.name;
+      _this.buyingForm.isShow = row.isShow;
       if (row.infos) {
         _this.$nextTick(() => {
           _this.$refs.wangeditor.setContent(row.remark);
@@ -763,7 +765,8 @@ export default {
         area: _this.buyingForm.area,
         city: _this.buyingForm.city,
         province: _this.buyingForm.province,
-        remark: this.$refs.wangeditor.getContentHtml()
+        remark: this.$refs.wangeditor.getContentHtml(),
+        isShow: _this.buyingForm.isShow
       };
       if (_this.buyingForm.id) {
         params.id = _this.buyingForm.id;
@@ -829,7 +832,8 @@ export default {
         price: "", // 金额
         area: "",
         city: "",
-        province: ""
+        province: "",
+        isShow: ""
       };
       this.fileList = []; // 清空回显
       this.$refs.provinceForm.initialization(); // 重置省市区
