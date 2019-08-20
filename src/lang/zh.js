@@ -259,6 +259,8 @@ export default {
         stage: '期',
         floor: '楼',
         unit: '单元',
+        layer: '层',
+        family: '家庭',
         commodity: "商品",
         groupBuying: "团购价格",
         reductionRule: '满减规则',

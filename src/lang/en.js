@@ -262,6 +262,8 @@ export default {
         stage: 'Stage',
         floor: 'Floor',
         unit: 'Unit',
+        layer: 'Layer',
+        family: 'Family',
         commodity: "Commodity",
         groupBuying: "Price",
         reductionRule: 'Rule',

@@ -28,7 +28,7 @@ export function getCommuntityAll(params) {
 }
 
 // 查询区下所属社区
-export function getCommuntityByArea(params) {
+export async function getCommuntityByArea(params) {
     return request({
         url: '/v1/communtity/findByArea',
         method: 'get',

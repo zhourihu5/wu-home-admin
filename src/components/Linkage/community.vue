@@ -54,6 +54,7 @@ export default {
     // 更新社区
     getCommuntity() {
       let _this = this;
+      console.log("---- >", this.params.areaValue[2]);
       getCommuntityByArea({ areaCode: this.params.areaValue[2] }).then(
         function(res) {
           _this.communityOptions = res.data;
