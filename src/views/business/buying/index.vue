@@ -179,7 +179,7 @@
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item :label="$t('form.reductionType')" prop="saleType">
+        <!-- <el-form-item :label="$t('form.reductionType')" prop="saleType">
           <el-select v-model="buyingForm.saleType" placeholder="请选择">
             <el-option
               v-for="item in options"
@@ -188,7 +188,7 @@
               :value="item.value"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item :label="$t('form.reductionRule')" prop="saleRules">
           <el-button type="text" @click="addRule">{{ $t('form.addCondition') }}</el-button>
           <div class="rule" v-for="(item, index) in myRules" :key="index">
@@ -359,7 +359,7 @@ export default {
         commodityName: "", // 商品名称回显示
         commodity: null, // 回显实体
         cover: "", // 封面
-        saleType: "", // 满减类型
+        // saleType: "", // 满减类型
         saleRules: "", // 满减规则
         deliveryHour: "", // 配送时效
         price: "", // 金额
@@ -411,13 +411,13 @@ export default {
             message: this.generatePoint("mandatory")
           }
         ],
-        saleType: [
-          {
-            required: true,
-            trigger: "change",
-            message: this.generatePoint("mandatory")
-          }
-        ],
+        // saleType: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     message: this.generatePoint("mandatory")
+        //   }
+        // ],
         commodityName: [
           {
             required: true,
@@ -575,7 +575,7 @@ export default {
       _this.buyingForm.startDate = row.startDate;
       _this.buyingForm.endDate = row.endDate;
       _this.buyingForm.price = row.price;
-      _this.buyingForm.saleType = row.saleType;
+      // _this.buyingForm.saleType = row.saleType;
       _this.buyingForm.deliveryHour = row.deliveryHour;
       _this.buyingForm.communityId = row.communityId;
       _this.buyingForm.communityCode = row.communityCode;
@@ -760,7 +760,7 @@ export default {
         startDate: _this.buyingForm.startDate,
         title: _this.buyingForm.title,
         saleRules: _this.buyingForm.saleRules,
-        saleType: _this.buyingForm.saleType,
+        // saleType: _this.buyingForm.saleType,
         price: _this.buyingForm.price,
         area: _this.buyingForm.area,
         city: _this.buyingForm.city,
@@ -826,7 +826,7 @@ export default {
         commodityName: "", // 商品名称回显示
         commodity: null, // 回显实体
         cover: "", // 封面
-        saleType: "", // 满减类型
+        // saleType: "", // 满减类型
         saleRules: "", // 满减规则
         deliveryHour: "", // 配送时效
         price: "", // 金额
