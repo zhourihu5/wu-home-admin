@@ -225,6 +225,7 @@ export default {
         price: "", // 商品价格
         specifications: "", // 规格
         formatVal: "", // 产地|规格|重量|包装|保质期|储存方式
+        salesNum: "", // 已经卖出数量
         labe: "", // 回显实体
       },
       rules: {
@@ -375,6 +376,7 @@ export default {
       _this.commodityForm.initPrice = row.initPrice;
       _this.commodityForm.price = row.price;
       _this.commodityForm.repertoryNum = row.repertoryNum;
+      _this.commodityForm.salesNum = row.salesNum;
       // 设置富文本显示
       if (row.infos) {
         _this.$nextTick(() => {
@@ -464,11 +466,12 @@ export default {
         name: this.commodityForm.name,
         repertoryNum: this.commodityForm.repertoryNum,
         formatVal: formatVal,
-        labelsName: this.commodityForm.labelsName
+        labelsName: this.commodityForm.labelsName,
       };
       if (this.commodityForm.id) {
         params.id = this.commodityForm.id;
         params.code = this.commodityForm.code;
+        params.salesNum = this.commodityForm.salesNum
       }
       return params;
     },
