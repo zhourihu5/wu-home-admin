@@ -78,6 +78,9 @@ export default {
     },
     initContent() {
       this.editor.txt.html("");
+    },
+    setContent(content) {
+      this.editor.txt.html(content)
     }
   }
 };

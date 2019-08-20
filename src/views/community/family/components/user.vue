@@ -57,7 +57,7 @@
           <template
             slot-scope="scope"
           >{{ scope.row.community ? scope.row.community : $t('table.noTime')}}</template>
-        </el-table-column> -->
+        </el-table-column>-->
       </el-table>
       <!-- 分页 -->
       <pagination
@@ -72,8 +72,8 @@
 </template>
 <style lang="scss">
 .userList {
-  // margin-left: 20px;
-  // margin-right: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
   // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   .title {
     font-size: 14px;
@@ -123,8 +123,9 @@ export default {
       this.listQuery.userName = this.user.userName;
       this.userId = this.user.id;
       this.queryUser();
+    } else {
+      this.fetchData();
     }
-    this.fetchData();
   },
   methods: {
     // 查询数据

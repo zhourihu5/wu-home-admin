@@ -9,6 +9,15 @@ export function addCommuntity(data) {
     })
 }
 
+// 根据ID查询社区
+export function getCommuntityById(params) {
+    return request({
+        url: '/v1/communtity/findById',
+        method: 'get',
+        params
+    })
+}
+
 // 获取所有的社区
 export function getCommuntityAll(params) {
     return request({
@@ -19,7 +28,7 @@ export function getCommuntityAll(params) {
 }
 
 // 查询区下所属社区
-export function getCommuntityByArea(params) {
+export async function getCommuntityByArea(params) {
     return request({
         url: '/v1/communtity/findByArea',
         method: 'get',
@@ -128,4 +137,105 @@ export function findFamilyUser(params) {
         params,
     })
 }
+
+// 添加期
+export function addStage(data) {
+    return request({
+        url: '/v1/issue/addIssue',
+        method: 'post',
+        data,
+    })
+}
+
+// 添加区
+export function addArea(data) {
+    return request({
+        url: '/v1/district/addDistrict',
+        method: 'post',
+        data,
+    })
+}
+
+// 查询社区下所有区
+export function getDistrictByCommuntity(params) {
+    return request({
+        url: '/v1/district/findByCommuntity',
+        method: 'get',
+        params
+    })
+}
+
+// 查询社区下所属期
+export function getStageByCommuntity(params) {
+    return request({
+        url: '/v1/issue/findByCommuntity',
+        method: 'get',
+        params
+    })
+}
+
+// 查询社区下所属层
+export function getLayerByCommuntity(params) {
+    return request({
+        url: '/v1/storey/list',
+        method: 'get',
+        params
+    })
+}
+
+// 添加层
+export function addStorey(data) {
+    return request({
+        url: '/v1/storey/addStorey',
+        method: 'post',
+        data
+    })
+}
+
+// 根据社区查询所有家庭
+export function findFamilyListByCode(params) {
+    return request({
+        url: '/v1/communtity/findFamilyListByCode',
+        method: 'get',
+        params
+    })
+}
+
+// 获取家庭的绑定信息
+export function findBindInfo(params) {
+    return request({
+        url: '/v1/family/bindInfo',
+        method: 'get',
+        params
+    })
+}
+
+// 保存社区黄页
+export function addCommondityInfo(data) {
+    return request({
+        url: '/v1/communtity/saveCommondityInfo',
+        method: 'post',
+        data
+    })
+}
+
+// 根据社区查询黄页
+export function getComInfoList(params) {
+    return request({
+        url: '/v1/communtity/getComInfoList',
+        method: 'get',
+        params
+    })
+}
+
+// 删除社区黄页
+export function deleteCommondityInfo(params) {
+    return request({
+        url: '/v1/communtity/removeCommondityInfo',
+        method: 'get',
+        params
+    })
+}
+
+
 
