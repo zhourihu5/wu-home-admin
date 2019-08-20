@@ -90,34 +90,46 @@
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('form.name')" prop="name">
-          <el-input v-model="commodityForm.name" :placeholder="$t('table.temp.name')"/>
+          <el-input v-model="commodityForm.name" :placeholder="$t('table.temp.name')" />
+        </el-form-item>
+        <el-form-item :label="$t('form.commodityLabel')" prop="labelsName">
+          <el-input
+            :disabled="true"
+            v-model="commodityForm.labelsName"
+            :placeholder="$t('table.temp.labels')"
+            class="my-input"
+          />
+          <el-button
+            type="text"
+            @click="dialogCommodityVisible = true"
+          >{{ $t('form.addCommodityLabel') }}</el-button>
         </el-form-item>
         <el-form-item :label="$t('form.initPrice')" prop="initPrice">
-          <el-input v-model="commodityForm.initPrice" :placeholder="$t('table.temp.price')"/>
+          <el-input v-model="commodityForm.initPrice" :placeholder="$t('table.temp.price')" />
         </el-form-item>
         <el-form-item :label="$t('form.price')" prop="price">
-          <el-input v-model="commodityForm.price" :placeholder="$t('table.temp.price')"/>
+          <el-input v-model="commodityForm.price" :placeholder="$t('table.temp.price')" />
         </el-form-item>
         <el-form-item :label="$t('form.stock')" prop="repertoryNum">
-          <el-input v-model="commodityForm.repertoryNum" :placeholder="$t('table.temp.stock')"/>
+          <el-input v-model="commodityForm.repertoryNum" :placeholder="$t('table.temp.stock')" />
         </el-form-item>
         <el-form-item :label="$t('form.origin')" prop="origin">
-          <el-input v-model="commodityForm.origin" :placeholder="$t('table.temp.content')"/>
+          <el-input v-model="commodityForm.origin" :placeholder="$t('table.temp.content')" />
         </el-form-item>
         <el-form-item :label="$t('form.specifications')" prop="specifications">
-          <el-input v-model="commodityForm.specifications" :placeholder="$t('table.temp.content')"/>
+          <el-input v-model="commodityForm.specifications" :placeholder="$t('table.temp.content')" />
         </el-form-item>
         <el-form-item :label="$t('form.weight')" prop="weight">
-          <el-input v-model="commodityForm.weight" :placeholder="$t('table.temp.content')"/>
+          <el-input v-model="commodityForm.weight" :placeholder="$t('table.temp.content')" />
         </el-form-item>
         <el-form-item :label="$t('form.packing')" prop="packing">
-          <el-input v-model="commodityForm.packing" :placeholder="$t('table.temp.content')"/>
+          <el-input v-model="commodityForm.packing" :placeholder="$t('table.temp.content')" />
         </el-form-item>
         <el-form-item :label="$t('form.guarantee')" prop="guarantee">
-          <el-input v-model="commodityForm.guarantee" :placeholder="$t('table.temp.content')"/>
+          <el-input v-model="commodityForm.guarantee" :placeholder="$t('table.temp.content')" />
         </el-form-item>
         <el-form-item :label="$t('form.storageMode')" prop="storageMode">
-          <el-input v-model="commodityForm.storageMode" :placeholder="$t('table.temp.content')"/>
+          <el-input v-model="commodityForm.storageMode" :placeholder="$t('table.temp.content')" />
         </el-form-item>
         <el-form-item :label="$t('form.details')" prop="infos">
           <wangeditor ref="wangeditor"></wangeditor>
@@ -131,6 +143,13 @@
           :loading="buttonLoading"
         >{{ $t('table.confirm') }}</el-button>
       </div>
+      <!-- 内部dialog -->
+      <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
+        <!-- 住戶列表-->
+        <transition name="el-zoom-in-top">
+          <label-List :label="commodityForm.labelsName" @transmitUser="userChoiceCommodity" @close="dialogCommodityVisible = false"></label-List>
+        </transition>
+      </el-dialog>
     </el-dialog>
   </div>
 </template>
@@ -166,8 +185,9 @@ import { generatePoint } from "@/utils/i18n";
 import { overall } from "@/constant/index";
 import { addCommodity, getCommodityAll } from "@/api/business";
 import Pagination from "@/components/Pagination"; // 分页
+import labelList from "./components/label";
 export default {
-  components: { wangeditor, Pagination },
+  components: { wangeditor, Pagination, labelList },
   data() {
     return {
       updateURL: overall.uploadUrl,
@@ -179,6 +199,7 @@ export default {
       },
       dialogStatus: "", // 标示当前操作是添加、还是修改
       dialogFormVisible: false, // 是否展示dialog内容
+      dialogCommodityVisible: false, // 是否展示商品标签dialog内容
       listLoading: false, // 列表加载
       buttonLoading: false, // 按钮加载请求
       commodityList: [],
@@ -198,14 +219,16 @@ export default {
         repertoryNum: "", // 库存
         name: "", // 商品名称
         labelsName: "", // 商品标签名称
+        labelsIds: "",
         infos: "", // 商品详情
         initPrice: "", // 商品上货价格
         price: "", // 商品价格
         specifications: "", // 规格
-        formatVal: "" // 产地|规格|重量|包装|保质期|储存方式
+        formatVal: "", // 产地|规格|重量|包装|保质期|储存方式
+        labe: "", // 回显实体
       },
       rules: {
-         file: [
+        file: [
           {
             required: true,
             trigger: "change",
@@ -331,6 +354,10 @@ export default {
     queryCommodity() {
       this.fetchData();
     },
+    userChoiceCommodity(labelStr) {
+      console.log("选择 商品标签", labelStr);
+      this.commodityForm.labelsName = labelStr;
+    },
     // 显示添加页面
     showAddView() {
       this.dialogStatus = "create"; // 标示创建
@@ -387,22 +414,22 @@ export default {
           try {
             let params = _this.buildParams(); // 构建参数
             console.log("params --- 》", params);
-            addCommodity(params).then(function(res) {
-              console.log("res --- >", res);
-              if (res.message == "SUCCESS") {
-                _this.buttonLoading = false; // 清空按钮加载状态
-                _this.$notify({
-                  title: _this.generatePoint("notifySuccess.title"),
-                  message: _this.generatePoint("notifySuccess.message"),
-                  type: "success"
-                });
-                _this.dialogFormVisible = false; // 关闭弹窗
-                _this.fetchData();
-              } else {
-                _this.buttonLoading = false; // 清空按钮加载状态
-                _this.$message.error(_this.generatePoint("system"));
-              }
-            });
+            // addCommodity(params).then(function(res) {
+            //   console.log("res --- >", res);
+            //   if (res.message == "SUCCESS") {
+            //     _this.buttonLoading = false; // 清空按钮加载状态
+            //     _this.$notify({
+            //       title: _this.generatePoint("notifySuccess.title"),
+            //       message: _this.generatePoint("notifySuccess.message"),
+            //       type: "success"
+            //     });
+            //     _this.dialogFormVisible = false; // 关闭弹窗
+            //     _this.fetchData();
+            //   } else {
+            //     _this.buttonLoading = false; // 清空按钮加载状态
+            //     _this.$message.error(_this.generatePoint("system"));
+            //   }
+            // });
           } catch (err) {
             console.error("err --- ", err); // 控制台打印异常
             _this.buttonLoading = false; // 清空按钮加载状态
@@ -436,7 +463,8 @@ export default {
         price: this.commodityForm.price,
         name: this.commodityForm.name,
         repertoryNum: this.commodityForm.repertoryNum,
-        formatVal: formatVal
+        formatVal: formatVal,
+        labelsName: this.commodityForm.labelsName
       };
       if (this.commodityForm.id) {
         params.id = this.commodityForm.id;
@@ -500,14 +528,14 @@ export default {
       this.fileList = files;
       // console.log("daelte --- res", res);
       let delItem = "";
-      if(res.hasOwnProperty("response")) {
+      if (res.hasOwnProperty("response")) {
         delItem = res.response.data;
       } else {
         delItem = res.url;
       }
-      if(this.commodityForm.uploadImg.length > 0) {
-        for(let i = 0; i < this.commodityForm.uploadImg.length; i++) {
-          if(this.commodityForm.uploadImg[i] == delItem) {
+      if (this.commodityForm.uploadImg.length > 0) {
+        for (let i = 0; i < this.commodityForm.uploadImg.length; i++) {
+          if (this.commodityForm.uploadImg[i] == delItem) {
             this.commodityForm.uploadImg.splice(i, 1);
           }
         }
@@ -535,6 +563,7 @@ export default {
         formatVal: "" // 产地|规格|重量|包装|保质期|储存方式
       };
       this.fileList = [];
+      this.labe = [];
       this.$refs.commodityForm.resetFields();
     }
   }
