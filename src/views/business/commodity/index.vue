@@ -416,22 +416,22 @@ export default {
           try {
             let params = _this.buildParams(); // 构建参数
             console.log("params --- 》", params);
-            // addCommodity(params).then(function(res) {
-            //   console.log("res --- >", res);
-            //   if (res.message == "SUCCESS") {
-            //     _this.buttonLoading = false; // 清空按钮加载状态
-            //     _this.$notify({
-            //       title: _this.generatePoint("notifySuccess.title"),
-            //       message: _this.generatePoint("notifySuccess.message"),
-            //       type: "success"
-            //     });
-            //     _this.dialogFormVisible = false; // 关闭弹窗
-            //     _this.fetchData();
-            //   } else {
-            //     _this.buttonLoading = false; // 清空按钮加载状态
-            //     _this.$message.error(_this.generatePoint("system"));
-            //   }
-            // });
+            addCommodity(params).then(function(res) {
+              console.log("res --- >", res);
+              if (res.message == "SUCCESS") {
+                _this.buttonLoading = false; // 清空按钮加载状态
+                _this.$notify({
+                  title: _this.generatePoint("notifySuccess.title"),
+                  message: _this.generatePoint("notifySuccess.message"),
+                  type: "success"
+                });
+                _this.dialogFormVisible = false; // 关闭弹窗
+                _this.fetchData();
+              } else {
+                _this.buttonLoading = false; // 清空按钮加载状态
+                _this.$message.error(_this.generatePoint("system"));
+              }
+            });
           } catch (err) {
             console.error("err --- ", err); // 控制台打印异常
             _this.buttonLoading = false; // 清空按钮加载状态
