@@ -188,7 +188,7 @@
               :value="item.value"
             ></el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>-->
         <el-form-item :label="$t('form.reductionRule')" prop="saleRules">
           <el-button type="text" @click="addRule">{{ $t('form.addCondition') }}</el-button>
           <div class="rule" v-for="(item, index) in myRules" :key="index">
@@ -589,6 +589,7 @@ export default {
       _this.buyingForm.commodityName = row.commodity.name;
       _this.buyingForm.isShow = row.isShow;
       _this.buyingForm.status = row.status;
+      _this.buyingForm.saleType = row.saleType;
       if (row.remark) {
         _this.$nextTick(() => {
           _this.$refs.wangeditor.setContent(row.remark);
