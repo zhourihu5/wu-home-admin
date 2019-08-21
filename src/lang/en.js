@@ -44,9 +44,7 @@ export default {
         order: 'order',
         examine: 'examine',
         examineIndex: 'Residence Audit',
-        notAudited: '未审核',
-        failed: '审核未通过',
-        adopt: '审核已通过'
+        busunessIndex: 'Business'
     },
     table: {
         id: 'ID',
@@ -178,9 +176,11 @@ export default {
         originalPrice: 'Original Price',
         presentPrice: 'Present Price',
         consignee: 'Consignee',
-        payment: 'payment',
-        money: 'money',
-        identityCard: 'identityCard'
+        payment: 'Payment',
+        money: 'Money',
+        identityCard: 'IdentityCard',
+        joinTime: 'JoinTime',
+        number: 'Number'
     },
     form: {
         title: 'Title',
@@ -192,6 +192,7 @@ export default {
         addModule: 'Add Module',
         addCommodity: 'Add Commodity',
         addCommodityLabel: 'Add Commodity Label',
+        addBusiness: 'Add Business',
         addCondition: 'Add Condition',
         applicationAudit: 'Application Audit',
         PutIn: 'Put In Time',
@@ -268,6 +269,7 @@ export default {
         family: 'Family',
         commodity: "Commodity",
         commodityLabel: "Commodity Label",
+        business: "Business",
         groupBuying: "Price",
         reductionRule: 'Rule',
         reductionType: 'Type',

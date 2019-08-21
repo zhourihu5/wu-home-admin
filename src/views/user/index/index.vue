@@ -381,6 +381,7 @@ export default {
     },
     getFlagText(flag) {
       let text = "";
+      console.log("options --- ", this.options);
       this.options.forEach(function(v) {
         if (v.value == flag) {
           text = v.label;

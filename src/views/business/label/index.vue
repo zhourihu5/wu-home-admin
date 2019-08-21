@@ -2,18 +2,7 @@
   <div class="label">
     <!-- search --->
     <div class="label-container">
-      <!-- <el-input
-        v-model="listQuery.lablesName"
-        :placeholder="$t('table.temp.community')"
-        style="width: 200px;"
-        class="filter-item"
-      />
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="queryTabel"
-      >{{ $t('table.search') }}</el-button>-->
+      
       <el-button
         class="filter-item"
         style="margin-left: 10px;"

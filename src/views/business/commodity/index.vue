@@ -92,17 +92,25 @@
         <el-form-item :label="$t('form.name')" prop="name">
           <el-input v-model="commodityForm.name" :placeholder="$t('table.temp.name')" />
         </el-form-item>
+        <el-form-item :label="$t('form.business')" prop="labelsName">
+          <el-input
+            :disabled="true"
+            v-model="commodityForm.shopName"
+            :placeholder="$t('table.temp.labels')"
+            class="my-input"
+            style="width: 80%;"
+          />
+          <el-button type="text" @click="onSubLevel(0)">{{ $t('form.addBusiness') }}</el-button>
+        </el-form-item>
         <el-form-item :label="$t('form.commodityLabel')" prop="labelsName">
           <el-input
             :disabled="true"
             v-model="commodityForm.labelsName"
             :placeholder="$t('table.temp.labels')"
             class="my-input"
+            style="width: 80%;"
           />
-          <el-button
-            type="text"
-            @click="dialogCommodityVisible = true"
-          >{{ $t('form.addCommodityLabel') }}</el-button>
+          <el-button type="text" @click="onSubLevel(1)">{{ $t('form.addCommodityLabel') }}</el-button>
         </el-form-item>
         <el-form-item :label="$t('form.initPrice')" prop="initPrice">
           <el-input v-model="commodityForm.initPrice" :placeholder="$t('table.temp.price')" />
@@ -144,10 +152,25 @@
         >{{ $t('table.confirm') }}</el-button>
       </div>
       <!-- 内部dialog -->
-      <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
+      <el-dialog
+        width="65%"
+        :title="sublevel == 1 ? $t('form.addCommodityLabel') : $t('form.addBusiness')"
+        :visible.sync="dialogCommodityVisible"
+        append-to-body
+      >
         <!-- 住戶列表-->
         <transition name="el-zoom-in-top">
-          <label-List :label="commodityForm.labelsName" @transmitUser="userChoiceCommodity" @close="dialogCommodityVisible = false"></label-List>
+          <label-List
+            v-if="sublevel == 1"
+            :label="commodityForm.labelsName"
+            @transmitUser="userChoiceCommodity"
+            @close="dialogCommodityVisible = false"
+          ></label-List>
+          <userl-list
+            v-if="sublevel == 0"
+            :user="commodityForm.shop"
+            @transmitUser="userChoiceUser"
+          ></userl-list>
         </transition>
       </el-dialog>
     </el-dialog>
@@ -186,8 +209,9 @@ import { overall } from "@/constant/index";
 import { addCommodity, getCommodityAll } from "@/api/business";
 import Pagination from "@/components/Pagination"; // 分页
 import labelList from "./components/label";
+import userlList from "./components/user";
 export default {
-  components: { wangeditor, Pagination, labelList },
+  components: { wangeditor, Pagination, labelList, userlList },
   data() {
     return {
       updateURL: overall.uploadUrl,
@@ -206,6 +230,7 @@ export default {
       uploadParams: {
         type: "commodity"
       },
+      sublevel: 1, // 控制子级dialog显示的列表
       total: 0, // 列表分页
       commodityForm: {
         id: "",
@@ -227,6 +252,10 @@ export default {
         formatVal: "", // 产地|规格|重量|包装|保质期|储存方式
         salesNum: "", // 已经卖出数量
         labe: "", // 回显实体
+        shopCode: "", // 商家code
+        shopId: "", // 商家ID
+        shopName: "", // 商家名称
+        shop: null, // 商家回显实体
       },
       rules: {
         file: [
@@ -359,6 +388,14 @@ export default {
       console.log("选择 商品标签", labelStr);
       this.commodityForm.labelsName = labelStr;
     },
+    userChoiceUser(shop) {
+      console.log("选择 商家", shop);
+      this.commodityForm.shopName = shop.name;
+      this.commodityForm.shopId = shop.id;
+      this.commodityForm.shopCode = shop.code;
+      this.commodityForm.shop = shop;
+      this.dialogCommodityVisible = false;
+    },
     // 显示添加页面
     showAddView() {
       this.dialogStatus = "create"; // 标示创建
@@ -377,6 +414,14 @@ export default {
       _this.commodityForm.price = row.price;
       _this.commodityForm.repertoryNum = row.repertoryNum;
       _this.commodityForm.salesNum = row.salesNum;
+      _this.commodityForm.shopCode = row.shopCode; // 商家code
+      _this.commodityForm.shopName = row.shopName; // 商家 名称
+      _this.commodityForm.shopId = row.shopId; // 商家 ID
+      _this.commodityForm.shop = { // 商家回显实体
+        name: row.shopName,
+        id: row.shopId
+      }
+      _this.commodityForm.labelsName = row.labelsName; // 商品标签
       // 设置富文本显示
       if (row.infos) {
         _this.$nextTick(() => {
@@ -406,6 +451,11 @@ export default {
         _this.commodityForm.guarantee = arr[4];
         _this.commodityForm.storageMode = arr[5];
       }
+    },
+    onSubLevel(num) {
+      console.log("num -- >", num);
+      this.sublevel = num;
+      this.dialogCommodityVisible = true;
     },
     // 添加数据
     createData() {
@@ -467,11 +517,14 @@ export default {
         repertoryNum: this.commodityForm.repertoryNum,
         formatVal: formatVal,
         labelsName: this.commodityForm.labelsName,
+        shopCode: this.commodityForm.shopCode, // 商家code
+        shopId: this.commodityForm.shopId, // 商家ID
+        shopName: this.commodityForm.shopName, // 商家名称
       };
       if (this.commodityForm.id) {
         params.id = this.commodityForm.id;
         params.code = this.commodityForm.code;
-        params.salesNum = this.commodityForm.salesNum
+        params.salesNum = this.commodityForm.salesNum;
       }
       return params;
     },
@@ -546,10 +599,11 @@ export default {
       // console.log("delete --- ", this.commodityForm.uploadImg);
     },
     close() {
+      this.$refs.wangeditor.setContent(""); // 设置富文本显示空
       this.dialogFormVisible = false;
       this.commodityForm = {
         id: "",
-        code: "",
+        code: "", // 商品code
         origin: "", // 产地
         weight: "", // 重量
         packing: "", // 包装
@@ -559,15 +613,22 @@ export default {
         repertoryNum: "", // 库存
         name: "", // 商品名称
         labelsName: "", // 商品标签名称
+        labelsIds: "",
         infos: "", // 商品详情
         initPrice: "", // 商品上货价格
         price: "", // 商品价格
         specifications: "", // 规格
-        formatVal: "" // 产地|规格|重量|包装|保质期|储存方式
+        formatVal: "", // 产地|规格|重量|包装|保质期|储存方式
+        salesNum: "", // 已经卖出数量
+        labe: "", // 回显实体
+        shopCode: "", // 商家code
+        shopId: "", // 商家ID
+        shopName: "" // 商家名称
       };
       this.fileList = [];
       this.labe = [];
       this.$refs.commodityForm.resetFields();
+      
     }
   }
 };

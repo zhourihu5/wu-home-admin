@@ -14,8 +14,16 @@ export const user = {
             label: "Pad"
         },
         {
+            value: 4,
+            label: "小程序"
+        },
+        {
             value: 5,
             label: "配送员"
+        },
+        {
+            value: 6,
+            label: "商家"
         }
     ]
 

@@ -359,7 +359,7 @@ export default {
         commodityName: "", // 商品名称回显示
         commodity: null, // 回显实体
         cover: "", // 封面
-        // saleType: "", // 满减类型
+        saleType: "1", // 满减类型
         saleRules: "", // 满减规则
         deliveryHour: "", // 配送时效
         price: "", // 金额
@@ -367,7 +367,8 @@ export default {
         city: "",
         province: "",
         remark: "", // 详情
-        isShow: ""
+        isShow: "",
+        status: "" // 状态
       },
       rules: {
         file: [
@@ -587,7 +588,8 @@ export default {
       _this.buyingForm.commodity = row.commodity;
       _this.buyingForm.commodityName = row.commodity.name;
       _this.buyingForm.isShow = row.isShow;
-      if (row.infos) {
+      _this.buyingForm.status = row.status;
+      if (row.remark) {
         _this.$nextTick(() => {
           _this.$refs.wangeditor.setContent(row.remark);
         });
@@ -760,7 +762,7 @@ export default {
         startDate: _this.buyingForm.startDate,
         title: _this.buyingForm.title,
         saleRules: _this.buyingForm.saleRules,
-        // saleType: _this.buyingForm.saleType,
+        saleType: _this.buyingForm.saleType,
         price: _this.buyingForm.price,
         area: _this.buyingForm.area,
         city: _this.buyingForm.city,
@@ -770,6 +772,7 @@ export default {
       };
       if (_this.buyingForm.id) {
         params.id = _this.buyingForm.id;
+        params.status = _this.buyingForm.status;
       }
 
       if (_this.buyingForm.commodity) {
@@ -815,6 +818,7 @@ export default {
       });
     },
     close() {
+      this.$refs.wangeditor.setContent(""); // 设置富文本显示空
       this.dialogFormVisible = false;
       this.buyingForm = {
         id: "",
