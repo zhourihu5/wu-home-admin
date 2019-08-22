@@ -44,7 +44,7 @@ export default {
         order: '订单管理',
         examine: '审核管理',
         examineIndex: '社区入驻审核',
-        busunessIndex: '商家管理'
+        busunessIndex: '商家管理',
     },
     table: {
         id: 'ID',
@@ -121,7 +121,8 @@ export default {
             price: '请输入价格',
             stock: '请输入库存',
             content: '请输入内容',
-            identityCard: '请输入身份证号'
+            identityCard: '请输入身份证号',
+            user: '请选择用户'
         },
         platform: '平台',
         roleName: '角色名称',
@@ -289,7 +290,8 @@ export default {
         notAudited: '未审核',
         failed: '审核未通过',
         adopt: '审核已通过',
-        activityExplain: '活动说明'
+        activityExplain: '活动说明',
+        relationUser: '关联用户'
     },
     login: {
         title: '吾家运营管理平台',

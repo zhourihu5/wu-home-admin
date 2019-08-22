@@ -121,7 +121,8 @@ export default {
             price: "Please enter the Price",
             stock: "Please enter the Stock",
             content: 'Please enter the ontent',
-            identityCard: 'Please enter the identityCard'
+            identityCard: 'Please enter the identityCard',
+            user: 'Please enter the user'
         },
         platform: "Platform",
         roleName: 'RoleName',
@@ -289,7 +290,8 @@ export default {
         notAudited: 'Not Audited',
         failed: 'Failed',
         adopt: 'Adopt',
-        activityExplain: 'Explain'
+        activityExplain: 'Explain',
+        relationUser: 'Relation User'
     },
     login: {
         title: 'Login Platform',
