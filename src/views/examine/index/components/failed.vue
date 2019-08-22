@@ -175,7 +175,8 @@ export default {
         .then(() => {
           audit({
             id: row.id,
-            status: overall.examine.status[1].value.toString()
+            status: overall.examine.status[1].value.toString(),
+            address: row.familyName
           }).then(function(res) {
             console.log("res --- >", res);
             if (res.message == "SUCCESS") {

@@ -69,17 +69,17 @@
             slot-scope="scope"
           >{{ scope.row.deliveryUname ? scope.row.deliveryUname : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.phone')" width="150">
+        <el-table-column align="center" :label="$t('table.phone')" width="145">
           <template
             slot-scope="scope"
           >{{ scope.row.deliveryUphone ? scope.row.deliveryUphone : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.payment')" width="150">
+        <el-table-column align="center" :label="$t('table.payment')" width="145">
           <template
             slot-scope="scope"
           >{{ scope.row.payType ? scope.row.payType : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.money')" width="150">
+        <el-table-column align="center" :label="$t('table.money')" width="145">
           <template
             slot-scope="scope"
           >{{ scope.row.realPrice ? scope.row.realPrice : $t('table.noTime')}}</template>

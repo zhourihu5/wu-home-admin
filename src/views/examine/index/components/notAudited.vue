@@ -171,7 +171,8 @@ export default {
       let _this = this;
       audit({
         id: row.id,
-        status: overall.examine.status[1].value.toString()
+        status: overall.examine.status[1].value.toString(),
+        address: row.familyName
       }).then(function(res) {
         console.log("res -- ", res);
         if (res.message == "SUCCESS") {
@@ -201,7 +202,8 @@ export default {
           audit({
             id: row.id,
             status: overall.examine.status[2].value.toString(),
-            remark: value
+            remark: value,
+            address: row.familyName
           }).then(function(res) {
             console.log("res --- >", res);
             if (res.message == "SUCCESS") {

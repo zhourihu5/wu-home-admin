@@ -43,7 +43,8 @@ export default {
         yellowIndex: '黄页配置与访客邀请',
         order: '订单管理',
         examine: '审核管理',
-        examineIndex: '社区入驻审核'
+        examineIndex: '社区入驻审核',
+        busunessIndex: '商家管理',
     },
     table: {
         id: 'ID',
@@ -120,7 +121,8 @@ export default {
             price: '请输入价格',
             stock: '请输入库存',
             content: '请输入内容',
-            identityCard: '请输入身份证号'
+            identityCard: '请输入身份证号',
+            user: '请选择用户'
         },
         platform: '平台',
         roleName: '角色名称',
@@ -178,7 +180,9 @@ export default {
         consignee: '收货人',
         payment: '支付方式',
         money: '金额',
-        identityCard: '身份证'
+        identityCard: '身份证',
+        joinTime: '入驻时间',
+        number: '编号'
     },
     form: {
         title: '标题',
@@ -190,6 +194,7 @@ export default {
         addModule: '添加模块',
         addCommodity: '添加商品',
         addCommodityLabel: '添加商品标签',
+        addBusiness: '添加商家',
         addCondition: '添加条件',
         applicationAudit: '应用审核专区',
         PutIn: '投放时间',
@@ -265,6 +270,7 @@ export default {
         family: '家庭',
         commodity: "商品",
         commodityLabel: "商品标签",
+        business: "商家",
         groupBuying: "团购价格",
         reductionRule: '满减规则',
         reductionType: '满减类型',
@@ -284,7 +290,8 @@ export default {
         notAudited: '未审核',
         failed: '审核未通过',
         adopt: '审核已通过',
-        activityExplain: '活动说明'
+        activityExplain: '活动说明',
+        relationUser: '关联用户'
     },
     login: {
         title: '吾家运营管理平台',

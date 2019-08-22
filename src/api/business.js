@@ -72,6 +72,33 @@ export function getOrderAll(params) {
     })
 }
 
+// 商家列表
+export function getBusinessList(params) {
+    return request({
+        url: '/v1/shop/list',
+        method: 'get',
+        params
+    })
+}
+
+// 添加商家 关联用户
+export function addBusinessUser(data) {
+    return request({
+        url: '/v1/shop/save',
+        method: 'post',
+        data
+    })
+}
+
+// 获取用户商家列表
+export function getShopUser(params) {
+    return request({
+        url: '/v1/user/shopUser',
+        method: 'get',
+        params
+    })
+}
+
 
 
 

@@ -30,15 +30,17 @@ service.interceptors.request.use(
 // response interceptor
 service.interceptors.response.use(
   response => {
+    console.log("response --- >", response)
     const res = response.data
     return res;
-Í  },
+  },
   error => {
+    console.log("异常- - 》", error)
     if (error.response) {
       if (error.response.status) {
         switch (error.response.status) {
           case 500:
-            console.log(error.response.data);
+            console.log(" asd a sd", error.response.data);
             if (error.response.data.code == 500) {
               Message({
                 message: error.response.data.message || 'error',
