@@ -34,21 +34,21 @@
             >{{ scope.row.id }}</el-radio>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.number')" width="300">
+        <el-table-column align="center" :label="$t('table.number')" width="200">
           <template slot-scope="scope">{{ scope.row.code ? scope.row.code : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.name')" width="300">
+        <el-table-column align="center" :label="$t('table.name')" width="200">
           <template slot-scope="scope">{{ scope.row.name ? scope.row.name : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.phone')" width="300">
+        <el-table-column align="center" :label="$t('table.phone')" width="200">
           <template slot-scope="scope">{{ scope.row.phone ? scope.row.phone : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.joinTime')" width="300">
+        <el-table-column align="center" :label="$t('table.joinTime')" width="200">
           <template
             slot-scope="scope"
           >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.address')" width="530">
+        <el-table-column align="center" :label="$t('table.address')" width="272">
           <template
             slot-scope="scope"
           >{{ scope.row.address ? scope.row.address : $t('table.noTime')}}</template>

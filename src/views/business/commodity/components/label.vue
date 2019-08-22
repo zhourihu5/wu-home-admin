@@ -20,12 +20,12 @@
             >{{scope.row.id}}</el-checkbox>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.name')" width="730">
+        <el-table-column align="center" :label="$t('table.name')" width="536">
           <template
             slot-scope="scope"
           >{{ scope.row.lablesName ? scope.row.lablesName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.uploadTime')" width="500">
+        <el-table-column align="center" :label="$t('table.uploadTime')" width="536">
           <template
             slot-scope="scope"
           >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</template>
