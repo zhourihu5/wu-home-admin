@@ -307,6 +307,9 @@ export default {
         validDate: "Valid Date",
         AvailableGoods: "Available Goods",
         giftGiving: 'Gift Giving',
+        remarks: 'Remarks',
+        grantCount: 'Grant Count',
+        addActivity: 'Add Activity'
     },
     login: {
         title: 'Login Platform',

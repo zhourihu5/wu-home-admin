@@ -310,6 +310,9 @@ export default {
         threshold: '使用门槛',
         validDate: "有效日期",
         giftGiving: '团购赠礼',
+        remarks: '备注',
+        grantCount: '发放总数',
+        addActivity: '添加活动'
     },
     login: {
         title: '吾家运营管理平台',
