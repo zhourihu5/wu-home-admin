@@ -291,7 +291,8 @@ export default {
         failed: '审核未通过',
         adopt: '审核已通过',
         activityExplain: '活动说明',
-        relationUser: '关联用户'
+        relationUser: '关联用户',
+        giftGiving: '团购赠礼',
     },
     login: {
         title: '吾家运营管理平台',

@@ -291,7 +291,8 @@ export default {
         failed: 'Failed',
         adopt: 'Adopt',
         activityExplain: 'Explain',
-        relationUser: 'Relation User'
+        relationUser: 'Relation User',
+        giftGiving: 'Gift Giving',
     },
     login: {
         title: 'Login Platform',

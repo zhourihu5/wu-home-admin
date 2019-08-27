@@ -132,7 +132,7 @@
             type="datetime"
             placeholder="选择日期"
             :picker-options="pickerOptions"
-            value-format=" yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
         </el-form-item>
         <el-form-item :label="$t('form.endTime')" prop="endDate">
@@ -142,7 +142,7 @@
             type="datetime"
             placeholder="选择日期"
             :picker-options="pickerOptions"
-            value-format=" yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
         </el-form-item>
         <el-form-item :label="$t('form.commodity')" prop="commodityName">
@@ -179,6 +179,21 @@
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
+         <el-form-item :label="$t('form.giftGiving')" prop="file">
+          <el-upload
+            :action="updateURL"
+            list-type="picture-card"
+            :limit="1"
+            :multiple="false"
+            :file-list="giftList"
+            :on-exceed="exceedUpload"
+            :before-upload="beforeAvatarUpload"
+            :on-success="handleGiftImgSuccess"
+            :data="uploadParams"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
         <!-- <el-form-item :label="$t('form.reductionType')" prop="saleType">
           <el-select v-model="buyingForm.saleType" placeholder="请选择">
             <el-option
@@ -189,7 +204,7 @@
             ></el-option>
           </el-select>
         </el-form-item>-->
-        <el-form-item :label="$t('form.reductionRule')" prop="saleRules">
+        <!-- <el-form-item :label="$t('form.reductionRule')" prop="saleRules">
           <el-button type="text" @click="addRule">{{ $t('form.addCondition') }}</el-button>
           <div class="rule" v-for="(item, index) in myRules" :key="index">
             <span class>团购活动达到</span>
@@ -198,7 +213,7 @@
             <el-input type="number" v-model="item.rmb" />
             {{buyingForm.reductionType}}
           </div>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item :label="$t('form.deliveryTime')" prop="deliveryHour" class="delivery-time">
           <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')" />
           <span>小时</span>
@@ -368,7 +383,8 @@ export default {
         province: "",
         remark: "", // 详情
         isShow: "",
-        status: "" // 状态
+        status: "", // 状态
+        giftImg: "", // 团购赠品图片
       },
       rules: {
         file: [
@@ -471,40 +487,40 @@ export default {
             }
           }
         ],
-        saleRules: [
-          {
-            required: true,
-            trigger: "change",
-            validator: (rule, value, callback) => {
-              if (this.myRules.length == 0) {
-                callback(this.generatePoint("required"));
-              } else {
-                let falg = true;
-                for (let i = 0; i < this.myRules.length; i++) {
-                  if (!this.myRules[i].num || !this.myRules[i].rmb) {
-                    falg = false;
-                    break;
-                  } else {
-                    let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
-                    if (
-                      !re.test(this.myRules[i].num) ||
-                      !re.test(this.myRules[i].rmb)
-                    ) {
-                      falg = false;
-                      break;
-                    }
-                  }
-                }
-                console.log("falg -- ", falg);
-                if (falg) {
-                  callback();
-                } else {
-                  callback(this.generatePoint("numOk"));
-                }
-              }
-            }
-          }
-        ],
+        // saleRules: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     validator: (rule, value, callback) => {
+        //       if (this.myRules.length == 0) {
+        //         callback(this.generatePoint("required"));
+        //       } else {
+        //         let falg = true;
+        //         for (let i = 0; i < this.myRules.length; i++) {
+        //           if (!this.myRules[i].num || !this.myRules[i].rmb) {
+        //             falg = false;
+        //             break;
+        //           } else {
+        //             let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+        //             if (
+        //               !re.test(this.myRules[i].num) ||
+        //               !re.test(this.myRules[i].rmb)
+        //             ) {
+        //               falg = false;
+        //               break;
+        //             }
+        //           }
+        //         }
+        //         console.log("falg -- ", falg);
+        //         if (falg) {
+        //           callback();
+        //         } else {
+        //           callback(this.generatePoint("numOk"));
+        //         }
+        //       }
+        //     }
+        //   }
+        // ],
         remark: [
           {
             required: true,
@@ -527,6 +543,7 @@ export default {
       communityList: [], // 社区集合
       updateURL: overall.uploadUrl,
       fileList: [], // 上传图片回显列表
+      giftList: [], // 上传团购赠礼回显示列表
       uploadParams: {
         type: "activity"
       },
@@ -573,6 +590,7 @@ export default {
       console.log("row --- >", row);
       _this.buyingForm.title = row.title;
       _this.fileList.push({ url: row.cover });
+      _this.giftList.push({ url: row.giftImg});
       _this.buyingForm.startDate = row.startDate;
       _this.buyingForm.endDate = row.endDate;
       _this.buyingForm.price = row.price;
@@ -582,6 +600,7 @@ export default {
       _this.buyingForm.communityCode = row.communityCode;
       _this.buyingForm.id = row.id;
       _this.buyingForm.cover = row.cover;
+      _this.buyingForm.giftImg = row.giftImg;
       _this.buyingForm.area = row.area;
       _this.buyingForm.city = row.city;
       _this.buyingForm.province = row.province;
@@ -660,6 +679,9 @@ export default {
     },
     handleAvatarSuccess(res, file) {
       this.buyingForm.cover = res.data;
+    },
+    handleGiftImgSuccess(res, file) {
+      this.buyingForm.giftImg = res.data;
     },
     // 添加数据
     createData() {
@@ -758,11 +780,12 @@ export default {
         communityId: _this.buyingForm.communityId,
         communityCode: _this.buyingForm.communityCode,
         cover: _this.buyingForm.cover,
+        giftImg: _this.buyingForm.giftImg,
         deliveryHour: _this.buyingForm.deliveryHour,
         endDate: _this.buyingForm.endDate,
         startDate: _this.buyingForm.startDate,
         title: _this.buyingForm.title,
-        saleRules: _this.buyingForm.saleRules,
+        // saleRules: _this.buyingForm.saleRules,
         saleType: _this.buyingForm.saleType,
         price: _this.buyingForm.price,
         area: _this.buyingForm.area,
@@ -822,25 +845,31 @@ export default {
       this.$refs.wangeditor.setContent(""); // 设置富文本显示空
       this.dialogFormVisible = false;
       this.buyingForm = {
-        id: "",
+         id: "",
         communityId: "", // 用户选择的社区
         commodityCode: "", // 社区code
         title: "", // 标题
         startDate: "", // 开始时间
         endDate: "", // 结束时间
+        // commodityId: "", // 商品ID
+        // communityCode: "", // 商品code
         commodityName: "", // 商品名称回显示
         commodity: null, // 回显实体
         cover: "", // 封面
-        // saleType: "", // 满减类型
+        saleType: "1", // 满减类型
         saleRules: "", // 满减规则
         deliveryHour: "", // 配送时效
         price: "", // 金额
         area: "",
         city: "",
         province: "",
-        isShow: ""
+        remark: "", // 详情
+        isShow: "",
+        status: "", // 状态
+        giftImg: "", // 团购赠品图片
       };
       this.fileList = []; // 清空回显
+      this.giftList = [];
       this.$refs.provinceForm.initialization(); // 重置省市区
       this.myRules = []; // 重置规则
       this.$refs.buyingForm.resetFields();
