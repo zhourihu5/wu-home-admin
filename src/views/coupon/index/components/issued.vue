@@ -106,8 +106,13 @@
           </el-form-item>
           <el-form-item :label="$t('form.threshold')" prop="everyoneNum">
             <!-- <el-input v-model="issuedForm.limit" :placeholder="$t('table.temp.content')" /> -->
-            <el-radio v-model="issuedForm.limit" label="1">无限制</el-radio>
-            <el-radio v-model="issuedForm.limit" label="2">有限制</el-radio>
+            <el-radio v-model="threshold" label="0">无限制</el-radio>
+            <el-radio v-model="threshold" label="1">有限制</el-radio>
+            <div class="rule" v-if="threshold == 1">
+              <span class>满</span>
+              <el-input v-model="issuedForm.limit" type="number" />
+              <span class>元可用</span>
+            </div>
           </el-form-item>
           <el-form-item :label="$t('form.validDate')" prop="everyoneNum">
             <el-date-picker
@@ -118,9 +123,6 @@
               :end-placeholder="$t('form.endTime')"
             ></el-date-picker>
           </el-form-item>
-          <!-- <el-form-item :label="$t('form.AvailableGoods')" prop="everyoneNum">
-            <el-input v-model="issuedForm.activityId" :placeholder="$t('table.temp.content')" />
-          </el-form-item>-->
         </template>
         <template v-if="issuedForm.type == 2">活动优惠券菜单</template>
       </el-form>
@@ -137,7 +139,7 @@ export default {
       listLoading: false, // 列表加载
       issuedList: [],
       total: 0,
-      threshold: 0, // 使用门槛
+      threshold: "0", // 使用门槛 0无限制、1有限制
       listQuery: {
         pageNum: 1,
         pageSize: 10
@@ -235,6 +237,16 @@ export default {
     }
     .el-input--medium {
       margin-top: 5px;
+    }
+  }
+  .rule {
+    margin: 10px;
+    animation: mymove 0.5s ease-in;
+    -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/
+    .el-input {
+      width: 80px;
+      margin-left: 10px;
+      margin-right: 10px;
     }
   }
 }
