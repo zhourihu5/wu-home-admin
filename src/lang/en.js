@@ -305,7 +305,8 @@ export default {
         everyoneNumber: 'Everyone Number',
         threshold: 'threshold',
         validDate: "Valid Date",
-        AvailableGoods: "Available Goods"
+        AvailableGoods: "Available Goods",
+        giftGiving: 'Gift Giving',
     },
     login: {
         title: 'Login Platform',

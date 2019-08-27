@@ -308,7 +308,8 @@ export default {
         addBlacklist: '添加黑名单',
         everyoneNumber: '每人发放数',
         threshold: '使用门槛',
-        validDate: "有效日期"
+        validDate: "有效日期",
+        giftGiving: '团购赠礼',
     },
     login: {
         title: '吾家运营管理平台',

@@ -137,6 +137,7 @@ export default {
       listLoading: false, // 列表加载
       issuedList: [],
       total: 0,
+      threshold: 0, // 使用门槛
       listQuery: {
         pageNum: 1,
         pageSize: 10
