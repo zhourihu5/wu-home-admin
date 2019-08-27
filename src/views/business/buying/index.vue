@@ -8,8 +8,8 @@
         align="right"
         unlink-panels
         range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        :start-placeholder="$t('form.startTime')"
+        :end-placeholder="$t('form.endTime')"
         :picker-options="pickerOptions"
         value-format="yyyy-MM-dd HH:mm:ss"
       ></el-date-picker>

@@ -5,9 +5,9 @@
       <el-tab-pane :label="$t('form.notInstalled')" name="NotInstalled" :disabled="true"></el-tab-pane>
       <el-tab-pane :label="$t('form.onReplace')" name="onReplace" :disabled="true"></el-tab-pane>
     </el-tabs>
-    <transition name="el-fade-in">
-      <component :is="currentView"></component>
-    </transition>
+    <!-- <transition name="el-fade-in"> -->
+    <component :is="currentView"></component>
+    <!-- </transition> -->
   </div>
 </template>
 <style lang="scss">

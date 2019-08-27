@@ -65,6 +65,7 @@ export default {
         add: 'Add',
         confirm: 'Confirm',
         cancel: 'Cancel',
+        grant: 'Grant',
         selectAll: 'Select All',
         upperShelf: 'Upper Shelf',
         update: 'update',
@@ -181,7 +182,11 @@ export default {
         money: 'Money',
         identityCard: 'IdentityCard',
         joinTime: 'JoinTime',
-        number: 'Number'
+        number: 'Number',
+        denomination: 'Denomination',
+        grantNum: "Grant Num",
+        amountUsed: "Amount Used",
+        validDate: "Valid Date"
     },
     form: {
         title: 'Title',
@@ -291,7 +296,16 @@ export default {
         failed: 'Failed',
         adopt: 'Adopt',
         activityExplain: 'Explain',
-        relationUser: 'Relation User'
+        relationUser: 'Relation User',
+        unissued: 'Unissued',
+        issued: 'Issued',
+        denomination: 'Denomination',
+        blacklist: 'Blacklist',
+        addBlacklist: 'Add Blacklist',
+        everyoneNumber: 'Everyone Number',
+        threshold: 'threshold',
+        validDate: "Valid Date",
+        AvailableGoods: "Available Goods"
     },
     login: {
         title: 'Login Platform',

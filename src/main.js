@@ -20,6 +20,8 @@ import i18n from './lang' // internationalization
 import '@/icons' // icon
 import '@/permission' // permission control
 import 'font-awesome/css/font-awesome.min.css' 
+import Blob from './excel/Blob.js'
+import Export2Excel from './excel/Export2Excel.js'
 
 /**
  * If you don't want to use mock-server
@@ -52,5 +54,7 @@ new Vue({
   router,
   store,
   i18n,
+  Blob,
+  Export2Excel,
   render: h => h(App)
 })

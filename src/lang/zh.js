@@ -45,6 +45,9 @@ export default {
         examine: '审核管理',
         examineIndex: '社区入驻审核',
         busunessIndex: '商家管理',
+        experience: '体验卷管理',
+        coupon: '优惠券管理',
+        couponIndex: '优惠券'
     },
     table: {
         id: 'ID',
@@ -65,6 +68,7 @@ export default {
         add: '添加',
         confirm: '确定',
         cancel: '取消',
+        grant: '发放',
         selectAll: '全选',
         upperShelf: '上架',
         preserve: '保存',
@@ -182,7 +186,12 @@ export default {
         money: '金额',
         identityCard: '身份证',
         joinTime: '入驻时间',
-        number: '编号'
+        number: '编号',
+        denomination: '面额',
+        grantNum: "发放数量",
+        amountUsed: "使用数量",
+        validDate: "有效日期",
+        availableGoods: "可使用商品"
     },
     form: {
         title: '标题',
@@ -291,7 +300,15 @@ export default {
         failed: '审核未通过',
         adopt: '审核已通过',
         activityExplain: '活动说明',
-        relationUser: '关联用户'
+        relationUser: '关联用户',
+        unissued: '未发放',
+        issued: '已发放',
+        denomination: '面额',
+        blacklist: '黑名单',
+        addBlacklist: '添加黑名单',
+        everyoneNumber: '每人发放数',
+        threshold: '使用门槛',
+        validDate: "有效日期"
     },
     login: {
         title: '吾家运营管理平台',
