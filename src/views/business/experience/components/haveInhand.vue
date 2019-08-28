@@ -1,7 +1,7 @@
 <template>
-  <div class="buying">
+  <div class="have-inhand">
     <!-- search --->
-    <div class="buying-container">
+    <div class="have-inhand-container">
       <el-date-picker
         v-model="queryDate"
         type="daterange"
@@ -13,11 +13,8 @@
         :picker-options="pickerOptions"
         value-format="yyyy-MM-dd HH:mm:ss"
       ></el-date-picker>
-      <el-select v-model="listQuery.status" :placeholder="$t('table.temp.status')">
-        <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
-      </el-select>
       <el-input
-        v-model="listQuery.title"
+        v-model="listQuery.name"
         :placeholder="$t('table.temp.name')"
         style="width: 200px;"
         class="filter-item"
@@ -28,63 +25,69 @@
         icon="el-icon-search"
         @click="queryBuying"
       >{{ $t('table.search') }}</el-button>
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="primary"
+        icon="el-icon-edit"
+        @click="showAddView"
+      >{{ $t('table.add') }}</el-button>
     </div>
     <!-- table --->
-    <div class="buying-table">
+    <div class="have-inhand-table">
       <el-table
         v-loading="listLoading"
-        :data="buyingList"
+        :data="experienceList"
         element-loading-text="Loading"
         border
         fit
         highlight-current-row
       >
         <el-table-column align="center" :label="$t('table.id')" width="95">
-          <template slot-scope="scope">
-            <el-radio
-              v-model="activityId"
-              :label="scope.row.id"
-              @change="userChange(scope.row)"
-            >{{ scope.row.id }}</el-radio>
-          </template>
+          <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.title')" width="300">
           <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.businessTime')" width="472">
+        <el-table-column align="center" :label="$t('table.createTime')" width="330">
           <template
             slot-scope="scope"
           >{{ scope.row.startDate ? (scope.row.startDate + ' - ' + scope.row.endDate) : $t('table.noTime')}}</template>
         </el-table-column>
-        <!-- <el-table-column align="center" :label="$t('table.createTime')" width="300">
-          <template slot-scope="scope">{{ scope.row.name ? scope.row.name : $t('table.noTime')}}</template>
-        </el-table-column>-->
+        <el-table-column align="center" :label="$t('table.grantNum')" width="200">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.grantNum ? scope.row.grantNum : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.amountUsed')" width="200">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.amountUsed ? scope.row.amountUsed : $t('table.noTime')}}</template>
+        </el-table-column>
         <el-table-column align="center" :label="$t('table.state')" width="300">
           <template
             slot-scope="scope"
           >{{ scope.row.status ? getStatusText(scope.row.status) : $t('table.noTime')}}</template>
         </el-table-column>
+        <el-table-column :label="$t('table.operation')" align="center" width="330">
+          <template slot-scope="{row}">
+            <el-button type="primary" size="mini" @click="showEditView(row)">{{ $t('table.edit') }}</el-button>
+            <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.delete') }}</el-button>
+            <el-button type="danger" size="mini" @click="grantData(row)">{{ $t('table.grant') }}</el-button>
+          </template>
+        </el-table-column>
       </el-table>
-       <!-- 分页 -->
-      <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="listQuery.pageNum"
-        :limit.sync="listQuery.pageSize"
-        @pagination="fetchData"
-      />
     </div>
   </div>
 </template>
 <script>
-import { overall } from "@/constant/index";
-import Pagination from "@/components/Pagination"; // 分页
-import { getActivityAll } from "@/api/business";
 export default {
-  components: { Pagination },
   data() {
     return {
       queryDate: "",
+      listLoading: false,
+      dialogStatus: "", // 标示当前操作是添加、还是修改
+      dialogFormVisible: false, // 是否展示dialog内容
       // 时间快捷方式
       pickerOptions: {
         shortcuts: [
@@ -117,84 +120,62 @@ export default {
           }
         ]
       },
-      // 查询参数
       listQuery: {
-        status: "", // 状态
-        title: "",
-        endDate: null, // 结束时间
-        startDate: null, // 开始时间
-        pageNum: 1,
-        pageSize: 10
+        name: ""
       },
-      // 状态
-      status: overall.buying.status,
-      listLoading: false, // 列表加载
-      buyingList: [],
-      total: 0,
-      activityId: ""
+      experienceList: []
     };
-  },
-  props: {
-    activity: {
-      type: Object
-    }
-  },
-  created() {
-    console.log("activity --- ", this.activity);
-    if (this.activity) {
-      this.listQuery.title = this.activity.title;
-      this.activityId = this.activity.id;
-      this.queryBuying();
-    } else {
-      this.fetchData();
-    }
-  },
-  watch: {
-    queryDate: {
-      handler: function(val, oldval) {
-        console.log(val[0] instanceof Date);
-        this.listQuery.startDate = val[0];
-        this.listQuery.endDate = val[1];
-      }
-    }
   },
   methods: {
     // 查询数据
     fetchData() {
       let _this = this;
-      _this.listLoading = true;
-      getActivityAll(this.listQuery).then(function(res) {
-        console.log("res --- ", res);
-        _this.listLoading = false;
-        _this.buyingList = res.data.content; // 列表数据
-        _this.total = res.data.totalPages; // 总页数
-      });
+      //   _this.listLoading = true;
     },
     // 搜索
     queryBuying() {
       this.fetchData();
     },
-    // 获取状态中文
-    getStatusText(status) {
-      for (let i = 0; i < this.status.length; i++) {
-        // console.log(this.status[i]);
-        if (this.status[i].value == status) {
-          return this.status[i].label;
-        }
-      }
+    // 显示添加页面
+    showAddView() {
+      this.dialogStatus = "create"; // 标示创建
+      this.dialogFormVisible = true; // 展示弹窗
     },
-    userChange(row) {
-      console.log(row);
-      this.$emit("transmitUser", row);
-    }
+    // 显示编辑页面
+    showEditView() {}
   }
 };
 </script>
 <style lang="scss">
-.buying {
+.have-inhand {
   padding: 20px;
-  .buying-container {
+  .my-input {
+    width: 55%;
+  }
+  .have-inhand-container {
     margin-bottom: 20px;
+    .el-cascader {
+      margin-top: 5px;
+    }
+    .el-button--medium {
+      margin-top: 5px;
+    }
+    .el-input--medium {
+      margin-top: 5px;
+    }
+  }
+  .rule {
+    margin: 10px;
+    .el-input {
+      width: 80px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+  }
+  .delivery-time {
+    .el-input {
+      width: 200px;
+    }
   }
 }
 </style>

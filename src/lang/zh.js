@@ -191,7 +191,8 @@ export default {
         grantNum: "发放数量",
         amountUsed: "使用数量",
         validDate: "有效日期",
-        availableGoods: "可使用商品"
+        availableGoods: "可使用商品",
+        see: "查看"
     },
     form: {
         title: '标题',
@@ -312,7 +313,10 @@ export default {
         giftGiving: '团购赠礼',
         remarks: '备注',
         grantCount: '发放总数',
-        addActivity: '添加活动'
+        addActivity: '添加活动',
+        notStarted: '未开始',
+        haveInhand: '进行中',
+        over: '已结束'
     },
     login: {
         title: '吾家运营管理平台',
@@ -361,7 +365,8 @@ export default {
             message4: '恭喜您,操作成功',
             message5: '恭喜您,删除成功',
             message6: '恭喜您,下架成功',
-            message7: '恭喜您,操作成功'
+            message7: '恭喜您,操作成功',
+            message8: '恭喜您,发放成功'
         },
         login: {
             nickName: '请输入账号',

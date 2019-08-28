@@ -186,7 +186,8 @@ export default {
         denomination: 'Denomination',
         grantNum: "Grant Num",
         amountUsed: "Amount Used",
-        validDate: "Valid Date"
+        validDate: "Valid Date",
+        see: "see"
     },
     form: {
         title: 'Title',
@@ -309,7 +310,10 @@ export default {
         giftGiving: 'Gift Giving',
         remarks: 'Remarks',
         grantCount: 'Grant Count',
-        addActivity: 'Add Activity'
+        addActivity: 'Add Activity',
+        notStarted: 'Not Started',
+        haveInhand: 'Have In hand',
+        over: 'Over'
     },
     login: {
         title: 'Login Platform',
@@ -358,7 +362,8 @@ export default {
             message4: 'Congratulations on your successful operation',
             message5: 'Congratulations on the success of deletion',
             message6: 'Congratulations on your success',
-            message7: 'Congratulations on your success'
+            message7: 'Congratulations on your success',
+            message8: 'Congratulations on your success'
         },
         login: {
             nickName: 'Please enter your account number.',

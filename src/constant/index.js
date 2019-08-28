@@ -6,6 +6,7 @@ import { equipment } from './equipment'
 import { buying } from './buying'
 import { order } from './order'
 import { examine } from './examine'
+import { coupon } from './coupon'
 
 export const overall = {
     uploadUrl: process.env.VUE_APP_BASE_API + '/oss/upload',
@@ -17,5 +18,6 @@ export const overall = {
     equipment: equipment,
     buying: buying,
     order: order,
-    examine: examine
+    examine: examine,
+    coupon: coupon
 } 
