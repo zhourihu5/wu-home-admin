@@ -316,7 +316,8 @@ export default {
         addActivity: '添加活动',
         notStarted: '未开始',
         haveInhand: '进行中',
-        over: '已结束'
+        over: '已结束',
+        see: "查看"
     },
     login: {
         title: '吾家运营管理平台',

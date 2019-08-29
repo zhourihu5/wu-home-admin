@@ -313,7 +313,8 @@ export default {
         addActivity: 'Add Activity',
         notStarted: 'Not Started',
         haveInhand: 'Have In hand',
-        over: 'Over'
+        over: 'Over',
+        see: "See"
     },
     login: {
         title: 'Login Platform',

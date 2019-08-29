@@ -98,136 +98,171 @@
     </div>
     <!-- dialog -->
     <el-dialog
-      :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
+      :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : textMap[dialogStatus] == 'Edit' ? $t('form.edit') :  $t('form.see') "
       :visible.sync="dialogFormVisible"
       @close="close"
     >
-      <el-form
-        ref="issuedForm"
-        :rules="rules"
-        :model="issuedForm"
-        label-position="right"
-        label-width="100px"
-        style="width: 80%"
-      >
-        <el-form-item :label="$t('table.type')" prop="communityId">
-          <el-select
-            v-if="issuedForm.id == ''"
-            v-model="issuedForm.type"
-            placeholder="请选择"
-            @change="typeFormChange"
-          >
-            <el-option
-              v-for="item in typeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-          <div v-else>{{ getTypeText(issuedForm.type) }}</div>
-        </el-form-item>
-        <template v-if="issuedForm.type == 1">
-          <el-form-item :label="$t('form.name')" prop="name">
-            <el-input v-model="issuedForm.name" :placeholder="$t('table.temp.content')" />
+      <template v-if="textMap[dialogStatus] != 'See'">
+        <el-form
+          ref="issuedForm"
+          :rules="rules"
+          :model="issuedForm"
+          label-position="right"
+          label-width="100px"
+          style="width: 80%"
+        >
+          <el-form-item :label="$t('table.type')" prop="communityId">
+            <el-select
+              v-if="issuedForm.id == ''"
+              v-model="issuedForm.type"
+              placeholder="请选择"
+              @change="typeFormChange"
+            >
+              <el-option
+                v-for="item in typeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+            <div v-else>{{ getTypeText(issuedForm.type) }}</div>
           </el-form-item>
-          <el-form-item :label="$t('form.denomination')" prop="money">
-            <el-input
-              v-model="issuedForm.money"
-              type="number"
-              :placeholder="$t('table.temp.content')"
-            />
-          </el-form-item>
-          <el-form-item :label="$t('form.blacklist')" prop="blacklist">
-            <upload-excel v-if="issuedForm.userNames.length == 0" @getExcel="getExcelData"></upload-excel>
-            <el-card v-if="issuedForm.userNames.length > 0" class="box-card">
-              <div slot="header" class="clearfix">
-                <span>黑名单列表</span>
-                <el-button style="float: right" type="text" @click="emptyBlacklist">清空</el-button>
+          <template v-if="issuedForm.type == 1">
+            <el-form-item :label="$t('form.name')" prop="name">
+              <el-input
+                :disabled="inputDisabled"
+                v-model="issuedForm.name"
+                :placeholder="$t('table.temp.content')"
+              />
+            </el-form-item>
+            <el-form-item :label="$t('form.denomination')" prop="money">
+              <el-input
+                :disabled="inputDisabled"
+                v-model="issuedForm.money"
+                type="number"
+                :placeholder="$t('table.temp.content')"
+              />
+            </el-form-item>
+            <el-form-item :label="$t('form.blacklist')" prop="blacklist">
+              <upload-excel v-if="issuedForm.userNames.length == 0" @getExcel="getExcelData"></upload-excel>
+              <el-card v-if="issuedForm.userNames.length > 0" class="box-card">
+                <div slot="header" class="clearfix">
+                  <span>黑名单列表</span>
+                  <el-button
+                    v-if="!inputDisabled"
+                    style="float: right"
+                    type="text"
+                    @click="emptyBlacklist"
+                  >清空</el-button>
+                </div>
+                <div v-for="o in issuedForm.userNames" :key="o" class="text item">{{'黑名单用户：' + o }}</div>
+              </el-card>
+            </el-form-item>
+            <el-form-item :label="$t('form.everyoneNumber')" prop="everyoneNum">
+              <el-input
+                :disabled="inputDisabled"
+                v-model="issuedForm.everyoneNum"
+                :placeholder="$t('table.temp.content')"
+              />
+            </el-form-item>
+            <el-form-item :label="$t('form.threshold')" prop="limitNum">
+              <!-- <el-input v-model="issuedForm.limit" :placeholder="$t('table.temp.content')" /> -->
+              <el-radio v-model="threshold" label="0" :disabled="inputDisabled">无限制</el-radio>
+              <el-radio v-model="threshold" label="1" :disabled="inputDisabled">有限制</el-radio>
+              <div class="rule" v-if="threshold == 1">
+                <span class>满</span>
+                <el-input :disabled="inputDisabled" v-model="issuedForm.limitNum" type="number" />
+                <span class>元可用</span>
               </div>
-              <div v-for="o in issuedForm.userNames" :key="o" class="text item">{{'黑名单用户：' + o }}</div>
-            </el-card>
-          </el-form-item>
-          <el-form-item :label="$t('form.everyoneNumber')" prop="everyoneNum">
-            <el-input v-model="issuedForm.everyoneNum" :placeholder="$t('table.temp.content')" />
-          </el-form-item>
-          <el-form-item :label="$t('form.threshold')" prop="limitNum">
-            <!-- <el-input v-model="issuedForm.limit" :placeholder="$t('table.temp.content')" /> -->
-            <el-radio v-model="threshold" label="0">无限制</el-radio>
-            <el-radio v-model="threshold" label="1">有限制</el-radio>
-            <div class="rule" v-if="threshold == 1">
-              <span class>满</span>
-              <el-input v-model="issuedForm.limitNum" type="number" />
-              <span class>元可用</span>
-            </div>
-          </el-form-item>
-          <el-form-item :label="$t('form.validDate')" prop="validDate">
-            <el-date-picker
-              v-model="queryDate"
-              type="daterange"
-              range-separator="至"
-              :start-placeholder="$t('form.startTime')"
-              :end-placeholder="$t('form.endTime')"
-            ></el-date-picker>
-          </el-form-item>
-          <!-- <el-form-item :label="$t('form.remarks')" prop="remark">
+            </el-form-item>
+            <el-form-item :label="$t('form.validDate')" prop="validDate">
+              <el-date-picker
+                :disabled="inputDisabled"
+                v-model="queryDate"
+                type="daterange"
+                range-separator="至"
+                :start-placeholder="$t('form.startTime')"
+                :end-placeholder="$t('form.endTime')"
+              ></el-date-picker>
+            </el-form-item>
+            <!-- <el-form-item :label="$t('form.remarks')" prop="remark">
             <wangeditor ref="wangeditor"></wangeditor>
-          </el-form-item>-->
-        </template>
-        <template v-if="issuedForm.type == 2">
-          <el-form-item :label="$t('form.name')" prop="name">
-            <el-input v-model="issuedForm.name" :placeholder="$t('table.temp.content')" />
+            </el-form-item>-->
+          </template>
+          <template v-if="issuedForm.type == 2">
+            <el-form-item :label="$t('form.name')" prop="name">
+              <el-input
+                :disabled="inputDisabled"
+                v-model="issuedForm.name"
+                :placeholder="$t('table.temp.content')"
+              />
+            </el-form-item>
+            <el-form-item :label="$t('form.denomination')" prop="money">
+              <el-input
+                :disabled="inputDisabled"
+                v-model="issuedForm.money"
+                type="number"
+                :placeholder="$t('table.temp.content')"
+              />
+            </el-form-item>
+            <el-form-item :label="$t('form.grantCount')" prop="grantCount">
+              <el-input
+                :disabled="inputDisabled"
+                v-model="issuedForm.grantCount"
+                :placeholder="$t('table.temp.content')"
+              />
+            </el-form-item>
+            <el-form-item :label="$t('form.everyoneNumber')" prop="everyoneNum">
+              <el-input
+                :disabled="inputDisabled"
+                v-model="issuedForm.everyoneNum"
+                :placeholder="$t('table.temp.content')"
+              />
+            </el-form-item>
+            <el-form-item :label="$t('form.addActivity')" prop="activityId">
+              <el-input
+                :disabled="inputDisabled"
+                v-model="issuedForm.activityName"
+                :placeholder="$t('table.temp.content')"
+                style="width: 80%;"
+              />
+              <el-button type="text" @click="onSubLevel()">{{ $t('form.addActivity') }}</el-button>
+            </el-form-item>
+            <el-form-item :label="$t('form.validDate')" prop="validDate">
+              <el-date-picker
+                :disabled="inputDisabled"
+                v-model="queryDate"
+                type="daterange"
+                range-separator="至"
+                :start-placeholder="$t('form.startTime')"
+                :end-placeholder="$t('form.endTime')"
+              ></el-date-picker>
+            </el-form-item>
+          </template>
+          <el-form-item :label="$t('form.remarks')" prop="remark">
+            <wangeditor ref="wangeditor"></wangeditor>
           </el-form-item>
-          <el-form-item :label="$t('form.denomination')" prop="money">
-            <el-input
-              v-model="issuedForm.money"
-              type="number"
-              :placeholder="$t('table.temp.content')"
-            />
-          </el-form-item>
-          <el-form-item :label="$t('form.grantCount')" prop="grantCount">
-            <el-input v-model="issuedForm.grantCount" :placeholder="$t('table.temp.content')" />
-          </el-form-item>
-          <el-form-item :label="$t('form.everyoneNumber')" prop="everyoneNum">
-            <el-input v-model="issuedForm.everyoneNum" :placeholder="$t('table.temp.content')" />
-          </el-form-item>
-          <el-form-item :label="$t('form.addActivity')" prop="activityId">
-            <el-input
-              v-model="issuedForm.activityName"
-              :disabled="true"
-              :placeholder="$t('table.temp.content')"
-              style="width: 80%;"
-            />
-            <el-button type="text" @click="onSubLevel()">{{ $t('form.addActivity') }}</el-button>
-          </el-form-item>
-          <el-form-item :label="$t('form.validDate')" prop="validDate">
-            <el-date-picker
-              v-model="queryDate"
-              type="daterange"
-              range-separator="至"
-              :start-placeholder="$t('form.startTime')"
-              :end-placeholder="$t('form.endTime')"
-            ></el-date-picker>
-          </el-form-item>
-        </template>
-        <el-form-item :label="$t('form.remarks')" prop="remark">
-          <wangeditor ref="wangeditor"></wangeditor>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="close">{{ $t('table.cancel') }}</el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus==='create'?createData():updateData()"
-          :loading="buttonLoading"
-        >{{ $t('table.confirm') }}</el-button>
-      </div>
-      <!-- 内部dialog -->
-      <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
-        <!-- 活动列表-->
-        <transition name="el-zoom-in-top">
-          <activity-list :activity="issuedForm.activity" @transmitUser="userChoiceActivity"></activity-list>
-        </transition>
-      </el-dialog>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="close">{{ $t('table.cancel') }}</el-button>
+          <el-button
+            type="primary"
+            @click="dialogStatus==='create'?createData():updateData()"
+            :loading="buttonLoading"
+          >{{ $t('table.confirm') }}</el-button>
+        </div>
+        <!-- 内部dialog -->
+        <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
+          <!-- 活动列表-->
+          <transition name="el-zoom-in-top">
+            <activity-list :activity="issuedForm.activity" @transmitUser="userChoiceActivity"></activity-list>
+          </transition>
+        </el-dialog>
+      </template>
+      <template v-else>
+        <on-see :issuedForm="issuedForm" :typeOptions="typeOptions"></on-see>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -236,6 +271,7 @@ import Pagination from "@/components/Pagination"; // 分页
 import UploadExcel from "@/components/UploadExcel";
 import wangeditor from "@/components/Wangeditor/index";
 import activityList from "./components/activity";
+import onSee from "./components/see";
 import { generatePoint } from "@/utils/i18n";
 import { overall } from "@/constant/index";
 import {
@@ -245,7 +281,7 @@ import {
   updateStatus
 } from "@/api/coupon";
 export default {
-  components: { Pagination, UploadExcel, wangeditor, activityList },
+  components: { Pagination, UploadExcel, wangeditor, activityList, onSee },
   data() {
     return {
       listLoading: false, // 列表加载
@@ -263,7 +299,8 @@ export default {
       textMap: {
         // 弹窗展示的title
         update: "Edit",
-        create: "Create"
+        create: "Create",
+        see: "See"
       },
       issuedForm: {
         type: "1", // 优惠券类型
@@ -373,7 +410,7 @@ export default {
       dialogStatus: "", // 标示当前操作是添加、还是修改
       dialogFormVisible: false, // 是否展示dialog内容
       dialogCommodityVisible: false, // 是否展示商品集合dialog内容
-      inputDisabled: false, // 表单是否可以编辑
+      inputDisabled: false // 表单是否可以编辑
     };
   },
   created() {
@@ -418,17 +455,8 @@ export default {
       _this.issuedForm.endDate = new Date(row.endDate);
       _this.queryDate.push(_this.issuedForm.startDate);
       _this.queryDate.push(_this.issuedForm.endDate);
-
-      _this.dialogStatus = "update"; // 标示创建
-      _this.dialogFormVisible = true; // 展示弹窗
-      if (row.remark) {
-        _this.$nextTick(() => {
-          _this.issuedForm.remark = row.remark;
-          _this.$refs.wangeditor.setContent(_this.issuedForm.remark); // 设置富文本显示空
-        });
-      }
+      _this.issuedForm.remark = row.remark;
       // 活动
-      console.log("活动");
       if (row.activity) {
         _this.issuedForm.activity = row.activity;
         _this.issuedForm.activityName = row.activity.title;
@@ -437,8 +465,19 @@ export default {
       if (row.userNames) {
         _this.issuedForm.userNames = row.userNames;
       }
-
-      console.log("code -- ", code)
+      // 判断是编辑功能 还是查看功能
+      if (code == "edit") {
+        _this.dialogStatus = "update"; // 标示创建
+        _this.dialogFormVisible = true; // 展示弹窗
+        if (row.remark) {
+          _this.$nextTick(() => {
+            _this.$refs.wangeditor.setContent(_this.issuedForm.remark); // 设置富文本显示空
+          });
+        }
+      } else {
+        _this.dialogStatus = "see"; // 标示创建
+        _this.dialogFormVisible = true; // 展示弹窗
+      }
     },
     // 显示添加页面
     showAddView() {
@@ -642,8 +681,10 @@ export default {
         id: ""
       };
       this.queryDate = [];
-      this.$refs.wangeditor.setContent(""); // 设置富文本显示空
-      this.$refs.issuedForm.resetFields();
+      if (this.dialogStatus != "see") {
+        this.$refs.wangeditor.setContent(""); // 设置富文本显示空
+        this.$refs.issuedForm.resetFields();
+      }
     }
   }
 };
