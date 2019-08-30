@@ -8,7 +8,9 @@
       class="excel-upload-input"
       accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
     />
-    <el-button type="text" @click="handleUpload">{{ $t('form.addBlacklist') }}</el-button>
+    <el-button type="text" @click="handleUpload">
+      {{ $t('form.onImport') }}
+    </el-button>
   </div>
 </template>
 <script>

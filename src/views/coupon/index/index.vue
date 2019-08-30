@@ -513,7 +513,8 @@ export default {
       updateStatus({
         type: row.type,
         id: row.id,
-        status: this.status[0].value
+        status: this.status[0].value,
+        activityId: row.activityId
       }).then(function(res) {
         if (res.message == "SUCCESS") {
           _this.$notify({

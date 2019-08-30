@@ -629,7 +629,6 @@ export default {
       this.fileList = [];
       this.labe = [];
       this.$refs.commodityForm.resetFields();
-      
     }
   }
 };

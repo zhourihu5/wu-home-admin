@@ -206,6 +206,7 @@ export default {
         addCommodityLabel: '添加商品标签',
         addBusiness: '添加商家',
         addCondition: '添加条件',
+        addCommunity: '添加社区',
         applicationAudit: '应用审核专区',
         PutIn: '投放时间',
         affairsAll: '全部政务',
@@ -317,7 +318,13 @@ export default {
         notStarted: '未开始',
         haveInhand: '进行中',
         over: '已结束',
-        see: "查看"
+        see: "查看",
+        banner: 'banner',
+        detailsImg: '详情图',
+        experienceImg: '体验卷图',
+        experienceNum: '体验卷数量',
+        experienceCode: '活动体验卷',
+        onImport: '导入'
     },
     login: {
         title: '吾家运营管理平台',

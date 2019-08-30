@@ -201,6 +201,7 @@ export default {
         addCommodityLabel: 'Add Commodity Label',
         addBusiness: 'Add Business',
         addCondition: 'Add Condition',
+        addCommunity: 'Add Community',
         applicationAudit: 'Application Audit',
         PutIn: 'Put In Time',
         affairsAll: 'Affairs All',
@@ -314,7 +315,13 @@ export default {
         notStarted: 'Not Started',
         haveInhand: 'Have In hand',
         over: 'Over',
-        see: "See"
+        see: "See",
+        banner: 'Banner',
+        detailsImg: 'Details Image',
+        experienceImg: 'Experience Image',
+        experienceNum: 'Experience Num',
+        experienceCode: 'Experience',
+        onImport: 'Import'
     },
     login: {
         title: 'Login Platform',
