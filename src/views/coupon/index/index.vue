@@ -60,6 +60,11 @@
         <el-table-column :label="$t('table.operation')" align="center" width="380">
           <template slot-scope="{row}">
             <el-button
+              v-if="row.status == 1"
+              size="mini"
+              @click="showEditView(row, 'see')"
+            >{{ $t('table.see') }}</el-button>
+            <el-button
               v-if="row.status == 0"
               type="primary"
               size="mini"
@@ -78,12 +83,6 @@
               size="mini"
               @click="grantData(row)"
             >{{ $t('table.grant') }}</el-button>
-            <el-button
-              v-if="row.status == 1"
-              type="primary"
-              size="mini"
-              @click="showEditView(row, 'see')"
-            >{{ $t('table.see') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -726,6 +725,9 @@ export default {
 </style>
 <style lang="scss">
 .coupon {
+  .el-date-editor .el-range-separator {
+    padding: 0 !important;
+  }
   .box-card {
     animation: mymove 0.5s ease-in;
     -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/

@@ -72,10 +72,12 @@
   </div>
 </template>
 <script>
-import { dateFtt } from "@/utils/index"; // 分页
+import { dateFtt } from "@/utils/index";
 export default {
   data() {
-    return {};
+    return {
+      
+    };
   },
   props: {
     issuedForm: {

@@ -4,7 +4,7 @@
       ref="experienceForm"
       label-position="left"
       label-width="100px"
-      style="width: 100%;margin: 0 auto;padding: 15px;border: 1px solid #dcdfe6;"
+      style="width: 100%;margin: 0 auto;"
     >
       <el-form-item :label="$t('form.community')" prop="communityName">
         <div>{{ experienceForm.communityNames }}</div>
@@ -13,7 +13,7 @@
         <div>{{ experienceForm.name }}</div>
       </el-form-item>
       <el-form-item :label="$t('form.validDate')" prop="validDate">
-        <div>{{ experienceForm.startDate }} - {{ experienceForm.endDate }}</div>
+        <div>{{ dateFtt("yyyy-MM-dd hh:mm:ss", experienceForm.startDate) }} - {{ dateFtt("yyyy-MM-dd hh:mm:ss", experienceForm.endDate) }}</div>
       </el-form-item>
       <el-form-item :label="$t('form.banner')" prop="bannerFile">
         <div>
@@ -26,7 +26,12 @@
         </div>
       </el-form-item>
       <el-form-item :label="$t('form.experienceImg')" prop="bannerFile">
-        <img v-for="(itme, index) in experienceForm.experienceImgs" :key="index" :src="itme" alt="体验卷图">
+        <img
+          v-for="(itme, index) in experienceForm.experienceImgs"
+          :key="index"
+          :src="itme"
+          alt="体验卷图"
+        />
       </el-form-item>
       <el-form-item :label="$t('form.everyoneNumber')" prop="limitNum">
         <div>{{ experienceForm.limitNum }}</div>
@@ -53,13 +58,41 @@
         ></div>
       </el-form-item>
     </el-form>
+    <!-- table -->
+    <div class="experience-see-table">
+      <h3>领卷人列表</h3>
+      <el-table
+        v-loading="listLoading"
+        :data="experienceForm.experienceCodeList"
+        element-loading-text="Loading"
+        border
+        fit
+        highlight-current-row
+      >
+        <el-table-column align="center" :label="$t('table.id')" width="95">
+          <template slot-scope="scope">{{ scope.row.id }}</template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.name')" width="200">
+          <template slot-scope="scope">{{ experienceForm.name ? experienceForm.name : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.nameOfRecipient')" width="200">
+          <template slot-scope="scope">{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.phone')" width="200">
+          <template slot-scope="scope">{{ scope.row.name ? scope.row.name : $t('table.noTime')}}</template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script>
 import { dateFtt } from "@/utils/index"; // 分页
 export default {
   data() {
-    return {};
+    return {
+      listLoading: false,
+      seeList: []
+    };
   },
   props: {
     experienceForm: {
@@ -84,4 +117,11 @@ export default {
 };
 </script>
 <style lang="scss">
+.experience-see {
+  padding: 15px;
+  border: 1px solid #dcdfe6;
+  .experience-see-table {
+    padding: 20px;
+  }
+}
 </style>

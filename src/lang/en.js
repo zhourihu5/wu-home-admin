@@ -187,7 +187,8 @@ export default {
         grantNum: "Grant Num",
         amountUsed: "Amount Used",
         validDate: "Valid Date",
-        see: "see"
+        see: "see",
+        nameOfRecipient: "Name Of Recipient"
     },
     form: {
         title: 'Title',

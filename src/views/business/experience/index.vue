@@ -77,11 +77,7 @@
         </el-table-column>
         <el-table-column :label="$t('table.operation')" align="center" width="300">
           <template slot-scope="{row}">
-            <el-button
-              type="primary"
-              size="mini"
-              @click="showEditView(row, 'see')"
-            >{{ $t('table.see') }}</el-button>
+            <el-button size="mini" @click="showEditView(row, 'see')">{{ $t('table.see') }}</el-button>
             <el-button
               v-if="row.status == 1"
               type="primary"
@@ -754,7 +750,9 @@ export default {
       this.bannerFileList = [];
       this.detailsFileList = [];
       this.experienceFileList = [];
-      this.$refs.experienceForm.resetFields();
+      if (this.dialogStatus != "see") {
+        this.$refs.experienceForm.resetFields();
+      }
     }
   }
 };
@@ -804,6 +802,13 @@ export default {
   .el-card__body {
     max-height: 200px;
     overflow: auto;
+  }
+}
+</style>
+<style lang="scss">
+.experience {
+  .el-date-editor .el-range-separator {
+    padding: 0 !important;
   }
 }
 </style>

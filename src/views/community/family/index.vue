@@ -132,6 +132,14 @@
   }
 }
 </style>
+<style lang="scss">
+.family {
+  .el-button--medium {
+    margin-left: 10px;
+    margin-bottom: 5px;
+  }
+}
+</style>
 <script>
 import Province from "@/components/Linkage/province"; // 省市区三级联动
 import { getCommuntityByArea, findFamilyListByCode } from "@/api/community";

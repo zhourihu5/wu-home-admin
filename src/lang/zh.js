@@ -192,7 +192,8 @@ export default {
         amountUsed: "使用数量",
         validDate: "有效日期",
         availableGoods: "可使用商品",
-        see: "查看"
+        see: "查看",
+        nameOfRecipient: "领取人姓名"
     },
     form: {
         title: '标题',
