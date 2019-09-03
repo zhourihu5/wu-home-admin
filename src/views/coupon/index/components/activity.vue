@@ -1,7 +1,7 @@
 <template>
-  <div class="order">
+  <div class="buying">
     <!-- search --->
-    <div class="order-container">
+    <div class="buying-container">
       <el-date-picker
         v-model="queryDate"
         type="daterange"
@@ -11,13 +11,13 @@
         :start-placeholder="$t('form.startTime')"
         :end-placeholder="$t('form.endTime')"
         :picker-options="pickerOptions"
-        value-format="yyyy-MM-dd"
+        value-format="yyyy-MM-dd HH:mm:ss"
       ></el-date-picker>
       <el-select v-model="listQuery.status" :placeholder="$t('table.temp.status')">
         <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
       </el-select>
       <el-input
-        v-model="listQuery.activityName"
+        v-model="listQuery.title"
         :placeholder="$t('table.temp.name')"
         style="width: 200px;"
         class="filter-item"
@@ -26,66 +26,46 @@
         class="filter-item"
         type="primary"
         icon="el-icon-search"
-        @click="queryOrder"
+        @click="queryBuying"
       >{{ $t('table.search') }}</el-button>
     </div>
     <!-- table --->
-    <div class="order-table">
+    <div class="buying-table">
       <el-table
         v-loading="listLoading"
-        :data="orderList"
+        :data="buyingList"
         element-loading-text="Loading"
         border
         fit
         highlight-current-row
       >
         <el-table-column align="center" :label="$t('table.id')" width="95">
-          <template slot-scope="scope">{{ scope.row.id }}</template>
+          <template slot-scope="scope">
+            <el-radio
+              v-model="activityId"
+              :label="scope.row.id"
+              @change="userChange(scope.row)"
+            >{{ scope.row.id }}</el-radio>
+          </template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.orderNumber')" width="300">
-          <template slot-scope="scope">{{ scope.row.code ? scope.row.code : $t('table.noTime')}}</template>
+        <el-table-column align="center" :label="$t('table.title')" width="300">
+          <template slot-scope="scope">{{ scope.row.title ? scope.row.title : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.orderTime')" width="200">
+        <el-table-column align="center" :label="$t('table.businessTime')" width="472">
           <template
             slot-scope="scope"
-          >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</template>
+          >{{ scope.row.startDate ? (scope.row.startDate + ' - ' + scope.row.endDate) : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.name')" width="150">
-          <template slot-scope="scope">{{ scope.row.activityName ? scope.row.activityName : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.originalPrice')" width="150">
-          <template slot-scope="scope">{{ scope.row.price ? scope.row.price : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.presentPrice')" width="150">
-          <template slot-scope="scope">{{scope.row.favPrice }}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.state')" width="150">
+        <!-- <el-table-column align="center" :label="$t('table.createTime')" width="300">
+          <template slot-scope="scope">{{ scope.row.name ? scope.row.name : $t('table.noTime')}}</template>
+        </el-table-column>-->
+        <el-table-column align="center" :label="$t('table.state')" width="300">
           <template
             slot-scope="scope"
           >{{ scope.row.status ? getStatusText(scope.row.status) : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.consignee')" width="180">
-          <template
-            slot-scope="scope"
-          >{{ scope.row.deliveryUname ? scope.row.deliveryUname : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.phone')" width="145">
-          <template
-            slot-scope="scope"
-          >{{ scope.row.deliveryUphone ? scope.row.deliveryUphone : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.payment')" width="145">
-          <template
-            slot-scope="scope"
-          >{{ scope.row.payType ? scope.row.payType : $t('table.noTime')}}</template>
-        </el-table-column>
-        <el-table-column align="center" :label="$t('table.money')" width="145">
-          <template
-            slot-scope="scope"
-          >{{ scope.row.realPrice ? scope.row.realPrice : $t('table.noTime')}}</template>
-        </el-table-column>
       </el-table>
-      <!-- 分页 -->
+       <!-- 分页 -->
       <pagination
         v-show="total>0"
         :total="total"
@@ -96,15 +76,15 @@
     </div>
   </div>
 </template>
-
 <script>
 import { overall } from "@/constant/index";
-import { getOrderAll } from "@/api/business";
 import Pagination from "@/components/Pagination"; // 分页
+import { getActivityAll } from "@/api/business";
 export default {
   components: { Pagination },
   data() {
     return {
+      queryDate: "",
       // 时间快捷方式
       pickerOptions: {
         shortcuts: [
@@ -137,29 +117,42 @@ export default {
           }
         ]
       },
-      queryDate: "", // 列表搜索
       // 查询参数
       listQuery: {
         status: "", // 状态
-        activityName: "", // 活动名称
+        title: "",
         endDate: null, // 结束时间
         startDate: null, // 开始时间
         pageNum: 1,
         pageSize: 10
       },
+      // 状态
+      status: overall.buying.status,
       listLoading: false, // 列表加载
-      orderList: [],
+      buyingList: [],
       total: 0,
-      status: overall.order.status
+      activityId: ""
     };
   },
+  props: {
+    activity: {
+      type: Object
+    }
+  },
   created() {
-    this.fetchData();
+    console.log("activity --- ", this.activity);
+    if (this.activity) {
+      this.listQuery.title = this.activity.title;
+      this.activityId = this.activity.id;
+      this.queryBuying();
+    } else {
+      this.fetchData();
+    }
   },
   watch: {
     queryDate: {
       handler: function(val, oldval) {
-        console.log(val, oldval);
+        console.log(val[0] instanceof Date);
         this.listQuery.startDate = val[0];
         this.listQuery.endDate = val[1];
       }
@@ -170,53 +163,38 @@ export default {
     fetchData() {
       let _this = this;
       _this.listLoading = true;
-      getOrderAll(_this.listQuery).then(function(res) {
+      getActivityAll(this.listQuery).then(function(res) {
         console.log("res --- ", res);
         _this.listLoading = false;
-        _this.orderList = res.data.content; // 列表数据
+        _this.buyingList = res.data.content; // 列表数据
         _this.total = res.data.totalPages; // 总页数
       });
     },
-    // 查询
-    queryOrder() {
-      console.log("_this.listQuery  ", this.listQuery);
+    // 搜索
+    queryBuying() {
       this.fetchData();
     },
     // 获取状态中文
     getStatusText(status) {
-      let text = "";
-      this.status.forEach(function(v) {
-        if (v.value == status) {
-          text = v.label;
+      for (let i = 0; i < this.status.length; i++) {
+        // console.log(this.status[i]);
+        if (this.status[i].value == status) {
+          return this.status[i].label;
         }
-      });
-      return text;
+      }
+    },
+    userChange(row) {
+      console.log(row);
+      this.$emit("transmitUser", row);
     }
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.order {
-  padding: 20px;
-  .order-container {
-    margin-bottom: 20px;
-    .el-cascader {
-      margin-top: 5px;
-    }
-    .el-button--medium {
-      margin-top: 5px;
-    }
-    .el-input--medium {
-      margin-top: 5px;
-    }
-  }
-}
-</style>
 <style lang="scss">
-.order-container {
-  .el-date-editor .el-range-separator {
-    padding: 0 !important;
+.buying {
+  padding: 20px;
+  .buying-container {
+    margin-bottom: 20px;
   }
 }
 </style>

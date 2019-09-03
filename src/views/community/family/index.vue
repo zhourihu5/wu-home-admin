@@ -132,6 +132,14 @@
   }
 }
 </style>
+<style lang="scss">
+.family {
+  .el-button--medium {
+    margin-left: 10px;
+    margin-bottom: 5px;
+  }
+}
+</style>
 <script>
 import Province from "@/components/Linkage/province"; // 省市区三级联动
 import { getCommuntityByArea, findFamilyListByCode } from "@/api/community";
@@ -303,17 +311,25 @@ export default {
           //   userParams.id = _this.familyForm.userAndFamilyId;
           console.log(ipadParams, boasParams, userParams);
           // 绑定ipad、底座、用户与家庭
-          Promise.all([
-            addDevice(ipadParams),
-            addDevice(boasParams),
-            addUserAndFamily(userParams)
-          ])
-            .then(result => {
-              if (
-                result[0].message == "SUCCESS" &&
-                result[1].message == "SUCCESS" &&
-                result[2].message == "SUCCESS"
-              ) {
+          addDevice(ipadParams)
+            .then(function(res) {
+              if (res.message == "SUCCESS") {
+                return addDevice(boasParams);
+              } else {
+                _this.$message.error(_this.generatePoint("system"));
+                _this.buttonLoading = false; // 清楚加载中
+              }
+            })
+            .then(function(res1) {
+              if (res1.message == "SUCCESS") {
+                return addUserAndFamily(userParams);
+              } else {
+                _this.$message.error(_this.generatePoint("system"));
+                _this.buttonLoading = false; // 清楚加载中
+              }
+            })
+            .then(function(res2) {
+              if (res2.message == "SUCCESS") {
                 _this.buttonLoading = false; // 清楚加载中
                 _this.$notify({
                   title: _this.generatePoint("notifySuccess.title"),
@@ -323,12 +339,39 @@ export default {
                 _this.dialogFormVisible = false;
               } else {
                 _this.$message.error(_this.generatePoint("system"));
+                _this.buttonLoading = false; // 清楚加载中
               }
             })
             .catch(error => {
               _this.buttonLoading = false; // 清楚加载中
               console.log(error);
             });
+          // Promise.all([
+          //   addDevice(ipadParams),
+          //   addDevice(boasParams),
+          //   addUserAndFamily(userParams)
+          // ])
+          //   .then(result => {
+          //     if (
+          //       result[0].message == "SUCCESS" &&
+          //       result[1].message == "SUCCESS" &&
+          //       result[2].message == "SUCCESS"
+          //     ) {
+          //       _this.buttonLoading = false; // 清楚加载中
+          //       _this.$notify({
+          //         title: _this.generatePoint("notifySuccess.title"),
+          //         message: _this.generatePoint("notifySuccess.message"),
+          //         type: "success"
+          //       });
+          //       _this.dialogFormVisible = false;
+          //     } else {
+          //       _this.$message.error(_this.generatePoint("system"));
+          //     }
+          //   })
+          //   .catch(error => {
+          //     _this.buttonLoading = false; // 清楚加载中
+          //     console.log(error);
+          //   });
         } else {
           _this.buttonLoading = false; // 清楚加载中
           return false;

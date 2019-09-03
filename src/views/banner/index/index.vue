@@ -344,7 +344,7 @@ export default {
               _this.close(); // 关闭弹窗
               _this.$notify({
                 title: _this.generatePoint("notifySuccess.title"),
-                message: _this.generatePoint("notifySuccess.message"),
+                message: _this.generatePoint("notifySuccess.message1"),
                 type: "success"
               });
             } else {

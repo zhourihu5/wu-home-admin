@@ -33,7 +33,7 @@
       <el-form-item :label="$t('form.cardAddress')" prop="location">
         <el-input-number v-model="imagTextForm.location"></el-input-number>
       </el-form-item>
-      <el-form-item :label="$t('form.deliveryTime')" prop="pushDate">
+      <el-form-item :label="$t('form.uptime')" prop="pushDate">
         <el-date-picker
           v-model="imagTextForm.pushDate"
           type="datetime"

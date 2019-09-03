@@ -100,37 +100,37 @@ export default {
       buttonLoading: false // 按钮加载请求
     };
   },
-  props: {
-    label: {
-      type: String
-    }
-  },
-  watch: {
-    label: {
-      handler: function(val, oldval) {
-        console.log("jianting --- >", val, oldval);
-        if (val.indexOf("|") != -1) {
-          let arr = val.split("|");
-          for (let i = 0; i < arr.length; i++) {
-            this.labelStr.push(arr[i]);
-          }
-        } else {
-          this.labelStr.push(val);
-        }
-      }
-    }
-  },
+  // props: {
+  //   label: {
+  //     type: String
+  //   }
+  // },
+  // watch: {
+  //   label: {
+  //     handler: function(val, oldval) {
+  //       console.log("jianting --- >", val, oldval);
+  //       if (val.indexOf("|") != -1) {
+  //         let arr = val.split("|");
+  //         for (let i = 0; i < arr.length; i++) {
+  //           this.labelStr.push(arr[i]);
+  //         }
+  //       } else {
+  //         this.labelStr.push(val);
+  //       }
+  //     }
+  //   }
+  // },
   created() {
-    let _this = this;
-    console.log(" ---- >", this.label);
-    if (_this.label) {
-      let labels = _this.label;
-      for (let i = 0; i < labels.length; i++) {
-        _this.labelStr.push(labels[i].id);
-      }
-    } else {
-      _this.fetchData();
-    }
+    // let _this = this;
+    // console.log(" ---- >", this.label);
+    // if (_this.label) {
+    //   let labels = _this.label;
+    //   for (let i = 0; i < labels.length; i++) {
+    //     _this.labelStr.push(labels[i].id);
+    //   }
+    // } else {
+      this.fetchData();
+    // }
   },
   methods: {
     generatePoint,

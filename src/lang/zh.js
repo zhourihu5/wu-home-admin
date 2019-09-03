@@ -45,6 +45,9 @@ export default {
         examine: '审核管理',
         examineIndex: '社区入驻审核',
         busunessIndex: '商家管理',
+        experience: '体验卷管理',
+        coupon: '优惠券管理',
+        couponIndex: '优惠券'
     },
     table: {
         id: 'ID',
@@ -65,6 +68,7 @@ export default {
         add: '添加',
         confirm: '确定',
         cancel: '取消',
+        grant: '发放',
         selectAll: '全选',
         upperShelf: '上架',
         preserve: '保存',
@@ -182,7 +186,14 @@ export default {
         money: '金额',
         identityCard: '身份证',
         joinTime: '入驻时间',
-        number: '编号'
+        number: '编号',
+        denomination: '面额',
+        grantNum: "发放数量",
+        amountUsed: "使用数量",
+        validDate: "有效日期",
+        availableGoods: "可使用商品",
+        see: "查看",
+        nameOfRecipient: "领取人姓名"
     },
     form: {
         title: '标题',
@@ -196,6 +207,7 @@ export default {
         addCommodityLabel: '添加商品标签',
         addBusiness: '添加商家',
         addCondition: '添加条件',
+        addCommunity: '添加社区',
         applicationAudit: '应用审核专区',
         PutIn: '投放时间',
         affairsAll: '全部政务',
@@ -291,7 +303,29 @@ export default {
         failed: '审核未通过',
         adopt: '审核已通过',
         activityExplain: '活动说明',
-        relationUser: '关联用户'
+        relationUser: '关联用户',
+        unissued: '未发放',
+        issued: '已发放',
+        denomination: '面额',
+        blacklist: '黑名单',
+        addBlacklist: '添加黑名单',
+        everyoneNumber: '每人发放数',
+        threshold: '使用门槛',
+        validDate: "有效日期",
+        giftGiving: '团购赠礼',
+        remarks: '备注',
+        grantCount: '发放总数',
+        addActivity: '添加活动',
+        notStarted: '未开始',
+        haveInhand: '进行中',
+        over: '已结束',
+        see: "查看",
+        banner: 'banner',
+        detailsImg: '详情图',
+        experienceImg: '体验卷图',
+        experienceNum: '体验卷数量',
+        experienceCode: '活动体验卷',
+        onImport: '导入'
     },
     login: {
         title: '吾家运营管理平台',
@@ -340,7 +374,8 @@ export default {
             message4: '恭喜您,操作成功',
             message5: '恭喜您,删除成功',
             message6: '恭喜您,下架成功',
-            message7: '恭喜您,操作成功'
+            message7: '恭喜您,操作成功',
+            message8: '恭喜您,发放成功'
         },
         login: {
             nickName: '请输入账号',

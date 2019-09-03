@@ -65,6 +65,7 @@ export default {
         add: 'Add',
         confirm: 'Confirm',
         cancel: 'Cancel',
+        grant: 'Grant',
         selectAll: 'Select All',
         upperShelf: 'Upper Shelf',
         update: 'update',
@@ -181,7 +182,13 @@ export default {
         money: 'Money',
         identityCard: 'IdentityCard',
         joinTime: 'JoinTime',
-        number: 'Number'
+        number: 'Number',
+        denomination: 'Denomination',
+        grantNum: "Grant Num",
+        amountUsed: "Amount Used",
+        validDate: "Valid Date",
+        see: "see",
+        nameOfRecipient: "Name Of Recipient"
     },
     form: {
         title: 'Title',
@@ -195,6 +202,7 @@ export default {
         addCommodityLabel: 'Add Commodity Label',
         addBusiness: 'Add Business',
         addCondition: 'Add Condition',
+        addCommunity: 'Add Community',
         applicationAudit: 'Application Audit',
         PutIn: 'Put In Time',
         affairsAll: 'Affairs All',
@@ -291,7 +299,30 @@ export default {
         failed: 'Failed',
         adopt: 'Adopt',
         activityExplain: 'Explain',
-        relationUser: 'Relation User'
+        relationUser: 'Relation User',
+        unissued: 'Unissued',
+        issued: 'Issued',
+        denomination: 'Denomination',
+        blacklist: 'Blacklist',
+        addBlacklist: 'Add Blacklist',
+        everyoneNumber: 'Everyone Number',
+        threshold: 'threshold',
+        validDate: "Valid Date",
+        AvailableGoods: "Available Goods",
+        giftGiving: 'Gift Giving',
+        remarks: 'Remarks',
+        grantCount: 'Grant Count',
+        addActivity: 'Add Activity',
+        notStarted: 'Not Started',
+        haveInhand: 'Have In hand',
+        over: 'Over',
+        see: "See",
+        banner: 'Banner',
+        detailsImg: 'Details Image',
+        experienceImg: 'Experience Image',
+        experienceNum: 'Experience Num',
+        experienceCode: 'Experience',
+        onImport: 'Import'
     },
     login: {
         title: 'Login Platform',
@@ -340,7 +371,8 @@ export default {
             message4: 'Congratulations on your successful operation',
             message5: 'Congratulations on the success of deletion',
             message6: 'Congratulations on your success',
-            message7: 'Congratulations on your success'
+            message7: 'Congratulations on your success',
+            message8: 'Congratulations on your success'
         },
         login: {
             nickName: 'Please enter your account number.',

@@ -81,6 +81,9 @@ export default {
     },
     setContent(content) {
       this.editor.txt.html(content)
+    },
+    onDisable() {
+      this.editor.disable(); 
     }
   }
 };
