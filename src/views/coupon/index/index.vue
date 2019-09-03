@@ -211,13 +211,13 @@
                 :placeholder="$t('table.temp.content')"
               />
             </el-form-item>
-            <el-form-item :label="$t('form.everyoneNumber')" prop="everyoneNum">
+            <!-- <el-form-item :label="$t('form.everyoneNumber')" prop="everyoneNum">
               <el-input
                 :disabled="inputDisabled"
                 v-model="issuedForm.everyoneNum"
                 :placeholder="$t('table.temp.content')"
               />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item :label="$t('form.addActivity')" prop="activityId">
               <el-input
                 :disabled="inputDisabled"
@@ -626,7 +626,8 @@ export default {
         name: this.issuedForm.name, // 名称
         money: this.issuedForm.money, // 面额
         grantCount: this.issuedForm.grantCount, // 发放总数
-        everyoneNum: this.issuedForm.everyoneNum, // 每人发放张数
+        // everyoneNum: this.issuedForm.everyoneNum, // 每人领取张数1
+        everyoneNum: "1", // 每人领取张数
         startDate: this.issuedForm.startDate, // 开始时间
         endDate: this.issuedForm.endDate, // 结束时间
         remark: this.$refs.wangeditor.getContentHtml(),

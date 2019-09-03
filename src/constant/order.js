@@ -21,6 +21,10 @@ export const order = {
         {
             label: "已过期",
             value: "4"
+        },
+        {
+            label: "配送中",
+            value: "5"
         }
     ]
 }
