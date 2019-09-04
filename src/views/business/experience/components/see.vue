@@ -17,22 +17,23 @@
       </el-form-item>
       <el-form-item :label="$t('form.banner')" prop="bannerFile">
         <div>
-          <img :src="experienceForm.banner" alt="banner" />
+          <img class="my-img" :src="experienceForm.banner" alt="banner" />
         </div>
       </el-form-item>
       <el-form-item :label="$t('form.detailsImg')" prop="bannerFile">
         <div>
-          <img :src="experienceForm.cover" alt="cover" />
+          <img class="my-img" :src="experienceForm.cover" alt="cover" />
         </div>
       </el-form-item>
-      <el-form-item :label="$t('form.experienceImg')" prop="bannerFile">
+      <!-- <el-form-item :label="$t('form.experienceImg')" prop="bannerFile">
         <img
+          class="my-img"
           v-for="(itme, index) in experienceForm.experienceImgs"
           :key="index"
           :src="itme"
           alt="体验卷图"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item :label="$t('form.everyoneNumber')" prop="limitNum">
         <div>{{ experienceForm.limitNum }}</div>
       </el-form-item>
@@ -63,7 +64,7 @@
       <h3>领卷人列表</h3>
       <el-table
         v-loading="listLoading"
-        :data="experienceForm.experienceCodeList"
+        :data="experienceList"
         element-loading-text="Loading"
         border
         fit
@@ -72,26 +73,48 @@
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.name')" width="200">
-          <template slot-scope="scope">{{ experienceForm.name ? experienceForm.name : $t('table.noTime')}}</template>
+        <el-table-column align="center" :label="$t('table.name')" width="245">
+          <template>{{ experienceForm.name ? experienceForm.name : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.nameOfRecipient')" width="200">
-          <template slot-scope="scope">{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</template>
+        <el-table-column align="center" :label="$t('table.nameOfRecipient')" width="250">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.phone')" width="200">
-          <template slot-scope="scope">{{ scope.row.name ? scope.row.name : $t('table.noTime')}}</template>
+        <el-table-column align="center" :label="$t('table.phone')" width="250">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.userName ? scope.row.userName : $t('table.noTime')}}</template>
         </el-table-column>
       </el-table>
+      <!-- 分页 -->
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.pageNum"
+        :limit.sync="listQuery.pageSize"
+        @pagination="fetchData"
+      />
     </div>
   </div>
 </template>
 <script>
 import { dateFtt } from "@/utils/index"; // 分页
+import { receiveUserList } from "@/api/experoemce/";
+import Pagination from "@/components/Pagination"; // 分页
 export default {
+  components: { Pagination },
   data() {
     return {
       listLoading: false,
-      seeList: []
+      seeList: [],
+      listQuery: {
+        experienceId: "",
+        pageNum: 1,
+        pageSize: 10
+      },
+      experienceList: [],
+      total: 0
     };
   },
   props: {
@@ -100,10 +123,34 @@ export default {
     }
   },
   created() {
+    console.log("1111");
     console.log("experienceForm --- ", this.experienceForm);
+    this.fetchData();
+  },
+  watch: {
+    "experienceForm.id": {
+      handler: function(val, oldval) {
+        if (val !== "") {
+          this.listQuery.experienceId = val;
+          this.fetchData();
+        }
+      },
+      deep: true
+    }
   },
   methods: {
     dateFtt,
+    // 查询数据
+    fetchData() {
+      let _this = this;
+      _this.listLoading = true;
+      receiveUserList(this.listQuery).then(function(res) {
+        console.log("查询体验卷领取人列表 === ", res);
+        _this.listLoading = false;
+        _this.experienceList = res.data.content; // 列表数据
+        _this.total = res.data.totalPages; // 总页数Î
+      });
+    },
     getTypeText(type) {
       let text = "";
       this.typeOptions.forEach(function(v) {
@@ -122,6 +169,10 @@ export default {
   border: 1px solid #dcdfe6;
   .experience-see-table {
     padding: 20px;
+  }
+  .my-img {
+    width: 146px;
+    height: 146px;
   }
 }
 </style>

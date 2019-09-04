@@ -36,3 +36,12 @@ export function updateIsShow(data) {
     })
 }
 
+// 获取体验卷领取人列表
+export function receiveUserList(params) {
+    return request({
+        url: '/v1/experience/receiveUserList',
+        method: 'get',
+        params,
+    })
+}
+
