@@ -216,7 +216,8 @@
             <el-card v-if="experienceForm.experienceCodes.length > 0" class="box-card">
               <div slot="header" class="clearfix">
                 <span>活动体验卷code码</span>
-                <el-button style="float: right" type="text" @click="emptyBlacklist">清空</el-button>
+                <el-button v-if="experienceForm.dian != 1" style="float: right" type="text" @click="emptyBlacklist">清空</el-button>
+                <span style="margin-left: 10px;font-size: 12px; color: #C0C4CC;">该活动已上架过,体验卷code码已生成(不可重新编辑此项)</span>
               </div>
               <div
                 v-for="(o, index) in experienceForm.experienceCodes"
@@ -364,7 +365,8 @@ export default {
         id: "",
         status: overall.experience.status[0].value,
         isShow: overall.experience.show[0].value,
-        limitAddress: "" // 地址
+        limitAddress: "", // 地址
+        dian: "", // 用户是否点击后上架
       },
       myForm: {
         code: "form",
@@ -554,6 +556,7 @@ export default {
       _this.experienceForm.rule = row.rule;
       _this.experienceForm.isShow = row.isShow;
       _this.experienceForm.limitAddress = row.limitAddress;
+      _this.experienceForm.dian = row.dian;
       // for (let i = 0; i < 5; i++) {
       //   if (row["img" + (i + 1)]) {
       //     _this.experienceFileList.push({ url: row["img" + (i + 1)] });
@@ -780,7 +783,8 @@ export default {
         id: "",
         status: overall.experience.status[0].value,
         isShow: overall.experience.show[0].value,
-        limitAddress: "" // 地址
+        limitAddress: "", // 地址
+        dian: ""
       };
       this.queryDate = [];
       this.formDate = [];
