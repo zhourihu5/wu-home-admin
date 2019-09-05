@@ -59,12 +59,12 @@
           style="width: 60%"
           class="my-form"
         >
-          <el-form-item :label="$t('table.ipad')" prop="paidCode">
+          <!-- <el-form-item :label="$t('table.ipad')" prop="paidCode">
             <el-input v-model="familyForm.paidCode" :placeholder="$t('table.temp.userName')" />
           </el-form-item>
           <el-form-item :label="$t('table.base')" prop="baseCode">
             <el-input v-model="familyForm.baseCode" :placeholder="$t('table.temp.userName')" />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item :label="$t('table.household')" prop="householdName">
             <el-input
               v-model="familyForm.householdName"
