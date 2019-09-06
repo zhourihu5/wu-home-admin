@@ -1,536 +1,202 @@
 <template>
-  <div class="community" @click="hiddenMenu">
-    <!-- 树列表 -->
-    <el-row>
-      <el-col :span="8" style="height: 100%;">
-        <div class="item-box" v-loading="regionLoading">
-          <h3>区域</h3>
-          <div class="item-tree">
-            <el-tree
-              accordion
-              :data="regionList"
-              :props="regionProps"
-              :render-content="regionContent"
-            ></el-tree>
-          </div>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="item-box">
-          <h3>小区层级</h3>
-          <div class="item-tree">
-            <el-tree
-              :data="communityList"
-              :props="communityProps"
-              :render-content="communityContent"
-              :load="loadCommunity"
-              lazy
-            ></el-tree>
-          </div>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="item-box">
-          <h3>家庭</h3>
-          <div class="item-tree"></div>
-        </div>
-      </el-col>
-    </el-row>
+  <div class="community">
+    <!-- search --->
+    <div class="community-index-container">
+      <province ref="provinceList" :params="myList" @getProvinceVal="getProvinceVal"></province>
+      <el-input
+        v-model="listQuery.name"
+        :placeholder="$t('table.temp.community')"
+        style="width: 200px;"
+        class="filter-item"
+      />
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="queryCommunity"
+      >{{ $t('table.search') }}</el-button>
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="primary"
+        icon="el-icon-edit"
+        @click="showAddView"
+      >{{ $t('table.add') }}</el-button>
+    </div>
+    <!-- table --->
+    <div class="community-table">
+      <el-table
+        v-loading="listLoading"
+        :data="communityList"
+        element-loading-text="Loading"
+        border
+        fit
+        highlight-current-row
+      >
+        <el-table-column align="center" :label="$t('table.id')" width="95">
+          <template slot-scope="scope">{{ scope.row.id }}</template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.communityName')" width="300">
+          <template slot-scope="scope">{{ scope.row.name ? scope.row.name : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column :label="$t('table.areaName')" width="300" align="center">
+          <template slot-scope="scope">
+            <span>{{ (scope.row.provinceName + '/' + scope.row.cityName + '/' + scope.row.areaName) ? (scope.row.provinceName + '/' + scope.row.cityName + '/' + scope.row.areaName) : $t('table.noTime')}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('table.address')" width="480" align="center">
+          <template
+            slot-scope="scope"
+          >{{ scope.row.address ? scope.row.address : $t('table.noTime')}}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="created_at"
+          :label="$t('table.createTime')"
+          width="300"
+        >
+          <template slot-scope="scope">
+            <i class="el-icon-time"/>
+            <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('table.operation')" align="center" width="350">
+          <template slot-scope="{row}">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="showEditView(row)"
+            >{{ $t('table.edit') }}</el-button>
+            <!-- <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.delete') }}</el-button> -->
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.pageNum"
+        :limit.sync="listQuery.pageSize"
+        @pagination="fetchData"
+      />
+    </div>
     <!-- dialog -->
     <div class="community-dialog">
-      <el-dialog :title="title" :visible.sync="dialogFormVisible" @close="close">
-        <!-- 创建社区 -->
-        <template v-if="code == 0">
-          <template v-if="pattern == 1">
-            <el-tabs v-model="activeName" @tab-click="handleClick">
-              <el-tab-pane label="完整模式" name="complete"></el-tab-pane>
-              <el-tab-pane label="大型模式" name="large"></el-tab-pane>
-              <el-tab-pane label="小型模式" name="csmall"></el-tab-pane>
-            </el-tabs>
-            <component
-              :is="currentView"
-              :isClose="dialogFormVisible"
-              @close="close"
-              @fetchData="fetchData"
-            ></component>
-          </template>
-          <div v-else>
-            <ordinary ref="ordinary" @close="close"></ordinary>
-          </div>
-        </template>
-        <!-- 创建层 -->
-        <template v-else-if="code == 1"></template>
-        <!-- 创建房 -->
-        <template v-else></template>
+      <el-dialog
+        :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
+        :visible.sync="dialogFormVisible"
+        width="90%"
+        @close="close"
+        :close-on-click-modal="false"
+      >
+        <save-communtity ref="savaCommuntity" @close="close" :cid="cid" @fetchData="fetchData"></save-communtity>
       </el-dialog>
     </div>
   </div>
 </template>
+<style lang="scss" >
+.community {
+  padding: 20px;
+  .community-index-container {
+    margin-bottom: 20px;
+    .el-cascader {
+      margin-top: 5px;
+    }
+    .el-button--medium {
+      margin-top: 5px;
+    }
+    .el-input--medium {
+      margin-top: 5px;
+    }
+  }
+  // .community-dialog {
+  //   .el-dialog {
+  //     max-height: 780px;
+  //   }
+  // }
+}
+</style>
 <script>
-import { getAreasAll } from "@/api/area"; // 省市区数据API
-import {
-  getCommuntityByArea,
-  getStageByCommuntity,
-  getDistrictByCommuntity,
-  getFloorByCommuntity,
-  getUnitByFloor
-} from "@/api/community"; // 社区API
-import complete from "./components/complete";
-import large from "./components/large";
-import csmall from "./components/csmall";
-import ordinary from "./components/ordinary";
-import $ from "jquery";
-import { generateI18n } from "@/utils/i18n";
-import axios from "axios";
+import { addCommuntity, getCommuntityAll } from "@/api/community";
+import Pagination from "@/components/Pagination"; // 分页
+import Province from "@/components/Linkage/province"; // 省市区三级联动
+import saveCommuntity from "./components/add";
 export default {
-  components: { complete, large, csmall, ordinary },
+  components: { Province, Pagination, saveCommuntity },
   data() {
     return {
-      // 区域树
-      regionList: [],
-      // 区域树树配置项
-      regionProps: {
-        label: "areaName",
-        children: "children",
-        value: "id"
+      cid: "",
+      myList: {
+        code: "list",
+        areaValue: [],
+        communityValue: []
       },
-      // 社区树
-      communityList: [],
-      communityProps: {
-        label: "name",
-        children: "children",
-        value: "code"
+      myForm: {
+        code: "form",
+        areaValue: [],
+        communityValue: []
       },
-      communityflag: "", // 操作的社区对象的flag
-      // 区域树
-      regionLoading: false, // 区域树loding
-      treeItem: null, // 用户选中的区域
-      dialogFormVisible: false, // 是否展示dialog内容
-      activeName: "csmall",
-      index: 2,
-      arr: ["complete", "large", "csmall"],
-      code: 0, // 创建模式 0 创建社区 1创建层 3创建房间
-      pattern: 0, // 社区创建模式 0快捷 1普通
-      title: "" // 弹窗标题
+      listQuery: {
+        name: "",
+        areaCode: "",
+        pageNum: 1,
+        pageSize: 10
+      },
+      textMap: {
+        // 弹窗展示的title
+        update: "Edit",
+        create: "Create"
+      },
+      listLoading: false, // 列表加载
+      communityList: [], // 列表数据
+      total: 0, // 列表分页
+      dialogStatus: "", // 标示当前操作是添加、还是修改
+      dialogFormVisible: false // 是否展示dialog内容
     };
   },
-  computed: {
-    // 动态组件
-    currentView() {
-      return this.arr[this.index];
-    }
-  },
   created() {
-    this.fetchData();
+    this.fetchData(); // 获取列表数据
   },
   methods: {
-    generateI18n,
-    // 获取区域数据
     fetchData() {
       let _this = this;
-      _this.regionLoading = true;
-      getAreasAll().then(function(res) {
-        _this.regionList = res.data;
-        _this.regionLoading = false;
-        _this.treeLogic;
+      _this.listLoading = true;
+      getCommuntityAll(_this.listQuery).then(function(res) {
+        console.log("res ---- ", res);
+        _this.listLoading = false;
+        _this.communityList = res.data.content; // 列表数据
+        _this.total = res.data.totalPages; // 总页数
       });
     },
-    // 区域被点击
-    regionNodeClick(data) {
-      let _this = this;
-      _this.hiddenMenu();
-      // 查询社区
-      getCommuntityByArea({ areaCode: data.id }).then(function(res) {
-        _this.communityList = res.data;
-        console.log("res --- >", res.data);
-      });
-    },
-    // 区域树展示形式
-    regionContent(h, { node, data, store }) {
-      return (
-        <span class="region" on-click={() => this.regionNodeClick(data)}>
-          <span>
-            <span>{node.label}</span>
-          </span>
-          <span class="options">
-            <el-button
-              style="font-size: 12px; color: #67c23a"
-              type="text"
-              on-click={() => this.regionMenu(data)}
-            >
-              创建
-            </el-button>
-
-            <ul class="region-menu">
-              <li>
-                <a href="#" on-click={() => this.showCreate(0, { pattern: 1 })}>
-                  快速创建
-                </a>
-              </li>
-              <li>
-                <a href="#" on-click={() => this.showCreate(0, { pattern: 0 })}>
-                  普通创建
-                </a>
-              </li>
-            </ul>
-          </span>
-        </span>
-      );
-    },
-    // 社区树展示形式
-    communityContent(h, { node, data, store }) {
-      return (
-        <span class="region">
-          <span>
-            <input
-              id="{node.label}"
-              style="display:none"
-              type="text"
-              value=""
-            />
-            <span>{node.label}</span>
-          </span>
-          <span class="options">
-            <el-button style="font-size: 12px; color: #67c23a" type="text">
-              创建
-            </el-button>
-            <el-button
-              style="font-size: 12px;"
-              type="text"
-              on-click={() => this.editItem(data)}
-            >
-              编辑
-            </el-button>
-            <el-button
-              style="font-size: 12px; display:none; opacity: 0.8;"
-              type="text"
-              on-click={() => this.updateItem(data)}
-            >
-              确定
-            </el-button>
-            <el-button
-              style="font-size: 12px; color: #f56c6c; "
-              type="text"
-              on-click={() => this.deleteItem(data)}
-            >
-              删除
-            </el-button>
-          </span>
-        </span>
-      );
-    },
-    // 编辑
-    editItem(data) {
-      console.log("data --- >", data);
-      let event = event ? event : window.event;
-      let $obj = $(event.srcElement);
-      let $input = $obj
-        .parent()
-        .parent()
-        .prev()
-        .children("input"); // 获取input
-      let $span = $obj
-        .parent()
-        .parent()
-        .prev()
-        .children("span"); // 获取文字名称span
-      $span.hide(); // 隐藏文字名称span
-      $input.val(data.name).show(); // 显示input
-      $obj.parent().hide(); // 隐藏编辑按钮
-      $obj
-        .parent()
-        .next()
-        .show(); // 显示确定按钮
-    },
-
-    // 修改
-    updateItem(data) {
-      let event = event ? event : window.event;
-      let $obj = $(event.srcElement);
-      let $input = $obj
-        .parent()
-        .parent()
-        .prev()
-        .children("input"); // 获取input
-      let communityName = $input.val();
-      // 修改
-      let $span = $obj
-        .parent()
-        .parent()
-        .prev()
-        .children("span"); // 获取文字名称span
-      $input.hide();
-      $span.text(communityName).show();
-      $obj
-        .parent()
-        .prev()
-        .show(); // 隐藏确定按钮
-      $obj.parent().hide(); // 显示编辑按钮
-    },
-
-    // 删除
-    deleteItem(data) {
-      let msg = "是否确认删除 " + data.name + ", 以及以下的所有节点?";
-      this.$confirm(msg, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
-    },
-
-    // 显示区域菜单
-    regionMenu(data) {
-      $(".region-menu").css("display", "none");
-      let event = event ? event : window.event;
-      var $obj = $(event.srcElement);
-      $obj
-        .parent()
-        .parent()
-        .children("ul")
-        .css("display", "block");
-      this.treeItem = data; // 记录用户选中的区域
-      event.stopPropagation(); // 阻止事件冒泡
-    },
-    // 隐藏区域菜单
-    hiddenMenu() {
-      $(".region-menu").css("display", "none");
-      event.stopPropagation(); // 阻止事件冒泡
-    },
-    // 动态加载社区
-    loadCommunity(node, resolve) {
-      console.log("动态加载社区 --- ", node);
-      let _this = this;
-      // 获取标识
-      function getFlag(index1, index2) {
-        let parentFlag =
-          _this.communityflag.indexOf("-") >= 1
-            ? _this.communityflag.split("-")[index1]
-            : _this.communityflag;
-        let flag =
-          _this.communityflag.indexOf("-") >= 1
-            ? _this.communityflag.split("-")[index2]
-            : _this.communityflag;
-        return {
-          parentFlag: parentFlag,
-          flag: flag
-        };
+    // 获取省市区数据
+    getProvinceVal(val, code) {
+      if (code == "list") {
+        this.myList.areaValue = val;
+        this.listQuery.areaCode = val[2];
+      } else {
+        this.myForm.areaValue = val;
       }
-      // 查询期
-      function onGetStageByCommuntity(params) {
-        getStageByCommuntity(params).then(function(res) {
-          console.log("查询期的数据 res -- >", res);
-          resolve(res.data);
-        });
-      }
-      // 查询区
-      function onGetDistrictByCommuntity(params) {
-        getDistrictByCommuntity(params).then(function(res) {
-          console.log("查询区的数据 res -- >", res);
-          resolve(res.data);
-        });
-      }
-      // 查询楼
-      function onGetFloorByCommuntity(params) {
-        getFloorByCommuntity(params).then(function(res) {
-          console.log("查询楼的数据 res -- >", res);
-          resolve(res.data);
-        });
-      }
-      // 单元
-      function onGetUnitByFloor(params) {
-        getUnitByFloor(params).then(function(res) {
-          console.log("查询单元的数据 res -- >", res);
-          resolve(res.data);
-        });
-      }
-
-      // 点击一级
-      if (node.level === 1) {
-        this.communityflag = node.data.flag; // 每次点击社区都将用户操作的社区标识保存起来
-        let flagObject = getFlag(0, 0); // 获取标识
-        console.log(" flagObject --- ", flagObject);
-        switch (flagObject.flag) {
-          case "期":
-            onGetStageByCommuntity({ commCode: node.data.code });
-            break;
-          case "区":
-            onGetDistrictByCommuntity({ commCode: node.data.code });
-            break;
-          case "楼":
-            onGetFloorByCommuntity({ commCode: node.data.code });
-            break;
-          default:
-            resolve([]);
-        }
-      }
-
-      // 点击二级
-      if (node.level === 2) {
-        console.log("this.communityflag --- >", this.communityflag);
-        let params = {};
-        let flagObject = getFlag(0, 1); // 获取标识
-        switch (flagObject.flag) {
-          case "区":
-            onGetDistrictByCommuntity({ issuCode: node.data.code });
-            break;
-          case "楼":
-            // 根据上一级flag 来决定用什么去查询
-            if (flagObject.parentFlag == "期") params.issuCode = node.data.code;
-            if (flagObject.parentFlag == "区") params.disCode = node.data.code;
-            onGetFloorByCommuntity(params);
-            break;
-          case "单":
-            // 根据上一级flag 来决定用什么去查询
-            if (flagObject.parentFlag == "期") params.issuCode = node.data.code;
-            if (flagObject.parentFlag == "区") params.disCode = node.data.code;
-            if (flagObject.parentFlag == "楼")
-              params.floorCode = node.data.code;
-            onGetUnitByFloor(params);
-            break;
-          default:
-            resolve([]);
-        }
-      }
-
-      // 点击三级
-      if (node.level === 3) {
-        console.log("this.communityflag --- >", this.communityflag);
-        let params = {};
-        let flagObject = getFlag(1, 2); // 获取标识
-        switch (flagObject.flag) {
-          case "楼":
-            // 根据上一级flag 来决定用什么去查询
-            if (flagObject.parentFlag == "期") params.issuCode = node.data.code;
-            if (flagObject.parentFlag == "区") params.disCode = node.data.code;
-            onGetFloorByCommuntity(params);
-            break;
-          case "单":
-            // 根据上一级flag 来决定用什么去查询
-            if (flagObject.parentFlag == "期") params.issuCode = node.data.code;
-            if (flagObject.parentFlag == "区") params.disCode = node.data.code;
-            if (flagObject.parentFlag == "楼")
-              params.floorCode = node.data.code;
-            onGetUnitByFloor(params);
-            break;
-          default:
-            resolve([]);
-        }
-      }
-
-      // 点击三级
-      if (node.level === 4) {
-        console.log("this.communityflag --- >", this.communityflag);
-        let params = {};
-        let flagObject = getFlag(2, 3); // 获取标识
-        switch (flagObject.flag) {
-          case "单":
-            // 根据上一级flag 来决定用什么去查询
-            if (flagObject.parentFlag == "期") params.issuCode = node.data.code;
-            if (flagObject.parentFlag == "区") params.disCode = node.data.code;
-            if (flagObject.parentFlag == "楼")
-              params.floorCode = node.data.code;
-            onGetUnitByFloor(params);
-            break;
-          default:
-            resolve([]);
-        }
-      }
-      if (node.level === 5) resolve([]); // 第五级返回
     },
-    // 显示Dialog
-    showCreate(code, params) {
-      // 创建社区
-      if (code == 0) {
-        this.title =
-          this.generateI18n("form.create") +
-          this.generateI18n("form.community");
-        this.pattern = params.pattern;
-        console.log("创建社区", this.pattern);
-        this.dialogFormVisible = true;
-        event.stopPropagation(); // 阻止事件冒泡
-      } 
+    // 搜索
+    queryCommunity() {
+      this.fetchData();
     },
-    // 页签切换
-    handleClick(tab, event) {
-      this.index = tab.index;
+    showAddView() {
+      this.dialogStatus = "create"; // 标示创建
+      this.dialogFormVisible = true; // 展示弹窗
     },
-    // 关闭Dialog
+    showEditView(row) {
+      console.log("row --- >", row);
+      this.cid = row.id.toString();
+      this.dialogStatus = "update"; // 标示创建
+      this.dialogFormVisible = true; // 展示弹窗
+    },
     close() {
-      console.log("关闭");
-      this.dialogFormVisible = false;
-      if (this.pattern == 0) {
-        this.$refs.ordinary.close(); // 重置
-      }
+      console.log("关闭")
+      this.$refs.savaCommuntity.initialization();
+      this.cid = "";
+      this.dialogFormVisible = false; // 关闭弹窗
     }
   }
 };
 </script>
-<style lang="scss" scoped>
-.community {
-  .item-box {
-    min-height: calc(100vh - 50px);
-    margin: 5px;
-    box-shadow: 0 2px 12px 0 rgba(64, 158, 255, 0.1);
-    border: 1px solid #409eff;
-    h3 {
-      width: 100%;
-      background-color: #409eff;
-      margin: 0;
-      padding: 5px;
-      color: #ffffff;
-      font-size: 15px;
-    }
-  }
-}
-</style>
-<style lang="scss" >
-@import "~@/styles/mixin.scss";
-.item-tree {
-  .region {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-right: 8px;
-    .options {
-      position: relative;
-      .region-menu {
-        display: none;
-        background-color: #ffffff;
-        padding: 0;
-        margin: 0;
-        border: 1px solid #409eff;
-        list-style-type: none;
-        position: absolute;
-        top: 25px;
-        left: -45px;
-        z-index: 100;
-        animation: mymove 0.5s ease-in;
-        -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/
-        li {
-          a {
-            display: block;
-            padding: 3px;
-          }
-          a:hover {
-            background-color: #e4e7ed;
-          }
-        }
-      }
-    }
-  }
-}
-</style>
