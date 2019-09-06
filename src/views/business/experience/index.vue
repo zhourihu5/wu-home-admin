@@ -216,8 +216,16 @@
             <el-card v-if="experienceForm.experienceCodes.length > 0" class="box-card">
               <div slot="header" class="clearfix">
                 <span>活动体验卷code码</span>
-                <el-button v-if="experienceForm.dian != 1" style="float: right" type="text" @click="emptyBlacklist">清空</el-button>
-                <span style="margin-left: 10px;font-size: 12px; color: #C0C4CC;">该活动已上架过,体验卷code码已生成(不可重新编辑此项)</span>
+                <el-button
+                  v-if="experienceForm.dian != 1"
+                  style="float: right"
+                  type="text"
+                  @click="emptyBlacklist"
+                >清空</el-button>
+                <span
+                  v-else
+                  style="margin-left: 10px;font-size: 12px; color: #C0C4CC;"
+                >该活动已上架过,体验卷code码已生成(不可重新编辑此项)</span>
               </div>
               <div
                 v-for="(o, index) in experienceForm.experienceCodes"
@@ -251,7 +259,7 @@
         </el-dialog>
       </template>
       <template v-else>
-        <on-see :experienceForm="experienceForm"></on-see>
+        <on-see ref="mySee" :experienceForm="experienceForm"></on-see>
       </template>
     </el-dialog>
   </div>
@@ -366,7 +374,7 @@ export default {
         status: overall.experience.status[0].value,
         isShow: overall.experience.show[0].value,
         limitAddress: "", // 地址
-        dian: "", // 用户是否点击后上架
+        dian: "" // 用户是否点击后上架
       },
       myForm: {
         code: "form",
@@ -766,6 +774,7 @@ export default {
       });
     },
     close() {
+      console.log("关闭");
       this.dialogFormVisible = false;
       this.experienceForm = {
         name: "",
@@ -794,6 +803,8 @@ export default {
       if (this.dialogStatus != "see") {
         this.$refs.experienceForm.resetFields();
         this.$refs.wangeditor.initContent(); // 清空富文本
+      } else {
+        this.$refs.mySee.emptySeeData();
       }
     }
   }

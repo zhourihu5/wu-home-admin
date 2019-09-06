@@ -61,7 +61,12 @@
     </el-form>
     <!-- table -->
     <div class="experience-see-table">
-      <h3>领卷人列表</h3>
+      <div class="experience-see-title">
+        <h3>领卷人列表</h3>
+      </div>
+      <div class="experience-see-optins">
+        <el-button type="primary" @click="outExe">导出</el-button>
+      </div>
       <el-table
         v-loading="listLoading"
         :data="experienceList"
@@ -107,14 +112,14 @@ export default {
   data() {
     return {
       listLoading: false,
-      seeList: [],
       listQuery: {
         experienceId: "",
         pageNum: 1,
         pageSize: 10
       },
       experienceList: [],
-      total: 0
+      total: 0,
+      excelData: [] // 导出的数据
     };
   },
   props: {
@@ -123,14 +128,17 @@ export default {
     }
   },
   created() {
-    console.log("1111");
-    console.log("experienceForm --- ", this.experienceForm);
-    this.fetchData();
+    if (this.experienceForm) {
+      this.listQuery.experienceId = this.experienceForm.id;
+      this.fetchData();
+    } else {
+      this.fetchData();
+    }
   },
   watch: {
     "experienceForm.id": {
       handler: function(val, oldval) {
-        if (val !== "") {
+        if (val != "") {
           this.listQuery.experienceId = val;
           this.fetchData();
         }
@@ -159,6 +167,52 @@ export default {
         }
       });
       return text;
+    },
+    emptySeeData() {
+      console.log("清空查看页面");
+      this.listQuery = {
+        experienceId: "",
+        pageNum: 1,
+        pageSize: 10
+      };
+      this.experienceList = [];
+      this.total = 0;
+      this.excelData = []; // 导出的数据
+    },
+    outExe() {
+      this.$confirm("此操作将导出excel文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          let _this = this;
+          // 构建导入数据
+          _this.experienceList.forEach(function(v, i) {
+            console.log("i", i, v)
+            v.experienceId = _this.experienceForm.id;
+            v.experienceName = _this.experienceForm.name;
+          })
+          _this.excelData =  _this.experienceList;
+          _this.export2Excel();
+        })
+        .catch(() => {});
+    },
+    export2Excel() {
+      var that = this;
+      require.ensure([], () => {
+        const {
+          export_json_to_excel
+        } = require("./../../../../excel/Export2Excel"); //这里必须使用绝对路径
+        const tHeader = ["体验卷ID", "体验卷名称", "优惠券code码", "领取人ID", "领取人昵称", "领取人联系方式", "创建时间", "完成时间", "最后修改时间"];
+        const filterVal = ["experienceId", "experienceName", "experienceCode", "id", "nickName", "userName", "createDate", "finishDate", "updateDate"]; // 导出的表头名
+        const list = that.excelData;
+        const data = that.formatJson(filterVal, list);
+        export_json_to_excel(tHeader, data, `提现管理excel`); // 导出的表格名称，根据需要自己命名
+      });
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]));
     }
   }
 };
@@ -169,6 +223,15 @@ export default {
   border: 1px solid #dcdfe6;
   .experience-see-table {
     padding: 20px;
+    .experience-see-title {
+      display: inline-block;
+      width: 49%;
+    }
+    .experience-see-optins {
+      text-align: right;
+      display: inline-block;
+      width: 49%;
+    }
   }
   .my-img {
     width: 146px;
