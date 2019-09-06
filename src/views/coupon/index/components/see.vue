@@ -75,9 +75,7 @@
 import { dateFtt } from "@/utils/index";
 export default {
   data() {
-    return {
-      
-    };
+    return {};
   },
   props: {
     issuedForm: {
@@ -105,4 +103,10 @@ export default {
 };
 </script>
 <style lang="scss">
+.sess {
+  .my-img {
+    width: 146px;
+    height: 146px;
+  }
+}
 </style>

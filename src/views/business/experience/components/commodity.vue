@@ -60,22 +60,18 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- 分页 -->
-      <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="listQuery.pageNum"
-        :limit.sync="listQuery.pageSize"
-        @pagination="fetchData"
-      />
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="close">{{ $t('table.cancel') }}</el-button>
-        <el-button
-          type="primary"
-          @click="addLabel"
-          :loading="buttonLoading"
-        >{{ $t('table.confirm') }}</el-button>
-      </div>
+    </div>
+    <!-- 分页 -->
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.pageNum"
+      :limit.sync="listQuery.pageSize"
+      @pagination="fetchData"
+    />
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="close">{{ $t('table.cancel') }}</el-button>
+      <el-button type="primary" @click="addLabel" :loading="buttonLoading">{{ $t('table.confirm') }}</el-button>
     </div>
   </div>
 </template>
@@ -186,6 +182,9 @@ export default {
 <style lang="scss">
 .commodity {
   padding: 20px;
+  .dialog-footer {
+    text-align: right;
+  }
   .commodity-container {
     margin-bottom: 20px;
     .el-cascader {

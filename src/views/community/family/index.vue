@@ -59,12 +59,12 @@
           style="width: 60%"
           class="my-form"
         >
-          <el-form-item :label="$t('table.ipad')" prop="paidCode">
+          <!-- <el-form-item :label="$t('table.ipad')" prop="paidCode">
             <el-input v-model="familyForm.paidCode" :placeholder="$t('table.temp.userName')" />
           </el-form-item>
           <el-form-item :label="$t('table.base')" prop="baseCode">
             <el-input v-model="familyForm.baseCode" :placeholder="$t('table.temp.userName')" />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item :label="$t('table.household')" prop="householdName">
             <el-input
               v-model="familyForm.householdName"
@@ -311,24 +311,24 @@ export default {
           //   userParams.id = _this.familyForm.userAndFamilyId;
           console.log(ipadParams, boasParams, userParams);
           // 绑定ipad、底座、用户与家庭
-          addDevice(ipadParams)
-            .then(function(res) {
-              if (res.message == "SUCCESS") {
-                return addDevice(boasParams);
-              } else {
-                _this.$message.error(_this.generatePoint("system"));
-                _this.buttonLoading = false; // 清楚加载中
-              }
-            })
-            .then(function(res1) {
-              if (res1.message == "SUCCESS") {
-                return addUserAndFamily(userParams);
-              } else {
-                _this.$message.error(_this.generatePoint("system"));
-                _this.buttonLoading = false; // 清楚加载中
-              }
-            })
-            .then(function(res2) {
+          // addDevice(ipadParams)
+          //   .then(function(res) {
+          //     if (res.message == "SUCCESS") {
+          //       return addDevice(boasParams);
+          //     } else {
+          //       _this.$message.error(_this.generatePoint("system"));
+          //       _this.buttonLoading = false; // 清楚加载中
+          //     }
+          //   })
+          //   .then(function(res1) {
+          //     if (res1.message == "SUCCESS") {
+          //       return addUserAndFamily(userParams);
+          //     } else {
+          //       _this.$message.error(_this.generatePoint("system"));
+          //       _this.buttonLoading = false; // 清楚加载中
+          //     }
+          //   })
+          addUserAndFamily(userParams).then(function(res2) {
               if (res2.message == "SUCCESS") {
                 _this.buttonLoading = false; // 清楚加载中
                 _this.$notify({

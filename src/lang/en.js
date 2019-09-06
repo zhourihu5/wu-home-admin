@@ -322,7 +322,8 @@ export default {
         experienceImg: 'Experience Image',
         experienceNum: 'Experience Num',
         experienceCode: 'Experience',
-        onImport: 'Import'
+        onImport: 'Import',
+        storeAddress: 'storeAddress'
     },
     login: {
         title: 'Login Platform',
@@ -415,7 +416,8 @@ export default {
         communityStage: 'At present, the community has not entered (stage), so there is no (stage) data in this community.',
         communityArea: 'At present, the community has not entered (district), so there is no (district) data in this community.',
         numOk: "Only numbers can be entered",
-        identityCard: "The ID card format is incorrect"
+        identityCard: "The ID card format is incorrect",
+        import: "This must be imported"
     },
     steps: {
         community: 'community',

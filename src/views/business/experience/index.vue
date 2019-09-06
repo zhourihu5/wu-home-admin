@@ -79,7 +79,7 @@
           <template slot-scope="{row}">
             <el-button size="mini" @click="showEditView(row, 'see')">{{ $t('table.see') }}</el-button>
             <el-button
-              v-if="row.status == 1"
+              v-if="row.status == 1 && row.isShow != 1"
               type="primary"
               size="mini"
               @click="showEditView(row, 'edit')"
@@ -142,10 +142,16 @@
           <el-form-item :label="$t('form.name')" prop="name">
             <el-input v-model="experienceForm.name" :placeholder="$t('table.temp.content')" />
           </el-form-item>
+          <el-form-item :label="$t('form.storeAddress')" prop="limitAddress">
+            <el-input
+              v-model="experienceForm.limitAddress"
+              :placeholder="$t('table.temp.content')"
+            />
+          </el-form-item>
           <el-form-item :label="$t('form.validDate')" prop="validDate">
             <el-date-picker
               v-model="formDate"
-              type="daterange"
+              type="datetimerange"
               range-separator="至"
               :start-placeholder="$t('form.startTime')"
               :end-placeholder="$t('form.endTime')"
@@ -181,7 +187,7 @@
               <i class="el-icon-plus"></i>
             </el-upload>
           </el-form-item>
-          <el-form-item :label="$t('form.experienceImg')" prop="experienceFile">
+          <!-- <el-form-item :label="$t('form.experienceImg')" prop="experienceFile">
             <el-upload
               :action="updateURL"
               list-type="picture-card"
@@ -195,13 +201,13 @@
             >
               <i class="el-icon-plus"></i>
             </el-upload>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item :label="$t('form.everyoneNumber')" prop="limitNum">
             <el-input v-model="experienceForm.limitNum" :placeholder="$t('table.temp.content')" />
           </el-form-item>
-          <el-form-item :label="$t('form.experienceNum')" prop="count">
+          <!-- <el-form-item :label="$t('form.experienceNum')" prop="count">
             <el-input v-model="experienceForm.count" :placeholder="$t('table.temp.content')" />
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item :label="$t('form.experienceCode')" prop="experienceCode">
             <upload-excel
               v-if="experienceForm.experienceCodes.length == 0"
@@ -210,7 +216,8 @@
             <el-card v-if="experienceForm.experienceCodes.length > 0" class="box-card">
               <div slot="header" class="clearfix">
                 <span>活动体验卷code码</span>
-                <el-button style="float: right" type="text" @click="emptyBlacklist">清空</el-button>
+                <el-button v-if="experienceForm.dian != 1" style="float: right" type="text" @click="emptyBlacklist">清空</el-button>
+                <span style="margin-left: 10px;font-size: 12px; color: #C0C4CC;">该活动已上架过,体验卷code码已生成(不可重新编辑此项)</span>
               </div>
               <div
                 v-for="(o, index) in experienceForm.experienceCodes"
@@ -357,7 +364,9 @@ export default {
         rule: "", // 规则
         id: "",
         status: overall.experience.status[0].value,
-        isShow: overall.experience.show[0].value
+        isShow: overall.experience.show[0].value,
+        limitAddress: "", // 地址
+        dian: "", // 用户是否点击后上架
       },
       myForm: {
         code: "form",
@@ -376,6 +385,13 @@ export default {
                 callback(this.generatePoint("required"));
               }
             }
+          }
+        ],
+        limitAddress: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
           }
         ],
         name: [
@@ -461,6 +477,20 @@ export default {
               }
             }
           }
+        ],
+        experienceCode: [
+          {
+            required: true,
+            trigger: "change",
+            validator: (rule, value, callback) => {
+              console.log("导入体验卷");
+              if (this.experienceForm.experienceCodes.length == 0) {
+                callback(this.generatePoint("import"));
+              } else {
+                callback();
+              }
+            }
+          }
         ]
       }
     };
@@ -477,7 +507,7 @@ export default {
     },
     formDate: {
       handler: function(val, oldval) {
-        console.log(val, oldval);
+        // console.log(val, oldval);
         this.experienceForm.startDate = val[0];
         this.experienceForm.endDate = val[1];
       }
@@ -525,12 +555,14 @@ export default {
       _this.detailsFileList.push({ url: _this.experienceForm.cover });
       _this.experienceForm.rule = row.rule;
       _this.experienceForm.isShow = row.isShow;
-      for (let i = 0; i < 5; i++) {
-        if (row["img" + (i + 1)]) {
-          _this.experienceFileList.push({ url: row["img" + (i + 1)] });
-          _this.experienceForm.experienceImgs.push(row["img" + (i + 1)]);
-        }
-      }
+      _this.experienceForm.limitAddress = row.limitAddress;
+      _this.experienceForm.dian = row.dian;
+      // for (let i = 0; i < 5; i++) {
+      //   if (row["img" + (i + 1)]) {
+      //     _this.experienceFileList.push({ url: row["img" + (i + 1)] });
+      //     _this.experienceForm.experienceImgs.push(row["img" + (i + 1)]);
+      //   }
+      // }
 
       // 体验码
       if (row.experienceCodes.length > 0) {
@@ -598,7 +630,8 @@ export default {
       for (let i = 0; i < data.length; i++) {
         this.experienceForm.experienceCodes.push(data[i]["团购码"]);
       }
-      console.log(this.experienceForm.experienceCodes);
+      this.experienceForm.count = data.length; // 体验卷总数
+      // console.log(this.experienceForm.experienceCodes);
     },
     // 获取状态中文
     getStatusText(status) {
@@ -670,13 +703,14 @@ export default {
         communitys: this.experienceForm.communitys,
         rule: this.$refs.wangeditor.getContentHtml(),
         status: this.experienceForm.status,
-        isShow: this.experienceForm.isShow
+        isShow: this.experienceForm.isShow,
+        limitAddress: this.experienceForm.limitAddress
       };
-      if (this.experienceForm.experienceImgs.length > 0) {
-        for (let i = 0; i < this.experienceForm.experienceImgs.length; i++) {
-          params["img" + (i + 1)] = this.experienceForm.experienceImgs[i];
-        }
-      }
+      // if (this.experienceForm.experienceImgs.length > 0) {
+      //   for (let i = 0; i < this.experienceForm.experienceImgs.length; i++) {
+      //     params["img" + (i + 1)] = this.experienceForm.experienceImgs[i];
+      //   }
+      // }
       if (this.experienceForm.id) {
         params.id = this.experienceForm.id;
       }
@@ -734,16 +768,23 @@ export default {
     close() {
       this.dialogFormVisible = false;
       this.experienceForm = {
+        name: "",
         communityNames: "", // 回显示社区名称
         communitys: "", // 传递给后台的社区id集合
         startDate: "",
         endDate: "",
         banner: "", // banner
-        cover: "", // 详情
+        cover: "", // 详情图片
         limitNum: "",
         experienceImgs: [], // 临时存储体验图 提交时要赋值给img1-img4
         count: "", // 体验卷总数
-        experienceCodes: [] // 导入code
+        experienceCodes: [], // 导入code
+        rule: "", // 规则
+        id: "",
+        status: overall.experience.status[0].value,
+        isShow: overall.experience.show[0].value,
+        limitAddress: "", // 地址
+        dian: ""
       };
       this.queryDate = [];
       this.formDate = [];
@@ -752,6 +793,7 @@ export default {
       this.experienceFileList = [];
       if (this.dialogStatus != "see") {
         this.$refs.experienceForm.resetFields();
+        this.$refs.wangeditor.initContent(); // 清空富文本
       }
     }
   }

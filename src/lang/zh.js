@@ -325,7 +325,8 @@ export default {
         experienceImg: '体验卷图',
         experienceNum: '体验卷数量',
         experienceCode: '活动体验卷',
-        onImport: '导入'
+        onImport: '导入',
+        storeAddress: '门店地址'
     },
     login: {
         title: '吾家运营管理平台',
@@ -423,8 +424,8 @@ export default {
         communityStage: '当前社区未录入（期），所以本社区无（期）数据。',
         communityArea: '当前社区未录入（区），所以本社区无（区）数据。',
         numOk: "只能输入数字",
-        identityCard: "身份证格式不正确"
-
+        identityCard: "身份证格式不正确",
+        import: "此项必须导入"
     },
     steps: {
         community: '添加社区',

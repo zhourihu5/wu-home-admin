@@ -128,15 +128,10 @@
           </el-form-item>
           <template v-if="issuedForm.type == 1">
             <el-form-item :label="$t('form.name')" prop="name">
-              <el-input
-                :disabled="inputDisabled"
-                v-model="issuedForm.name"
-                :placeholder="$t('table.temp.content')"
-              />
+              <el-input v-model="issuedForm.name" :placeholder="$t('table.temp.content')" />
             </el-form-item>
             <el-form-item :label="$t('form.denomination')" prop="money">
               <el-input
-                :disabled="inputDisabled"
                 v-model="issuedForm.money"
                 type="number"
                 :placeholder="$t('table.temp.content')"
@@ -158,27 +153,22 @@
               </el-card>
             </el-form-item>
             <el-form-item :label="$t('form.everyoneNumber')" prop="everyoneNum">
-              <el-input
-                :disabled="inputDisabled"
-                v-model="issuedForm.everyoneNum"
-                :placeholder="$t('table.temp.content')"
-              />
+              <el-input v-model="issuedForm.everyoneNum" :placeholder="$t('table.temp.content')" />
             </el-form-item>
             <el-form-item :label="$t('form.threshold')" prop="limitNum">
               <!-- <el-input v-model="issuedForm.limit" :placeholder="$t('table.temp.content')" /> -->
-              <el-radio v-model="threshold" label="0" :disabled="inputDisabled">无限制</el-radio>
-              <el-radio v-model="threshold" label="1" :disabled="inputDisabled">有限制</el-radio>
+              <el-radio v-model="threshold" label="0">无限制</el-radio>
+              <el-radio v-model="threshold" label="1">有限制</el-radio>
               <div class="rule" v-if="threshold == 1">
                 <span class>满</span>
-                <el-input :disabled="inputDisabled" v-model="issuedForm.limitNum" type="number" />
+                <el-input v-model="issuedForm.limitNum" type="number" />
                 <span class>元可用</span>
               </div>
             </el-form-item>
             <el-form-item :label="$t('form.validDate')" prop="validDate">
               <el-date-picker
-                :disabled="inputDisabled"
                 v-model="queryDate"
-                type="daterange"
+                type="datetimerange"
                 range-separator="至"
                 :start-placeholder="$t('form.startTime')"
                 :end-placeholder="$t('form.endTime')"
@@ -189,27 +179,32 @@
             </el-form-item>-->
           </template>
           <template v-if="issuedForm.type == 2">
+            <el-form-item :label="$t('form.Cover')" prop="file">
+              <el-upload
+                :action="uploadUrl"
+                list-type="picture-card"
+                :limit="1"
+                :multiple="false"
+                :file-list="fileList"
+                :on-exceed="exceedUpload"
+                :on-success="handleAvatarSuccess"
+                :data="uploadParams"
+              >
+                <i class="el-icon-plus"></i>
+              </el-upload>
+            </el-form-item>
             <el-form-item :label="$t('form.name')" prop="name">
-              <el-input
-                :disabled="inputDisabled"
-                v-model="issuedForm.name"
-                :placeholder="$t('table.temp.content')"
-              />
+              <el-input v-model="issuedForm.name" :placeholder="$t('table.temp.content')" />
             </el-form-item>
             <el-form-item :label="$t('form.denomination')" prop="money">
               <el-input
-                :disabled="inputDisabled"
                 v-model="issuedForm.money"
                 type="number"
                 :placeholder="$t('table.temp.content')"
               />
             </el-form-item>
             <el-form-item :label="$t('form.grantCount')" prop="grantCount">
-              <el-input
-                :disabled="inputDisabled"
-                v-model="issuedForm.grantCount"
-                :placeholder="$t('table.temp.content')"
-              />
+              <el-input v-model="issuedForm.grantCount" :placeholder="$t('table.temp.content')" />
             </el-form-item>
             <!-- <el-form-item :label="$t('form.everyoneNumber')" prop="everyoneNum">
               <el-input
@@ -217,10 +212,10 @@
                 v-model="issuedForm.everyoneNum"
                 :placeholder="$t('table.temp.content')"
               />
-            </el-form-item> -->
+            </el-form-item>-->
             <el-form-item :label="$t('form.addActivity')" prop="activityId">
               <el-input
-                :disabled="inputDisabled"
+                :disabled="true"
                 v-model="issuedForm.activityName"
                 :placeholder="$t('table.temp.content')"
                 style="width: 80%;"
@@ -229,7 +224,6 @@
             </el-form-item>
             <el-form-item :label="$t('form.validDate')" prop="validDate">
               <el-date-picker
-                :disabled="inputDisabled"
                 v-model="queryDate"
                 type="daterange"
                 range-separator="至"
@@ -283,6 +277,11 @@ export default {
   components: { Pagination, UploadExcel, wangeditor, activityList, onSee },
   data() {
     return {
+      uploadUrl: overall.uploadUrl,
+      fileList: [], // 上传图片回显列表
+      uploadParams: {
+        type: "activity"
+      },
       listLoading: false, // 列表加载
       buttonLoading: false, // 按钮加载请求
       issuedList: [],
@@ -317,10 +316,22 @@ export default {
         activityName: "",
         activity: null, // 回显对象
         userNames: [], // 黑名单
-        id: ""
+        id: "",
+        cover: "" // 封面
       },
       queryDate: [],
       rules: {
+        file: [
+          {
+            validator: (rule, value, callback) => {
+              if (this.issuedForm.cover == "") {
+                callback(this.generatePoint("upload"));
+              } else {
+                callback();
+              }
+            }
+          }
+        ],
         name: [
           {
             required: true,
@@ -361,10 +372,14 @@ export default {
             required: true,
             trigger: "change",
             validator: (rule, value, callback) => {
-              if (this.threshold) {
+              if (this.threshold == 0) {
                 callback();
               } else {
-                callback(this.generatePoint("required"));
+                if (/^[0-9]*[1-9][0-9]*$/.test(this.issuedForm.limitNum)) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("num"));
+                }
               }
             }
           }
@@ -455,9 +470,15 @@ export default {
       _this.queryDate.push(_this.issuedForm.startDate);
       _this.queryDate.push(_this.issuedForm.endDate);
       _this.issuedForm.remark = row.remark;
+      _this.issuedForm.cover = row.cover;
+
+      if (_this.issuedForm.cover) {
+        _this.fileList.push({ url: _this.issuedForm.cover });
+      }
       // 活动
       if (row.activity) {
         _this.issuedForm.activity = row.activity;
+        _this.issuedForm.activityId = row.activityId;
         _this.issuedForm.activityName = row.activity.title;
       }
       // 黑名单
@@ -613,7 +634,7 @@ export default {
         limitNum: this.issuedForm.limitNum, // 使用门槛 0无限制、其他的都是现在消费多少金融后可使用
         startDate: this.issuedForm.startDate,
         endDate: this.issuedForm.endDate,
-        receive: this.issuedForm.receive,
+        receive: 2, // 自动发放
         remark: this.$refs.wangeditor.getContentHtml(),
         userNames: this.issuedForm.userNames,
         status: "0"
@@ -622,14 +643,17 @@ export default {
     // 保存活动优惠券
     savePctivityParams() {
       return {
+        cover: this.issuedForm.cover,
         type: this.issuedForm.type, // 优惠券类型
         name: this.issuedForm.name, // 名称
         money: this.issuedForm.money, // 面额
         grantCount: this.issuedForm.grantCount, // 发放总数
         // everyoneNum: this.issuedForm.everyoneNum, // 每人领取张数1
         everyoneNum: "1", // 每人领取张数
+        limitNum: "0",
         startDate: this.issuedForm.startDate, // 开始时间
         endDate: this.issuedForm.endDate, // 结束时间
+        receive: 1, // 领取
         remark: this.$refs.wangeditor.getContentHtml(),
         activityId: this.issuedForm.activityId, // 活动ID 0代表全场通用， 其他存活动ID
         status: "0"
@@ -661,6 +685,19 @@ export default {
     emptyBlacklist() {
       this.issuedForm.userNames = [];
     },
+    // 超出文件上传个数时触发
+    exceedUpload(file, fileList) {
+      // this.$message.error("超过最大上传数量,目前只可上传1张");
+      this.$notify({
+        title: this.generatePoint("notifyWarning.title"),
+        message: this.generatePoint("notifyWarning.message"),
+        type: "warning"
+      });
+    },
+    handleAvatarSuccess(res, file) {
+      // console.log("handleAvatarSuccess --", res, file);
+      this.issuedForm.cover = res.data;
+    },
     close() {
       this.dialogFormVisible = false;
       this.issuedForm = {
@@ -679,9 +716,11 @@ export default {
         activityName: "",
         activity: null, // 回显对象
         userNames: [], // 黑名单
-        id: ""
+        id: "",
+        cover: "" // 封面
       };
       this.queryDate = [];
+      this.fileList = [];
       if (this.dialogStatus != "see") {
         this.$refs.wangeditor.setContent(""); // 设置富文本显示空
         this.$refs.issuedForm.resetFields();
@@ -711,7 +750,7 @@ export default {
     animation: mymove 0.5s ease-in;
     -webkit-animation: mymove 0.5s ease-in; /*Safari and Chrome*/
     .el-input {
-      width: 80px;
+      width: 150px;
       margin-left: 10px;
       margin-right: 10px;
       padding: 20px;

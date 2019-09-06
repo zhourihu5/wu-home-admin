@@ -151,7 +151,6 @@ export function param2Obj(url) {
 
 // 时间格式化 yyyy-MM-dd HH:mm:ss
 export function dateFtt(fmt, date) { //author: meizz 
-  console.log("fmt --- >", fmt)
   if (date) {
     var o = {
       "M+": date.getMonth() + 1,     //月份 
