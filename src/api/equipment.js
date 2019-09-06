@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import axios from "axios";
 
 // 保存设备
 export function addDevice(data) {
