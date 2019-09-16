@@ -23,7 +23,9 @@
           @click="queryUser"
         >{{ $t('table.search') }}</el-button>
       </div>
-      <!-- table --->
+    </div>
+    <!-- table --->
+    <div class="filter-table">
       <el-table
         v-loading="listLoading"
         :data="list"
@@ -34,8 +36,14 @@
       >
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <!-- <template slot-scope="scope">{{ scope.row.id }}</template> -->
-          <template slot-scope="{row}">
-            <el-radio v-model="userId" :label="row.id" @change="userChange(row)">{{row.id}}</el-radio>
+          <template slot-scope="scope">
+            <!-- <el-radio v-model="userId" :label="row.id" @change="userChange(row)">{{row.id}}</el-radio> -->
+            <el-checkbox
+              v-model="userIds"
+              :label="scope.row.id"
+              :key="scope.row.id"
+              @change="checkboxChange"
+            >{{scope.row.id}}</el-checkbox>
           </template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.nickName')" width="422">
@@ -67,6 +75,14 @@
         :limit.sync="listQuery.pageSize"
         @pagination="fetchData"
       />
+      <div slot="footer" class="dialog-footer">
+        <!-- <el-button @click="close">{{ $t('table.cancel') }}</el-button> -->
+        <el-button
+          type="primary"
+          @click="addUsers"
+          :loading="buttonLoading"
+        >{{ $t('table.confirm') }}</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -86,6 +102,11 @@
       margin-bottom: 10px;
     }
   }
+  .filter-table {
+    .dialog-footer {
+      text-align: right;
+    }
+  }
 }
 </style>
 <script>
@@ -100,6 +121,8 @@ export default {
       listLoading: true,
       total: 0, // 分页
       userId: "", // 单选
+      userIds: [], // 多选
+      userNames: [],
       // 查询参数
       listQuery: {
         nickName: "",
@@ -108,7 +131,8 @@ export default {
         pageSize: 10
       },
       // 平台标示选择
-      options: overall.user.options
+      options: overall.user.options,
+      buttonLoading: false // 按钮加载请求
     };
   },
   props: {
@@ -155,6 +179,31 @@ export default {
         }
       });
       return text;
+    },
+    checkboxChange(change) {
+      if (!change) {
+        this.userNames = [];
+      }
+      for (let j = 0; j < this.userIds.length; j++) {
+        for (let i = 0; i < this.list.length; i++) {
+          if (this.userIds[j] == this.list[i].id) {
+            if (this.userNames.indexOf(this.list[i].nickName) < 0) {
+              this.userNames.push(this.list[i].nickName);
+              break;
+            }
+          }
+        }
+      }
+    },
+    // 添加家庭成员
+    addUsers() {
+      this.$emit("transmitUser", this.userIds, this.userNames);
+      this.close();
+    },
+    close() {
+      this.$emit("close");
+      this.userIds = [];
+      this.userNames = [];
     }
   }
 };

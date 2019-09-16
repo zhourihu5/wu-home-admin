@@ -34,7 +34,7 @@
         </el-table-column>
         <el-table-column align="center" :label="$t('table.bannerImg')" width="300">
           <template slot-scope="scope">
-            <img v-if="scope.row.cover" :src="scope.row.cover" :alt="$t('table.icon')" class="icon">
+            <img v-if="scope.row.cover" :src="scope.row.cover" :alt="$t('table.icon')" class="icon" />
             <p v-else>{{ $t('table.noTime') }}</p>
           </template>
         </el-table-column>
@@ -98,7 +98,7 @@
             </el-upload>
           </el-form-item>
           <el-form-item :label="$t('form.link')" prop="url">
-            <el-input v-model="bannerForm.url" :placeholder="$t('table.temp.url')"/>
+            <el-input v-model="bannerForm.url" :placeholder="$t('table.temp.url')" />
           </el-form-item>
           <el-form-item :label="$t('form.type')" prop="type">
             <el-select v-model="bannerForm.moduleType" :placeholder="$t('table.temp.type')">
@@ -220,9 +220,11 @@ export default {
     let _this = this;
     getBannerType().then(function(res) {
       console.log("轮播 -- types", res.data);
-      _this.type = res.data;
+      if (res.data.length > 0) {
+        _this.type = res.data;
+        _this.listQuery.type = res.data[0].id;
+      }
       // _this.bannerForm.type = res.data[0]; // 默认选中的
-      _this.listQuery.type = res.data[0].id;
       _this.fetchData(); // 查询数据
     });
   },

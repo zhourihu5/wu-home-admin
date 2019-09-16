@@ -63,6 +63,7 @@ export default {
         adopt: '通过',
         reject: '驳回',
         addHousehold: '添加户主',
+        addMember: '添加家庭成员',
         delete: '删除',
         search: '查询',
         add: '添加',

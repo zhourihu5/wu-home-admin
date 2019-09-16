@@ -64,14 +64,14 @@
           </el-form-item>
           <el-form-item :label="$t('table.base')" prop="baseCode">
             <el-input v-model="familyForm.baseCode" :placeholder="$t('table.temp.userName')" />
-          </el-form-item> -->
+          </el-form-item>-->
           <el-form-item :label="$t('table.household')" prop="householdName">
             <el-input
               v-model="familyForm.householdName"
               :placeholder="$t('table.temp.userName')"
               disabled
             />
-            <el-button type="text" @click="dialogInnerVisible = true">{{ $t('table.addHousehold')}}</el-button>
+            <el-button type="text" @click="dialogInnerVisible = true">{{ $t('table.addMember')}}</el-button>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -86,7 +86,7 @@
         <el-dialog width="65%" title="用户列表" :visible.sync="dialogInnerVisible" append-to-body>
           <!-- 住戶列表-->
           <transition v-if="dialogStatus==='update'" name="el-zoom-in-top">
-            <user-List :user="familyForm.user" @transmitUser="userChoiceHousehold"></user-List>
+            <user-List @transmitUser="userChoiceHousehold" @close="dialogCommodityVisible = false"></user-List>
           </transition>
         </el-dialog>
       </el-dialog>
@@ -187,9 +187,10 @@ export default {
         baseCode: "", // 底座编码
         baseId: "", // 绑定底座的ID
         userId: "", // 业主ID
+        userIds: "", // 用,号分隔
         userAndFamilyId: "", // 绑定业主家庭ID
         householdName: "",
-        user: null // 回显实体
+        user: null, // 回显实体
       },
       rules: {
         paidCode: {
@@ -267,12 +268,15 @@ export default {
       });
     },
     // 获取用户选择的业主
-    userChoiceHousehold(user) {
-      console.log("user --- ", user);
-      this.familyForm.householdName = user.nickName
-        ? user.nickName
-        : user.userName;
-      this.familyForm.user = user;
+    userChoiceHousehold(userIds, userNames) {
+      console.log(userIds, userNames);
+      this.familyForm.householdName = userNames.join(","); // 回显用的名称
+      this.familyForm.userIds = userIds.join(","); // 用户Ids
+      // console.log("user --- ", user);
+      // this.familyForm.householdName = user.nickName
+      //   ? user.nickName
+      //   : user.userName;
+      // this.familyForm.user = user;
       this.dialogInnerVisible = false;
     },
     // 创建数据
@@ -304,7 +308,8 @@ export default {
             identity: 1, // 代表业主
             userFamily: {
               familyId: _this.familyForm.familyId,
-              userId: _this.familyForm.user.id
+              userIds: _this.familyForm.userIds
+              // userId: _this.familyForm.user.id
             }
           };
           // if (_this.familyForm.userAndFamilyId)
@@ -328,24 +333,30 @@ export default {
           //       _this.buttonLoading = false; // 清楚加载中
           //     }
           //   })
-          addUserAndFamily(userParams).then(function(res2) {
-              if (res2.message == "SUCCESS") {
-                _this.buttonLoading = false; // 清楚加载中
-                _this.$notify({
-                  title: _this.generatePoint("notifySuccess.title"),
-                  message: _this.generatePoint("notifySuccess.message"),
-                  type: "success"
-                });
-                _this.dialogFormVisible = false;
-              } else {
-                _this.$message.error(_this.generatePoint("system"));
-                _this.buttonLoading = false; // 清楚加载中
-              }
-            })
-            .catch(error => {
-              _this.buttonLoading = false; // 清楚加载中
-              console.log(error);
-            });
+
+
+          // addUserAndFamily(userParams)
+          //   .then(function(res2) {
+          //     if (res2.message == "SUCCESS") {
+          //       _this.buttonLoading = false; // 清楚加载中
+          //       _this.$notify({
+          //         title: _this.generatePoint("notifySuccess.title"),
+          //         message: _this.generatePoint("notifySuccess.message"),
+          //         type: "success"
+          //       });
+          //       _this.dialogFormVisible = false;
+          //     } else {
+          //       _this.$message.error(_this.generatePoint("system"));
+          //       _this.buttonLoading = false; // 清楚加载中
+          //     }
+          //   })
+          //   .catch(error => {
+          //     _this.buttonLoading = false; // 清楚加载中
+          //     console.log(error);
+          //   });
+
+
+
           // Promise.all([
           //   addDevice(ipadParams),
           //   addDevice(boasParams),
