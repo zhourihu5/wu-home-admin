@@ -18,6 +18,7 @@ export default {
         stage: 'stage',
         area: 'area',
         household: 'household',
+        member: 'member',
         floor: 'floor',
         unit: 'unit',
         family: 'family',
@@ -176,11 +177,12 @@ export default {
         address: 'Address',
         orderNumber: 'Order Number',
         orderTime: 'Order Time',
-        originalPrice: 'Original Price',
+        originalPrice: 'Activity Price',
         presentPrice: 'Present Price',
         consignee: 'Consignee',
         payment: 'Payment',
         money: 'Money',
+        orderMoney: 'Order Money',
         identityCard: 'IdentityCard',
         joinTime: 'JoinTime',
         number: 'Number',
@@ -363,7 +365,10 @@ export default {
     point: {
         close: "Are you sure to close it?",
         delete: "Do you confirm deletion?",
+        upperShelf: "Are you sure it's on the shelf?",
+        lowerShelf: "Are you sure to get off the shelf?",
         loadMore: 'Load more...',
+        grant: "Confirmation of issuance?",
         notifySuccess: {
             title: 'Success',
             message: 'Congratulations on your success',
@@ -385,7 +390,8 @@ export default {
             title: 'warning',
             title1: 'tips',
             message: 'Up to one upload',
-            message1: 'Please select the above option, which will automatically refresh the list data'
+            message1: 'Please select the above option, which will automatically refresh the list data',
+            message5: 'Up to five uploads'
         },
         platform: 'Platform Requirements',
         userName: 'Account cannot be empty',
@@ -418,7 +424,8 @@ export default {
         communityArea: 'At present, the community has not entered (district), so there is no (district) data in this community.',
         numOk: "Only numbers can be entered",
         identityCard: "The ID card format is incorrect",
-        import: "This must be imported"
+        import: "This must be imported",
+        lastItem: "After you have added the previous item, add the item"
     },
     steps: {
         community: 'community',

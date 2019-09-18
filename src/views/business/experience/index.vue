@@ -413,7 +413,23 @@ export default {
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: (rule, value, callback) => {
+              if (this.experienceForm.limitNum == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                if (!re.test(value)) {
+                  falg = false;
+                }
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("numOk"));
+                }
+              }
+            }
           }
         ],
         count: [
@@ -516,8 +532,15 @@ export default {
     formDate: {
       handler: function(val, oldval) {
         // console.log(val, oldval);
-        this.experienceForm.startDate = val[0];
-        this.experienceForm.endDate = val[1];
+        // this.experienceForm.startDate = val[0];
+        // this.experienceForm.endDate = val[1];
+        if (val.length > 0) {
+          this.listQuery.startDate = val[0];
+          this.listQuery.endDate = val[1];
+        } else {
+          this.listQuery.startDate = "";
+          this.listQuery.endDate = "";
+        }
       }
     }
   },
@@ -652,7 +675,7 @@ export default {
     },
     createData() {
       let _this = this;
-      _this.buttonLoading = true; // 清空按钮加载状态
+      // _this.buttonLoading = true; // 清空按钮加载状态
       _this.$refs.experienceForm.validate(valid => {
         if (valid) {
           try {
@@ -753,6 +776,8 @@ export default {
       let _this = this;
       let params = {};
       let content = {};
+      let timsg = ""; // 提示框title
+      let comsg = ""; // 提示框msg
       // 默认上架
       params.id = row.id;
       params.isShow = overall.experience.show[1].value;
@@ -763,15 +788,24 @@ export default {
       if (row.isShow == overall.experience.show[1].value) {
         params.isShow = overall.experience.show[0].value;
         content.message = _this.generatePoint("notifySuccess.message6");
+        timsg = _this.generatePoint("lowerShelf");
+        comsg = _this.generatePoint("notifySuccess.message6");
+      } else {
+        timsg = _this.generatePoint("upperShelf");
+        comsg = _this.generatePoint("notifySuccess.message3");
       }
-      updateIsShow(params).then(function(res) {
-        if (res.message == "SUCCESS") {
-          _this.$notify(content);
-        } else {
-          _this.$message.error(_this.generatePoint("system"));
-        }
-        _this.fetchData();
-      });
+      _this.$confirm(timsg)
+        .then(_ => {
+          updateIsShow(params).then(function(res) {
+            if (res.message == "SUCCESS") {
+              _this.$notify(content);
+            } else {
+              _this.$message.error(_this.generatePoint("system"));
+            }
+            _this.fetchData();
+          });
+        })
+        .catch(_ => {});
     },
     close() {
       console.log("关闭");

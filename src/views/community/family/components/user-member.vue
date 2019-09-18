@@ -23,7 +23,9 @@
           @click="queryUser"
         >{{ $t('table.search') }}</el-button>
       </div>
-      <!-- table --->
+    </div>
+    <!-- table --->
+    <div class="filter-table">
       <el-table
         v-loading="listLoading"
         :data="list"
@@ -34,8 +36,14 @@
       >
         <el-table-column align="center" :label="$t('table.id')" width="95">
           <!-- <template slot-scope="scope">{{ scope.row.id }}</template> -->
-          <template slot-scope="{row}">
-            <el-radio v-model="userId" :label="row.id" @change="userChange(row)">{{row.id}}</el-radio>
+          <template slot-scope="scope">
+            <!-- <el-radio v-model="userId" :label="row.id" @change="userChange(row)">{{row.id}}</el-radio> -->
+            <el-checkbox
+              v-model="userIds"
+              :label="scope.row.id"
+              :key="scope.row.id"
+              @change="checkboxChange"
+            >{{scope.row.id}}</el-checkbox>
           </template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.nickName')" width="422">
@@ -67,6 +75,14 @@
         :limit.sync="listQuery.pageSize"
         @pagination="fetchData"
       />
+      <div slot="footer" class="dialog-footer">
+        <!-- <el-button @click="close">{{ $t('table.cancel') }}</el-button> -->
+        <el-button
+          type="primary"
+          @click="addUsers"
+          :loading="buttonLoading"
+        >{{ $t('table.confirm') }}</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -86,12 +102,18 @@
       margin-bottom: 10px;
     }
   }
+  .filter-table {
+    .dialog-footer {
+      text-align: right;
+    }
+  }
 }
 </style>
 <script>
 import Pagination from "@/components/Pagination"; // 分页
 import { getUserList } from "@/api/user";
 import { overall } from "@/constant/index"; // 服务 常用常量
+import { Message } from "element-ui";
 export default {
   components: { Pagination },
   data() {
@@ -99,7 +121,9 @@ export default {
       list: null,
       listLoading: true,
       total: 0, // 分页
-      userId: "", // 单选
+      userId: "", // 户主ID 用来验证用户选择的住户里是否重复存在户主
+      userIds: [], // 多选
+      userNames: [],
       // 查询参数
       listQuery: {
         nickName: "",
@@ -108,7 +132,8 @@ export default {
         pageSize: 10
       },
       // 平台标示选择
-      options: overall.user.options
+      options: overall.user.options,
+      buttonLoading: false // 按钮加载请求
     };
   },
   props: {
@@ -119,8 +144,8 @@ export default {
   created() {
     console.log("用户列表 --- ", this.user);
     if (this.user) {
-      // this.listQuery.nickName = this.user.nickName;
-      // this.listQuery.userName = this.user.userName;
+      //   this.listQuery.nickName = this.user.nickName;
+      //   this.listQuery.userName = this.user.userName;
       this.userId = this.user.id;
       this.queryUser();
     } else {
@@ -155,6 +180,40 @@ export default {
         }
       });
       return text;
+    },
+    checkboxChange(change) {
+      if (!change) {
+        this.userNames = [];
+      }
+      // 判断用户选择的住户里是否重复包含户主
+      for (let j = 0; j < this.userIds.length; j++) {
+        if (this.userIds[j] == this.userId) {
+          this.userIds.splice(j, 1);
+          Message({
+            message: "你勾选的用户已经是户主了",
+            type: "error",
+            duration: 2 * 1000
+          });
+        }
+        for (let i = 0; i < this.list.length; i++) {
+          if (this.userIds[j] == this.list[i].id) {
+            if (this.userNames.indexOf(this.list[i].nickName) < 0) {
+              this.userNames.push(this.list[i].nickName);
+              break;
+            }
+          }
+        }
+      }
+    },
+    // 添加家庭成员
+    addUsers() {
+      this.$emit("transmitUsers", this.userIds, this.userNames);
+      this.close();
+    },
+    close() {
+      this.$emit("close");
+      this.userIds = [];
+      this.userNames = [];
     }
   }
 };

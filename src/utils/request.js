@@ -40,13 +40,20 @@ service.interceptors.response.use(
       if (error.response.status) {
         switch (error.response.status) {
           case 500:
-            console.log(" asd a sd", error.response.data);
             if (error.response.data.code == 500) {
-              Message({
-                message: error.response.data.message || 'error',
-                type: 'error',
-                duration: 2 * 1000
-              })
+              if(error.response.data.message == "类名不存在或执行表达式错误") {
+                Message({
+                  message: '定时任务的开始时间必须大于当前时间',
+                  type: 'error',
+                  duration: 2 * 1000
+                })
+              } else {
+                Message({
+                  message: error.response.data.message || 'error',
+                  type: 'error',
+                  duration: 2 * 1000
+                })
+              }
             }
             break;
           case 403:

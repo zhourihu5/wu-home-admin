@@ -12,7 +12,7 @@ export const buying = {
         },
         {
             label: "已结束",
-            value: "2"
+            value: "3"
         }
     ]
 }

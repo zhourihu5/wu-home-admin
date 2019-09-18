@@ -255,7 +255,7 @@ export default {
         shopCode: "", // 商家code
         shopId: "", // 商家ID
         shopName: "", // 商家名称
-        shop: null, // 商家回显实体
+        shop: null // 商家回显实体
       },
       rules: {
         file: [
@@ -283,21 +283,69 @@ export default {
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: (rule, value, callback) => {
+              if (this.commodityForm.initPrice == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                if (!re.test(value)) {
+                  falg = false;
+                }
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("numOk"));
+                }
+              }
+            }
           }
         ],
         price: [
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: (rule, value, callback) => {
+              if (this.commodityForm.price == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                if (!re.test(value)) {
+                  falg = false;
+                }
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("numOk"));
+                }
+              }
+            }
           }
         ],
         repertoryNum: [
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: (rule, value, callback) => {
+              if (this.commodityForm.repertoryNum == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                if (!re.test(value)) {
+                  falg = false;
+                }
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("numOk"));
+                }
+              }
+            }
           }
         ],
         origin: [
@@ -417,10 +465,11 @@ export default {
       _this.commodityForm.shopCode = row.shopCode; // 商家code
       _this.commodityForm.shopName = row.shopName; // 商家 名称
       _this.commodityForm.shopId = row.shopId; // 商家 ID
-      _this.commodityForm.shop = { // 商家回显实体
+      _this.commodityForm.shop = {
+        // 商家回显实体
         name: row.shopName,
         id: row.shopId
-      }
+      };
       _this.commodityForm.labelsName = row.labelsName; // 商品标签
       // 设置富文本显示
       if (row.infos) {
@@ -525,7 +574,6 @@ export default {
       if (this.commodityForm.id) {
         params.id = this.commodityForm.id;
         params.code = this.commodityForm.code;
-       
       }
       return params;
     },

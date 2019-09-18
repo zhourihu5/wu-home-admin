@@ -67,15 +67,20 @@
         </el-table-column>
         <el-table-column :label="$t('table.operation')" align="center" width="360">
           <template slot-scope="{row}">
-            <el-button type="primary" size="mini" @click="showEditView(row)">{{ $t('table.edit') }}</el-button>
             <el-button
-              v-if="row.isShow == 0"
+              v-if="row.status != 3"
               type="primary"
+              size="mini"
+              @click="showEditView(row)"
+            >{{ $t('table.edit') }}</el-button>
+            <el-button
+              v-if="row.isShow == 0 && row.status != 3"
+              type="success"
               size="mini"
               @click="updateShow(row)"
             >{{ $t('table.upperShelf') }}</el-button>
             <el-button
-              v-if="row.isShow == 1"
+              v-if="row.isShow == 1 && row.status != 3"
               type="danger"
               size="mini"
               @click="updateShow(row)"
@@ -179,7 +184,7 @@
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-         <el-form-item :label="$t('form.giftGiving')" prop="file">
+        <el-form-item :label="$t('form.giftGiving')" prop="file">
           <el-upload
             :action="updateURL"
             list-type="picture-card"
@@ -213,7 +218,7 @@
             <el-input type="number" v-model="item.rmb" />
             {{buyingForm.reductionType}}
           </div>
-        </el-form-item> -->
+        </el-form-item>-->
         <el-form-item :label="$t('form.deliveryTime')" prop="deliveryHour" class="delivery-time">
           <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')" />
           <span>小时</span>
@@ -384,7 +389,7 @@ export default {
         remark: "", // 详情
         isShow: "",
         status: "", // 状态
-        giftImg: "", // 团购赠品图片
+        giftImg: "" // 团购赠品图片
       },
       rules: {
         file: [
@@ -421,7 +426,7 @@ export default {
             message: this.generatePoint("mandatory")
           }
         ],
-        endtDate: [
+        endDate: [
           {
             required: true,
             trigger: "change",
@@ -556,9 +561,13 @@ export default {
   watch: {
     queryDate: {
       handler: function(val, oldval) {
-        console.log(val[0] instanceof Date);
-        this.listQuery.startDate = val[0];
-        this.listQuery.endDate = val[1];
+        if (val.length > 0) {
+          this.listQuery.startDate = val[0];
+          this.listQuery.endDate = val[1];
+        } else {
+          this.listQuery.startDate = "";
+          this.listQuery.endDate = "";
+        }
       }
     }
   },
@@ -590,7 +599,7 @@ export default {
       console.log("row --- >", row);
       _this.buyingForm.title = row.title;
       _this.fileList.push({ url: row.cover });
-      _this.giftList.push({ url: row.giftImg});
+      _this.giftList.push({ url: row.giftImg });
       _this.buyingForm.startDate = row.startDate;
       _this.buyingForm.endDate = row.endDate;
       _this.buyingForm.price = row.price;
@@ -686,7 +695,7 @@ export default {
     // 添加数据
     createData() {
       let _this = this;
-      _this.buttonLoading = true;
+      // _this.buttonLoading = true;
       _this.$refs.buyingForm.validate(valid => {
         if (valid) {
           try {
@@ -823,29 +832,63 @@ export default {
     updateShow(row) {
       console.log("row --- >", row.isShow);
       let _this = this;
-      let onShow = row.isShow == 1 ? 0 : 1;
-      modityIsShow({ id: row.id, isShow: onShow }).then(function(res) {
-        console.log("res --- >", res);
-        if (res.message == "SUCCESS") {
-          _this.buttonLoading = false; // 清空按钮加载状态
-          _this.$notify({
-            title: _this.generatePoint("notifySuccess.title"),
-            message: _this.generatePoint("notifySuccess.message4"),
-            type: "success"
+      let timsg = ""; // 提示框title
+      let comsg = ""; // 提示框msg
+      let onShow = "";
+      if (row.isShow == 1) {
+        // 下架
+        timsg = _this.generatePoint("lowerShelf");
+        comsg = _this.generatePoint("notifySuccess.message6");
+        onShow = 0;
+      } else {
+        // 上架
+        timsg = _this.generatePoint("upperShelf");
+        comsg = _this.generatePoint("notifySuccess.message3");
+        onShow = 1;
+      }
+      _this
+        .$confirm(timsg)
+        .then(_ => {
+          modityIsShow({ id: row.id, isShow: onShow }).then(function(res) {
+            if (res.message == "SUCCESS") {
+              _this.buttonLoading = false; // 清空按钮加载状态
+              _this.$notify({
+                title: _this.generatePoint("notifySuccess.title"),
+                message: comsg,
+                type: "success"
+              });
+              _this.dialogFormVisible = false; // 关闭弹窗
+              _this.fetchData();
+            } else {
+              _this.buttonLoading = false; // 清空按钮加载状态
+              _this.$message.error(_this.generatePoint("system"));
+            }
           });
-          _this.dialogFormVisible = false; // 关闭弹窗
-          _this.fetchData();
-        } else {
-          _this.buttonLoading = false; // 清空按钮加载状态
-          _this.$message.error(_this.generatePoint("system"));
-        }
-      });
+        })
+        .catch(_ => {});
+      //
+      // modityIsShow({ id: row.id, isShow: onShow }).then(function(res) {
+      //   console.log("res --- >", res);
+      //   if (res.message == "SUCCESS") {
+      //     _this.buttonLoading = false; // 清空按钮加载状态
+      //     _this.$notify({
+      //       title: _this.generatePoint("notifySuccess.title"),
+      //       message: _this.generatePoint("notifySuccess.message4"),
+      //       type: "success"
+      //     });
+      //     _this.dialogFormVisible = false; // 关闭弹窗
+      //     _this.fetchData();
+      //   } else {
+      //     _this.buttonLoading = false; // 清空按钮加载状态
+      //     _this.$message.error(_this.generatePoint("system"));
+      //   }
+      // });
     },
     close() {
       this.$refs.wangeditor.setContent(""); // 设置富文本显示空
       this.dialogFormVisible = false;
       this.buyingForm = {
-         id: "",
+        id: "",
         communityId: "", // 用户选择的社区
         commodityCode: "", // 社区code
         title: "", // 标题
@@ -866,7 +909,7 @@ export default {
         remark: "", // 详情
         isShow: "",
         status: "", // 状态
-        giftImg: "", // 团购赠品图片
+        giftImg: "" // 团购赠品图片
       };
       this.fileList = []; // 清空回显
       this.giftList = [];

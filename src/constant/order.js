@@ -26,5 +26,24 @@ export const order = {
             label: "配送中",
             value: "5"
         }
+    ],
+    // 类型
+    types: [
+        {
+            label: "余额支付",
+            value: "1"
+        },
+        {
+            label: "支付宝支付",
+            value: "2"
+        },
+        {
+            label: "网银支付",
+            value: "3"
+        },
+        {
+            label: "微信支付",
+            value: "4"
+        },
     ]
 }

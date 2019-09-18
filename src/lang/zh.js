@@ -172,6 +172,7 @@ export default {
         bannerImg: 'banner缩略图',
         equipmentCoding: '设备编码',
         household: '户主',
+        member: '成员',
         userList: '用户列表',
         phone: '手机号',
         ipad: 'pad编码',
@@ -180,11 +181,12 @@ export default {
         address: '地址',
         orderNumber: '订单编号',
         orderTime: '下单时间',
-        originalPrice: '原价',
+        originalPrice: '活动价格',
         presentPrice: '优惠金额',
         consignee: '收货人',
         payment: '支付方式',
         money: '金额',
+        orderMoney: '订单金额',
         identityCard: '身份证',
         joinTime: '入驻时间',
         number: '编号',
@@ -323,9 +325,9 @@ export default {
         see: "查看",
         banner: 'banner',
         detailsImg: '详情图',
-        experienceImg: '体验卷图',
-        experienceNum: '体验卷数量',
-        experienceCode: '活动体验卷',
+        experienceImg: '体验券图',
+        experienceNum: '体验券数量',
+        experienceCode: '活动体验券',
         onImport: '导入',
         storeAddress: '门店地址'
     },
@@ -365,8 +367,11 @@ export default {
     },
     point: {
         close: "确认关闭吗?",
-        delete: "确认删除吗",
+        delete: "确认删除吗?",
+        upperShelf: "确认上架吗?",
+        lowerShelf: "确认下架吗?",
         loadMore: '加载更多...',
+        grant: "确认发放吗",
         notifySuccess: {
             title: '成功',
             message: '恭喜您,保存成功',
@@ -388,7 +393,8 @@ export default {
             title: '警告',
             title1: '提示',
             message: '最多只可上传一张,请删除后重新上传',
-            message1: '请选择上面的选项,选择后会自动刷新列表数据'
+            message1: '请选择上面的选项,选择后会自动刷新列表数据',
+            message5: '最多只可上传五张,请删除后重新上传',
         },
         notifyError: {
             title: '错误',
@@ -426,7 +432,8 @@ export default {
         communityArea: '当前社区未录入（区），所以本社区无（区）数据。',
         numOk: "只能输入数字",
         identityCard: "身份证格式不正确",
-        import: "此项必须导入"
+        import: "此项必须导入",
+        lastItem: "请添加完上一项后,在添加此项"
     },
     steps: {
         community: '添加社区',

@@ -30,6 +30,9 @@
       >{{ $t('table.search') }}</el-button>
     </div>
     <!-- table --->
+    <div class="order-export">
+      <el-button type="primary" @click="outExe">导出</el-button>
+    </div>
     <div class="order-table">
       <el-table
         v-loading="listLoading"
@@ -51,14 +54,16 @@
           >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.name')" width="150">
-          <template slot-scope="scope">{{ scope.row.activityName ? scope.row.activityName : $t('table.noTime')}}</template>
+          <template
+            slot-scope="scope"
+          >{{ scope.row.activityName ? scope.row.activityName : $t('table.noTime')}}</template>
         </el-table-column>
         <el-table-column align="center" :label="$t('table.originalPrice')" width="150">
           <template slot-scope="scope">{{ scope.row.price ? scope.row.price : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.presentPrice')" width="150">
+        <!-- <el-table-column align="center" :label="$t('table.presentPrice')" width="150">
           <template slot-scope="scope">{{scope.row.favPrice }}</template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column align="center" :label="$t('table.state')" width="150">
           <template
             slot-scope="scope"
@@ -77,9 +82,9 @@
         <el-table-column align="center" :label="$t('table.payment')" width="145">
           <template
             slot-scope="scope"
-          >{{ scope.row.payType ? scope.row.payType : $t('table.noTime')}}</template>
+          >{{ scope.row.payType ? getTypesText(scope.row.payType) : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.money')" width="145">
+        <el-table-column align="center" :label="$t('table.orderMoney')" width="145">
           <template
             slot-scope="scope"
           >{{ scope.row.realPrice ? scope.row.realPrice : $t('table.noTime')}}</template>
@@ -150,7 +155,9 @@ export default {
       listLoading: false, // 列表加载
       orderList: [],
       total: 0,
-      status: overall.order.status
+      status: overall.order.status,
+      types: overall.order.types,
+      excelData: [] // 导出的数据
     };
   },
   created() {
@@ -169,8 +176,15 @@ export default {
     // 查询数据
     fetchData() {
       let _this = this;
+      let params = {
+        pageNum: _this.listQuery.pageNum,
+        pageSize: _this.listQuery.pageSize
+      };
+      if(_this.listQuery.status != "" && _this.listQuery.status != 0) {
+        params.status = _this.listQuery.status;
+      }
       _this.listLoading = true;
-      getOrderAll(_this.listQuery).then(function(res) {
+      getOrderAll(params).then(function(res) {
         console.log("res --- ", res);
         _this.listLoading = false;
         _this.orderList = res.data.content; // 列表数据
@@ -179,7 +193,6 @@ export default {
     },
     // 查询
     queryOrder() {
-      console.log("_this.listQuery  ", this.listQuery);
       this.fetchData();
     },
     // 获取状态中文
@@ -191,6 +204,69 @@ export default {
         }
       });
       return text;
+    },
+    // 获取状态中文
+    getTypesText(types) {
+      for (let i = 0; i < this.types.length; i++) {
+        // console.log(this.status[i]);
+        if (this.types[i].value == types) {
+          return this.types[i].label;
+        }
+      }
+    },
+    outExe() {
+      this.$confirm("此操作将导出excel文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          let _this = this;
+          // 构建导入数据
+          console.log(" --- >", _this.orderList);
+          // _this.experienceList.forEach(function(v, i) {
+          //   console.log("i", i, v);
+          //   v.experienceId = _this.experienceForm.id;
+          //   v.experienceName = _this.experienceForm.name;
+          // });
+          _this.excelData = _this.orderList;
+          _this.export2Excel();
+        })
+        .catch(() => {});
+    },
+    export2Excel() {
+      var that = this;
+      require.ensure([], () => {
+        const {
+          export_json_to_excel
+        } = require("./../../../excel/Export2Excel"); //这里必须使用绝对路径
+        const tHeader = [
+          "订单ID",
+          "订单编码",
+          "下单时间",
+          "活动名称",
+          "商品现价",
+          "收货人姓名",
+          "收货人手机号",
+          "订单金额"
+        ];
+        const filterVal = [
+          "id",
+          "code",
+          "createDate",
+          "activityName",
+          "price",
+          "deliveryUname",
+          "deliveryUphone",
+          "realPrice"
+        ]; // 导出的表头名
+        const list = that.excelData;
+        const data = that.formatJson(filterVal, list);
+        export_json_to_excel(tHeader, data, `订单excel`); // 导出的表格名称，根据需要自己命名
+      });
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]));
     }
   }
 };
@@ -210,6 +286,10 @@ export default {
     .el-input--medium {
       margin-top: 5px;
     }
+  }
+  .order-export {
+    margin: 10px;
+    text-align: right;
   }
 }
 </style>

@@ -77,7 +77,7 @@
               @click="deleteData(row)"
             >{{ $t('table.delete') }}</el-button>
             <el-button
-              v-if="row.status == 0"
+              v-if="row.status == 0 && row.type == 1"
               type="success"
               :loading="buttonLoading"
               size="mini"
@@ -131,11 +131,7 @@
               <el-input v-model="issuedForm.name" :placeholder="$t('table.temp.content')" />
             </el-form-item>
             <el-form-item :label="$t('form.denomination')" prop="money">
-              <el-input
-                v-model="issuedForm.money"
-                type="number"
-                :placeholder="$t('table.temp.content')"
-              />
+              <el-input v-model="issuedForm.money" :placeholder="$t('table.temp.content')" />
             </el-form-item>
             <el-form-item :label="$t('form.blacklist')" prop="blacklist">
               <upload-excel v-if="issuedForm.userNames.length == 0" @getExcel="getExcelData"></upload-excel>
@@ -197,11 +193,7 @@
               <el-input v-model="issuedForm.name" :placeholder="$t('table.temp.content')" />
             </el-form-item>
             <el-form-item :label="$t('form.denomination')" prop="money">
-              <el-input
-                v-model="issuedForm.money"
-                type="number"
-                :placeholder="$t('table.temp.content')"
-              />
+              <el-input v-model="issuedForm.money" :placeholder="$t('table.temp.content')" />
             </el-form-item>
             <el-form-item :label="$t('form.grantCount')" prop="grantCount">
               <el-input v-model="issuedForm.grantCount" :placeholder="$t('table.temp.content')" />
@@ -249,7 +241,7 @@
         <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
           <!-- 活动列表-->
           <transition name="el-zoom-in-top">
-            <activity-list :activity="issuedForm.activity" @transmitUser="userChoiceActivity"></activity-list>
+            <activity-list @transmitUser="userChoiceActivity"></activity-list>
           </transition>
         </el-dialog>
       </template>
@@ -343,14 +335,46 @@ export default {
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: (rule, value, callback) => {
+              if (this.issuedForm.money == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                if (!re.test(value)) {
+                  falg = false;
+                }
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("numOk"));
+                }
+              }
+            }
           }
         ],
         everyoneNum: [
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: (rule, value, callback) => {
+              if (this.issuedForm.everyoneNum == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                if (!re.test(value)) {
+                  falg = false;
+                }
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("numOk"));
+                }
+              }
+            }
           }
         ],
         grantCount: [
@@ -438,6 +462,12 @@ export default {
         this.issuedForm.startDate = val[0];
         this.issuedForm.endDate = val[1];
       }
+    },
+    'issuedForm.type': {
+      handler: function(val, oldval) {
+         this.$refs.issuedForm.resetFields();
+      },
+      deep: true
     }
   },
   methods: {
@@ -527,28 +557,60 @@ export default {
     },
     // 发放数据
     grantData(row) {
-      console.log("row --- >", row);
       let _this = this;
-      _this.buttonLoading = true;
-      updateStatus({
-        type: row.type,
-        id: row.id,
-        status: this.status[0].value,
-        activityId: row.activityId
-      }).then(function(res) {
-        if (res.message == "SUCCESS") {
-          _this.$notify({
-            title: _this.generatePoint("notifySuccess.title"),
-            message: _this.generatePoint("notifySuccess.message8"),
-            type: "success"
+      _this
+        .$confirm(_this.generatePoint("grant"))
+        .then(_ => {
+          _this.buttonLoading = true;
+          updateStatus({
+            type: row.type,
+            id: row.id,
+            status: this.status[0].value,
+            activityId: row.activityId
+          }).then(function(res) {
+            if (res.message == "SUCCESS") {
+              _this.$notify({
+                title: _this.generatePoint("notifySuccess.title"),
+                message: _this.generatePoint("notifySuccess.message8"),
+                type: "success"
+              });
+              _this.buttonLoading = false;
+              _this.fetchData();
+            } else {
+              _this.buttonLoading = false;
+              _this.$message.error(_this.generatePoint("system"));
+            }
           });
-          _this.buttonLoading = false;
-          _this.fetchData();
-        } else {
-          _this.buttonLoading = false;
-          _this.$message.error(_this.generatePoint("system"));
-        }
-      });
+        })
+        .catch(_ => {});
+      // console.log("row --- >", row);
+      // let _this = this;
+      // _this.buttonLoading = true;
+      // console.log("啦啦啦啦啦 ---- ", {
+      //   type: row.type,
+      //   id: row.id,
+      //   status: this.status[0].value,
+      //   activityId: row.activityId
+      // })
+      // updateStatus({
+      //   type: row.type,
+      //   id: row.id,
+      //   status: this.status[0].value,
+      //   activityId: row.activityId
+      // }).then(function(res) {
+      //   if (res.message == "SUCCESS") {
+      //     _this.$notify({
+      //       title: _this.generatePoint("notifySuccess.title"),
+      //       message: _this.generatePoint("notifySuccess.message8"),
+      //       type: "success"
+      //     });
+      //     _this.buttonLoading = false;
+      //     _this.fetchData();
+      //   } else {
+      //     _this.buttonLoading = false;
+      //     _this.$message.error(_this.generatePoint("system"));
+      //   }
+      // });
     },
     // 查询
     queryCoupon() {

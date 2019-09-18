@@ -342,6 +342,7 @@ export default {
                   message: _this.generatePoint("notifySuccess.message"),
                   type: "success"
                 });
+                _this.close()();
                 _this.fetchData(); // 刷新列表
               } else {
                 _this.$message.error(_this.generatePoint("system"));
