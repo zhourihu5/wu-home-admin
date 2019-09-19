@@ -53,7 +53,7 @@ export default {
         nickName: 'NickName',
         userName: 'UserName',
         createTime: 'CreateTime',
-        businessTime: 'businessD Time',
+        businessTime: 'Dusiness Time',
         addUser: 'AddUser',
         community: 'Community',
         operation: 'Operation',
@@ -326,7 +326,8 @@ export default {
         experienceNum: 'Experience Num',
         experienceCode: 'Experience',
         onImport: 'Import',
-        storeAddress: 'storeAddress'
+        storeAddress: 'storeAddress',
+        businessTime: 'Dusiness Time',
     },
     login: {
         title: 'Login Platform',
@@ -423,6 +424,7 @@ export default {
         communityStage: 'At present, the community has not entered (stage), so there is no (stage) data in this community.',
         communityArea: 'At present, the community has not entered (district), so there is no (district) data in this community.',
         numOk: "Only numbers can be entered",
+        greater0: "Please enter a number greater than 0",
         identityCard: "The ID card format is incorrect",
         import: "This must be imported",
         lastItem: "After you have added the previous item, add the item"

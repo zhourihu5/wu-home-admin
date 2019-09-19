@@ -85,7 +85,11 @@
               size="mini"
               @click="updateShow(row)"
             >{{ $t('table.lowerShelf') }}</el-button>
-            <!-- type="danger" -->
+            <el-button
+              v-if="row.status == 3"
+              size="mini"
+              @click="showEditView(row, 'see')"
+            >{{ $t('table.see') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -111,6 +115,7 @@
         label-position="right"
         label-width="100px"
         style="width: 90%"
+        :disabled="fromDisabled"
       >
         <el-form-item :label="$t('table.community')" prop="communityId">
           <province ref="provinceForm" :params="myForm" @getProvinceVal="getProvinceVal"></province>
@@ -130,7 +135,16 @@
             :placeholder="$t('table.temp.title')"
           />
         </el-form-item>
-        <el-form-item :label="$t('form.startTime')" prop="startDate">
+        <el-form-item :label="$t('form.businessTime')" prop="validDate">
+          <el-date-picker
+            v-model="formDate"
+            type="datetimerange"
+            range-separator="至"
+            :start-placeholder="$t('form.startTime')"
+            :end-placeholder="$t('form.endTime')"
+          ></el-date-picker>
+        </el-form-item>
+        <!-- <el-form-item :label="$t('form.startTime')" prop="startDate">
           <el-date-picker
             v-model="buyingForm.startDate"
             align="right"
@@ -149,7 +163,7 @@
             :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item :label="$t('form.commodity')" prop="commodityName">
           <el-input
             :disabled="true"
@@ -224,7 +238,7 @@
           <span>小时</span>
         </el-form-item>
         <el-form-item :label="$t('form.activityExplain')" prop="remark">
-          <wangeditor ref="wangeditor"></wangeditor>
+          <wangeditor ref="wangeditor" :myDisabled="fromDisabled"></wangeditor>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -301,6 +315,8 @@ export default {
   components: { Pagination, Province, commodityList, wangeditor },
   data() {
     return {
+      fromDisabled: false,
+      formDate: [],
       // 时间快捷方式
       pickerOptions: {
         shortcuts: [
@@ -419,20 +435,33 @@ export default {
             message: this.generatePoint("mandatory")
           }
         ],
-        startDate: [
+        validDate: [
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("mandatory")
+            validator: (rule, value, callback) => {
+              if (this.buyingForm.startDate && this.buyingForm.endDate) {
+                callback();
+              } else {
+                callback(this.generatePoint("required"));
+              }
+            }
           }
         ],
-        endDate: [
-          {
-            required: true,
-            trigger: "change",
-            message: this.generatePoint("mandatory")
-          }
-        ],
+        // startDate: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     message: this.generatePoint("mandatory")
+        //   }
+        // ],
+        // endDate: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     message: this.generatePoint("mandatory")
+        //   }
+        // ],
         // saleType: [
         //   {
         //     required: true,
@@ -569,6 +598,17 @@ export default {
           this.listQuery.endDate = "";
         }
       }
+    },
+    formDate: {
+      handler: function(val, oldval) {
+        if (val.length > 0) {
+          this.buyingForm.startDate = val[0];
+          this.buyingForm.endDate = val[1];
+        } else {
+          this.buyingForm.startDate = "";
+          this.buyingForm.endDate = "";
+        }
+      }
     }
   },
   methods: {
@@ -594,14 +634,18 @@ export default {
       this.dialogFormVisible = true; // 展示弹窗
     },
     // 修改页面
-    showEditView(row) {
+    showEditView(row, code) {
       let _this = this;
       console.log("row --- >", row);
       _this.buyingForm.title = row.title;
       _this.fileList.push({ url: row.cover });
       _this.giftList.push({ url: row.giftImg });
+      // 时间处理
       _this.buyingForm.startDate = row.startDate;
       _this.buyingForm.endDate = row.endDate;
+      _this.formDate.push(row.startDate);
+      _this.formDate.push(row.endDate);
+
       _this.buyingForm.price = row.price;
       // _this.buyingForm.saleType = row.saleType;
       _this.buyingForm.deliveryHour = row.deliveryHour;
@@ -651,6 +695,10 @@ export default {
             _this.myRules.push({ num: item[0], rmb: item[1] }); // 追加规则
           }
         }
+      }
+      // 是否是查看功能
+      if (code == "see") {
+        _this.fromDisabled = true;
       }
       _this.dialogStatus = "update"; // 标示创建
       _this.dialogFormVisible = true; // 展示弹窗
@@ -912,10 +960,12 @@ export default {
         giftImg: "" // 团购赠品图片
       };
       this.fileList = []; // 清空回显
+      this.formDate = [];
       this.giftList = [];
       this.$refs.provinceForm.initialization(); // 重置省市区
       this.myRules = []; // 重置规则
       this.$refs.buyingForm.resetFields();
+      this.fromDisabled = false;
     }
   }
 };

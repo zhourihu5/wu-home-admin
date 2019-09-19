@@ -19,15 +19,22 @@ export default {
       updateURL: overall.uploadUrl
     };
   },
+  props: {
+    // 是否禁用
+    myDisabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   mounted() {
     this.editor = new E("#editor");
     let _this = this;
-    // 隐藏“网络图片”tab
+
     this.editor.customConfig.showLinkImg = false;
     this.editor.customConfig.uploadImgMaxLength = 1;
     this.editor.customConfig.uploadFileName = "file"; //上传参数 自定义
     this.editor.customConfig.uploadImgParams = {
-      type: "card_content",
+      type: "card_content"
     };
     this.editor.customConfig.uploadImgServer = this.updateURL; // 上传图片到服务器
     this.editor.customConfig.uploadImgHooks = {
@@ -65,6 +72,16 @@ export default {
     ];
 
     this.editor.create();
+    if (this.myDisabled) {
+      this.editor.$textElem.attr("contenteditable", false); // 禁用
+    } else {
+      this.editor.$textElem.attr("contenteditable", true); // 启用
+    }
+
+    // console.log("this.editor:", this.editor);
+    // console.log("this.editor:", this.editor.$textElem);
+    // console.log("this.editor:", this.editor.$textContainerElem);
+    // console.log("this.editor:", this.editor.$textContainerElem);
   },
   methods: {
     uploadInit() {},
@@ -80,10 +97,18 @@ export default {
       this.editor.txt.html("");
     },
     setContent(content) {
-      this.editor.txt.html(content)
+      this.editor.txt.html(content);
     },
     onDisable() {
-      this.editor.disable(); 
+      this.editor.disable();
+    },
+    // 禁用
+    onDisabled() {
+      this.editor.$textElem.attr("contenteditable", false);
+    },
+    // 启用
+    onEnable() {
+      this.editor.$textElem.attr("contenteditable", true);
     }
   }
 };

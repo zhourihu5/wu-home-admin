@@ -337,18 +337,19 @@ export default {
             trigger: "change",
             // message: this.generatePoint("required")
             validator: (rule, value, callback) => {
+              console.log("验证")
               if (this.issuedForm.money == "") {
                 callback(this.generatePoint("required"));
               } else {
                 let falg = true;
                 let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
-                if (!re.test(value)) {
+                if (!re.test(value) || value <= 0) {
                   falg = false;
                 }
                 if (falg) {
                   callback();
                 } else {
-                  callback(this.generatePoint("numOk"));
+                  callback(this.generatePoint("greater0"));
                 }
               }
             }
@@ -463,9 +464,9 @@ export default {
         this.issuedForm.endDate = val[1];
       }
     },
-    'issuedForm.type': {
+    "issuedForm.type": {
       handler: function(val, oldval) {
-         this.$refs.issuedForm.resetFields();
+        this.$refs.issuedForm.resetFields();
       },
       deep: true
     }
@@ -653,7 +654,7 @@ export default {
               console.log("res --- >", res);
               if (res.message == "SUCCESS") {
                 _this.buttonLoading = false; // 清空按钮加载状态
-                if (params.id) {
+                if (!params.id) {
                   // 保存成功
                   _this.$notify({
                     title: _this.generatePoint("notifySuccess.title"),

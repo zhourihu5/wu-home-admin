@@ -329,7 +329,8 @@ export default {
         experienceNum: '体验券数量',
         experienceCode: '活动体验券',
         onImport: '导入',
-        storeAddress: '门店地址'
+        storeAddress: '门店地址',
+        businessTime: '活动时间',
     },
     login: {
         title: '吾家运营管理平台',
@@ -431,6 +432,7 @@ export default {
         communityStage: '当前社区未录入（期），所以本社区无（期）数据。',
         communityArea: '当前社区未录入（区），所以本社区无（区）数据。',
         numOk: "只能输入数字",
+        greater0: "请输入大于0的数字",
         identityCard: "身份证格式不正确",
         import: "此项必须导入",
         lastItem: "请添加完上一项后,在添加此项"

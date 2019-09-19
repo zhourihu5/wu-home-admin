@@ -535,11 +535,11 @@ export default {
         // this.experienceForm.startDate = val[0];
         // this.experienceForm.endDate = val[1];
         if (val.length > 0) {
-          this.listQuery.startDate = val[0];
-          this.listQuery.endDate = val[1];
+          this.experienceForm.startDate = val[0];
+          this.experienceForm.endDate = val[1];
         } else {
-          this.listQuery.startDate = "";
-          this.listQuery.endDate = "";
+          this.experienceForm.startDate = "";
+          this.experienceForm.endDate = "";
         }
       }
     }
