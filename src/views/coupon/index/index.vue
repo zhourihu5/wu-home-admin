@@ -77,7 +77,7 @@
               @click="deleteData(row)"
             >{{ $t('table.delete') }}</el-button>
             <el-button
-              v-if="row.status == 0 && row.type == 1"
+              v-if="row.status == 0"
               type="success"
               :loading="buttonLoading"
               size="mini"
