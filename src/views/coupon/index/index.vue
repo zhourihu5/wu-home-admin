@@ -456,12 +456,14 @@ export default {
         this.issuedForm.endDate = val[1];
       }
     },
-    "issuedForm.type": {
-      handler: function(val, oldval) {
-        this.$refs.issuedForm.resetFields();
-      },
-      deep: true
-    }
+    // "issuedForm.type": {
+    //   handler: function(val, oldval) {
+    //     this.$nextTick(() => {
+    //       this.$refs.issuedForm.resetFields();
+    //     });
+    //   },
+    //   deep: true
+    // }
   },
   methods: {
     generatePoint,
@@ -613,11 +615,6 @@ export default {
     // 类型选择
     typeFormChange(id) {
       console.log("id", id);
-      console.log(
-        "_this.issuedForm.name  --- ",
-        this.issuedForm.name,
-        this.issuedForm.money
-      );
     },
     // 获取Excel组件中的数据
     getExcelData(data) {
@@ -785,6 +782,8 @@ export default {
         this.$refs.wangeditor.setContent(""); // 设置富文本显示空
         this.$refs.issuedForm.resetFields();
       }
+
+      console.log("清空  --", this.issuedForm)
     }
   }
 };
