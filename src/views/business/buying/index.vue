@@ -641,10 +641,10 @@ export default {
       _this.fileList.push({ url: row.cover });
       _this.giftList.push({ url: row.giftImg });
       // 时间处理
-      _this.buyingForm.startDate = row.startDate;
-      _this.buyingForm.endDate = row.endDate;
-      _this.formDate.push(row.startDate);
-      _this.formDate.push(row.endDate);
+      _this.buyingForm.startDate = new Date(row.startDate);
+      _this.buyingForm.endDate = new Date(row.endDate);
+      _this.formDate.push(_this.buyingForm.startDate);
+      _this.formDate.push(_this.buyingForm.endDate);
 
       _this.buyingForm.price = row.price;
       // _this.buyingForm.saleType = row.saleType;
