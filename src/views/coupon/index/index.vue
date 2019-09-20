@@ -126,13 +126,22 @@
             </el-select>
             <div v-else>{{ getTypeText(issuedForm.type) }}</div>
           </el-form-item>
+          <el-form-item :label="$t('form.name')" prop="name">
+            <el-input v-model="issuedForm.name" :placeholder="$t('table.temp.content')" />
+          </el-form-item>
+          <el-form-item :label="$t('form.denomination')" prop="money">
+            <el-input v-model="issuedForm.money" :placeholder="$t('table.temp.content')" />
+          </el-form-item>
+          <el-form-item :label="$t('form.validDate')" prop="validDate">
+            <el-date-picker
+              v-model="queryDate"
+              type="daterange"
+              range-separator="至"
+              :start-placeholder="$t('form.startTime')"
+              :end-placeholder="$t('form.endTime')"
+            ></el-date-picker>
+          </el-form-item>
           <template v-if="issuedForm.type == 1">
-            <el-form-item :label="$t('form.name')" prop="name">
-              <el-input v-model="issuedForm.name" :placeholder="$t('table.temp.content')" />
-            </el-form-item>
-            <el-form-item :label="$t('form.denomination')" prop="money">
-              <el-input v-model="issuedForm.money" :placeholder="$t('table.temp.content')" />
-            </el-form-item>
             <el-form-item :label="$t('form.blacklist')" prop="blacklist">
               <upload-excel v-if="issuedForm.userNames.length == 0" @getExcel="getExcelData"></upload-excel>
               <el-card v-if="issuedForm.userNames.length > 0" class="box-card">
@@ -152,7 +161,6 @@
               <el-input v-model="issuedForm.everyoneNum" :placeholder="$t('table.temp.content')" />
             </el-form-item>
             <el-form-item :label="$t('form.threshold')" prop="limitNum">
-              <!-- <el-input v-model="issuedForm.limit" :placeholder="$t('table.temp.content')" /> -->
               <el-radio v-model="threshold" label="0">无限制</el-radio>
               <el-radio v-model="threshold" label="1">有限制</el-radio>
               <div class="rule" v-if="threshold == 1">
@@ -161,18 +169,6 @@
                 <span class>元可用</span>
               </div>
             </el-form-item>
-            <el-form-item :label="$t('form.validDate')" prop="validDate">
-              <el-date-picker
-                v-model="queryDate"
-                type="datetimerange"
-                range-separator="至"
-                :start-placeholder="$t('form.startTime')"
-                :end-placeholder="$t('form.endTime')"
-              ></el-date-picker>
-            </el-form-item>
-            <!-- <el-form-item :label="$t('form.remarks')" prop="remark">
-            <wangeditor ref="wangeditor"></wangeditor>
-            </el-form-item>-->
           </template>
           <template v-if="issuedForm.type == 2">
             <el-form-item :label="$t('form.Cover')" prop="file">
@@ -189,22 +185,9 @@
                 <i class="el-icon-plus"></i>
               </el-upload>
             </el-form-item>
-            <el-form-item :label="$t('form.name')" prop="name">
-              <el-input v-model="issuedForm.name" :placeholder="$t('table.temp.content')" />
-            </el-form-item>
-            <el-form-item :label="$t('form.denomination')" prop="money">
-              <el-input v-model="issuedForm.money" :placeholder="$t('table.temp.content')" />
-            </el-form-item>
             <el-form-item :label="$t('form.grantCount')" prop="grantCount">
               <el-input v-model="issuedForm.grantCount" :placeholder="$t('table.temp.content')" />
             </el-form-item>
-            <!-- <el-form-item :label="$t('form.everyoneNumber')" prop="everyoneNum">
-              <el-input
-                :disabled="inputDisabled"
-                v-model="issuedForm.everyoneNum"
-                :placeholder="$t('table.temp.content')"
-              />
-            </el-form-item>-->
             <el-form-item :label="$t('form.addActivity')" prop="activityId">
               <el-input
                 :disabled="true"
@@ -213,15 +196,6 @@
                 style="width: 80%;"
               />
               <el-button type="text" @click="onSubLevel()">{{ $t('form.addActivity') }}</el-button>
-            </el-form-item>
-            <el-form-item :label="$t('form.validDate')" prop="validDate">
-              <el-date-picker
-                v-model="queryDate"
-                type="daterange"
-                range-separator="至"
-                :start-placeholder="$t('form.startTime')"
-                :end-placeholder="$t('form.endTime')"
-              ></el-date-picker>
             </el-form-item>
           </template>
           <el-form-item :label="$t('form.remarks')" prop="remark">
@@ -337,7 +311,7 @@ export default {
             trigger: "change",
             // message: this.generatePoint("required")
             validator: (rule, value, callback) => {
-              console.log("验证")
+              console.log("验证");
               if (this.issuedForm.money == "") {
                 callback(this.generatePoint("required"));
               } else {
@@ -361,18 +335,19 @@ export default {
             trigger: "change",
             // message: this.generatePoint("required")
             validator: (rule, value, callback) => {
+              console.log("验证");
               if (this.issuedForm.everyoneNum == "") {
                 callback(this.generatePoint("required"));
               } else {
                 let falg = true;
                 let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
-                if (!re.test(value)) {
+                if (!re.test(value) || value <= 0) {
                   falg = false;
                 }
                 if (falg) {
                   callback();
                 } else {
-                  callback(this.generatePoint("numOk"));
+                  callback(this.generatePoint("greater0"));
                 }
               }
             }
@@ -382,7 +357,24 @@ export default {
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("required")
+            // message: this.generatePoint("required")
+            validator: (rule, value, callback) => {
+              console.log("验证");
+              if (this.issuedForm.grantCount == "") {
+                callback(this.generatePoint("required"));
+              } else {
+                let falg = true;
+                let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
+                if (!re.test(value) || value <= 0) {
+                  falg = false;
+                }
+                if (falg) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("greater0"));
+                }
+              }
+            }
           }
         ],
         activityId: [
@@ -621,6 +613,11 @@ export default {
     // 类型选择
     typeFormChange(id) {
       console.log("id", id);
+      console.log(
+        "_this.issuedForm.name  --- ",
+        this.issuedForm.name,
+        this.issuedForm.money
+      );
     },
     // 获取Excel组件中的数据
     getExcelData(data) {
@@ -758,7 +755,7 @@ export default {
       });
     },
     handleAvatarSuccess(res, file) {
-      // console.log("handleAvatarSuccess --", res, file);
+      console.log("handleAvatarSuccess --", res, file);
       this.issuedForm.cover = res.data;
     },
     close() {
