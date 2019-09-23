@@ -743,7 +743,7 @@ export default {
     // 添加数据
     createData() {
       let _this = this;
-      // _this.buttonLoading = true;
+      _this.buttonLoading = true;
       _this.$refs.buyingForm.validate(valid => {
         if (valid) {
           try {

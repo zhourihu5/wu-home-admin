@@ -575,10 +575,12 @@ export default {
       _this.experienceForm.cover = row.cover;
       _this.experienceForm.limitNum = row.limitNum;
       _this.experienceForm.count = row.count;
+
       _this.experienceForm.startDate = new Date(row.startDate);
       _this.experienceForm.endDate = new Date(row.endDate);
       _this.formDate.push(_this.experienceForm.startDate);
       _this.formDate.push(_this.experienceForm.endDate);
+
       _this.experienceForm.communityNames = row.communityNames;
       _this.experienceForm.communitys = row.communitys;
       _this.experienceForm.status = row.status;
@@ -675,7 +677,7 @@ export default {
     },
     createData() {
       let _this = this;
-      // _this.buttonLoading = true; // 清空按钮加载状态
+      _this.buttonLoading = true; // 清空按钮加载状态
       _this.$refs.experienceForm.validate(valid => {
         if (valid) {
           try {
