@@ -109,12 +109,43 @@
             />
           </el-form-item>
           <el-form-item :label="$t('table.platform')" prop="flag">
-            <el-select v-model="userForm.flag" :placeholder="$t('table.temp.platform')">
+            <el-select
+              v-model="userForm.flag"
+              :placeholder="$t('table.temp.platform')"
+              @change="selectChange"
+            >
               <el-option
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 角色 -->
+          <el-form-item v-show="showRole" :label="$t('table.role')" prop="role">
+            <el-select
+              v-model="userForm.roleId"
+              :placeholder="$t('table.temp.platform')"
+              @change="roleChange"
+            >
+              <el-option
+                v-for="item in roleList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 社区-->
+          <el-form-item v-show="showCommunity" :label="$t('table.community')" prop="community">
+            <province ref="provinceForm" :params="myForm" @getProvinceVal="getProvinceVal"></province>
+            <el-select v-model="userForm.communityIds" placeholder="请选择" multiple>
+              <el-option
+                v-for="item in communityList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -138,10 +169,13 @@
 </style>
 
 <script>
+import Province from "@/components/Linkage/province"; // 省市区三级联动
 import { getUserList, addUser, removeUser } from "@/api/user";
 import Pagination from "@/components/Pagination"; // 分页
 import { generatePoint } from "@/utils/i18n";
 import { overall } from "@/constant/index"; // 服务 常用常量
+import { findRloeList } from "@/api/permission";
+import { getCommuntityByArea } from "@/api/community";
 // 验证手机号码
 function isvalidPhone(value) {
   var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
@@ -153,7 +187,7 @@ function isvalidPhone(value) {
 }
 
 export default {
-  components: { Pagination },
+  components: { Pagination, Province },
   data() {
     return {
       list: null,
@@ -182,11 +216,17 @@ export default {
         password: "",
         nickName: "",
         id: "",
-        identityCard: "" // 身份证号
+        identityCard: "", // 身份证号
+        roleId: "", // 角色ID
+        communityIds: [], // 社区ID集合
+        cityCode: "" // 省市区code
+        // province: "",
+        // city: "",
+        // area: ""
       },
       // 平台标示选择
       options: overall.user.options,
-
+      roleMark: overall.role.mark, // 角色标示
       // 表单验证
       rules: {
         userName: [
@@ -212,16 +252,50 @@ export default {
           }
         ],
         flag: [
-          { required: true, trigger: "change" },
-          { validator: this.validatePlatform }
-        ],
-        identityCard: [
           {
             required: true,
             trigger: "change",
-            validator: this.validateIdentityCard
+            validator: this.validatePlatform
+          }
+        ],
+        role: [
+          {
+            validator: (rule, value, callback) => {
+              if (this.showRole) {
+                if (this.userForm.roleId) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("mandatory"));
+                }
+              } else {
+                callback();
+              }
+            }
+          }
+        ],
+        community: [
+          {
+            validator: (rule, value, callback) => {
+              if (this.showCommunity) {
+                console.log(" ---- > 123123");
+                if (this.userForm.communityIds.length > 0) {
+                  callback();
+                } else {
+                  callback(this.generatePoint("mandatory"));
+                }
+              } else {
+                callback();
+              }
+            }
           }
         ]
+        // identityCard: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     validator: this.validateIdentityCard
+        //   }
+        // ]
       },
       pickerOptions: {
         // 时间插件控制
@@ -229,7 +303,16 @@ export default {
           // 只可选择大于当前时间的日期
           return time.getTime() < Date.now();
         }
-      }
+      },
+      roleList: [], // 角色集合
+      communityList: [], // 社区集合
+      myForm: {
+        code: "form",
+        areaValue: [],
+        communityValue: []
+      },
+      showCommunity: false, // 是否显示选择社区
+      showRole: false // 是否显示角色
     };
   },
   created() {
@@ -237,6 +320,9 @@ export default {
   },
 
   methods: {
+    aChange() {
+      console.log(" ----- >", this.value5);
+    },
     generatePoint,
     // 查询数据
     fetchData() {
@@ -262,19 +348,60 @@ export default {
     // 显示编辑页面
     showEditUserView(row) {
       let _this = this;
-      console.log(row);
+      console.log("row-- ", row);
+      _this.userForm.id = row.id;
+      _this.userForm.userName = row.userName;
+      _this.userForm.userId = row.userId;
+      _this.userForm.password = row.password;
+      _this.userForm.nickName = row.nickName;
+      _this.userForm.identityCard = row.identityCard;
+      _this.userForm.roleId = row.roleId;
+      _this.userForm.flag = row.flag;
+      _this.userForm.cityCode = row.cityCode; // 省市区
+      // 社区赋值
+      if (row.communityIds) {
+        _this.userForm.communityIds = row.communityIds.split(",");
+      }
+      console.log("_this.userForm --- ", _this.userForm);
+
+      // 处理物业与后台用户权限回显
+      if (row.flag == 1) {
+        _this.buttonLoading = true;
+        _this.getRloeList(function() {
+          _this.showRole = true; // 显示权限
+          if (row.communityIds) {
+            _this.showCommunity = true; // 显示选择社区
+          }
+          _this.buttonLoading = false;
+        });
+      } else {
+        _this.showRole = false;
+        _this.showCommunity = false; // 显示选择社区
+      }
+
+      // 回显示 省市区 社区
+      _this.$nextTick(() => {
+        if (_this.userForm.cityCode) {
+          let arr = _this.userForm.cityCode.split(",");
+          _this.$refs.provinceForm.echoArea([
+            parseInt(arr[0]),
+            parseInt(arr[1]),
+            parseInt(arr[2])
+          ]);
+          getCommuntityByArea({ areaCode: arr[2] }).then(function(res) {
+            _this.communityList = res.data;
+            if (_this.userForm.communityIds.length > 0) {
+              for (let i = 0; i < _this.userForm.communityIds.length; i++) {
+                _this.userForm.communityIds[i] = parseInt(
+                  _this.userForm.communityIds[i]
+                );
+              }
+            }
+          });
+        }
+      });
       _this.dialogStatus = "update"; // 标示创建
       _this.dialogFormVisible = true; // 展示弹窗
-      console.log("_this.userForm -- ", _this.userForm);
-      console.log("row-- ", row);
-      // Object.assign(_this.userForm, row);
-      for (let key in _this.userForm) {
-        for (let key1 in row) {
-          if (key == key1) {
-            _this.userForm[key] = row[key1];
-          }
-        }
-      }
     },
     // 创建数据
     createData() {
@@ -282,13 +409,24 @@ export default {
       _this.buttonLoading = true; // 按钮加载中
       _this.$refs.userForm.validate(valid => {
         if (valid) {
-          console.log("创建", _this.temp);
-          addUser(_this.userForm).then(function(res) {
+          let params = {
+            userName: _this.userForm.userName,
+            nickName: _this.userForm.nickName,
+            flag: _this.userForm.flag,
+            password: _this.userForm.password,
+            identityCard: _this.userForm.identityCard,
+            roleId: _this.userForm.roleId,
+            cityCode: _this.userForm.cityCode
+          };
+          if (_this.userForm.communityIds.length > 0) {
+            params.communityIds = _this.userForm.communityIds.join(",");
+          }
+          console.log("创建用户:", params);
+          addUser(params).then(function(res) {
             console.log("res --- >", res);
             _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
               _this.dialogFormVisible = false; // 关闭弹窗
-              // _this.$refs.userForm.resetFields(); // 重置表单
               // 提示
               _this.$notify({
                 title: _this.generatePoint("notifySuccess.title"),
@@ -308,13 +446,27 @@ export default {
     },
     // 修改数据
     updateData() {
-      console.log("修改");
-      _this.buttonLoading = true; // 按钮加载中
       let _this = this;
+      // _this.buttonLoading = true; // 按钮加载中
       _this.$refs.userForm.validate(valid => {
         console.log("res --- >", _this.userForm);
         if (valid) {
-          addUser(_this.userForm).then(function(res) {
+          let params = {
+            userName: _this.userForm.userName,
+            nickName: _this.userForm.nickName,
+            flag: _this.userForm.flag,
+            password: _this.userForm.password,
+            identityCard: _this.userForm.identityCard,
+            roleId: _this.userForm.roleId,
+            // communityIds: _this.userForm.communityIds.join(","),
+            cityCode: _this.userForm.cityCode,
+            id: _this.userForm.id
+          };
+          if (_this.userForm.communityIds.length > 0) {
+            params.communityIds = _this.userForm.communityIds.join(",");
+          }
+          console.log("params --- >", params);
+          addUser(params).then(function(res) {
             console.log("res --- >", res);
             _this.buttonLoading = false; // 清楚加载中
             if (res.message == "SUCCESS") {
@@ -355,10 +507,14 @@ export default {
     },
     // 验证账号 手机格式
     validateUserName(rule, value, callback) {
-      if (!isvalidPhone(value)) {
-        callback(new Error(this.generatePoint("phone")));
-      } else {
+      if (value == "admin") {
         callback();
+      } else {
+        if (!isvalidPhone(value)) {
+          callback(new Error(this.generatePoint("phone")));
+        } else {
+          callback();
+        }
       }
     },
     // 验证账号 是否重复
@@ -381,13 +537,65 @@ export default {
     },
     getFlagText(flag) {
       let text = "";
-      console.log("options --- ", this.options);
+      // console.log("options --- ", this.options);
       this.options.forEach(function(v) {
         if (v.value == flag) {
           text = v.label;
         }
       });
       return text;
+    },
+    // 查询角色集合
+    getRloeList(callback) {
+      let _this = this;
+      findRloeList().then(function(res) {
+        console.log("获取角色列表 --- ", res);
+        _this.roleList = res.data; // 列表数据
+        typeof callback == "function" ? callback() : "";
+      });
+    },
+    selectChange(val) {
+      let _this = this;
+      console.log("val --- ", val, this.userForm.roleId);
+      // 后台用户
+      if (val == 1) {
+        _this.buttonLoading = true;
+        _this.getRloeList(function() {
+          _this.showRole = true; // 显示权限
+          _this.buttonLoading = false;
+        });
+      } else {
+        _this.showRole = false;
+      }
+    },
+    roleChange(val) {
+      console.log("val --- >", val, this.roleList);
+      let roleMark = "";
+      this.buttonLoading = true;
+      this.roleList.forEach(function(v) {
+        if (v.id == val) {
+          roleMark = v.flag;
+        }
+      });
+      // 如果是物业的话 显示社区
+      if (roleMark == this.roleMark[1].label) {
+        this.showCommunity = true; // 显示选择社区
+      } else {
+        this.showCommunity = false; // 显示选择社区
+      }
+      this.buttonLoading = false;
+
+      console.log("roleMark --- >", roleMark, this.roleMark[1].label);
+    },
+    // 获取省市区数据
+    getProvinceVal(val, code) {
+      let _this = this;
+      // console.log("用户选择了 ", val, code);
+      _this.userForm.cityCode = val.join(","); // 省市区
+      getCommuntityByArea({ areaCode: val[2] }).then(function(res) {
+        console.log("res --- >", res);
+        _this.communityList = res.data;
+      });
     },
     close() {
       this.dialogFormVisible = false;
@@ -398,9 +606,16 @@ export default {
         password: "",
         nickName: "",
         id: "",
-        identityCard: "" // 身份证号
+        identityCard: "", // 身份证号
+        roleId: "",
+        communityIds: "",
+        cityCode: "" // 省市区code
       };
       this.$refs.userForm.resetFields();
+      this.showCommunity = false;
+      this.showRole = false;
+      this.roleList = [];
+      this.communityList = [];
     }
   }
 };

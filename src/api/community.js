@@ -80,7 +80,6 @@ export function getUnitAll(params) {
         method: 'get',
         params,
     })
-
 }
 
 // 根据楼宇查询单元
@@ -99,13 +98,21 @@ export function addFamily(data) {
         method: 'post',
         data
     })
-
 }
 
 // 查询所有家庭
 export function getFamilyAll(params) {
     return request({
         url: '/v1/family/findAll',
+        method: 'get',
+        params,
+    })
+}
+
+// 获取每层下的家庭
+export function getFamilyByStoreyCode(params) {
+    return request({
+        url: '/v1/family/getFamilyByStoreyCode',
         method: 'get',
         params,
     })
@@ -124,6 +131,24 @@ export function addUserAndFamily(data) {
 export function delUserAndFamily(data) {
     return request({
         url: '/v1/family/delUserAndFamily',
+        method: 'post',
+        data,
+    })
+}
+
+// 绑定用户和家庭关系  (提供物业管理员用)
+export function addUserAndFamilyNew(data) {
+    return request({
+        url: 'v1/family/addUserAndFamilyNew',
+        method: 'post',
+        data,
+    })
+}
+
+// 编辑用户和家庭关系
+export function updateUserAndFamilyNew(data) {
+    return request({
+        url: '/v1/family/updateUserAndFamilyNew',
         method: 'post',
         data,
     })
@@ -164,6 +189,15 @@ export function getDistrictByCommuntity(params) {
         params
     })
 }
+
+export function getByIssue(params) {
+    return request({
+        url: '/v1/district/findByCode',
+        method: 'get',
+        params
+    })
+}
+
 
 // 查询社区下所属期
 export function getStageByCommuntity(params) {
@@ -232,6 +266,15 @@ export function getComInfoList(params) {
 export function deleteCommondityInfo(params) {
     return request({
         url: '/v1/communtity/removeCommondityInfo',
+        method: 'get',
+        params
+    })
+}
+
+// 根据登录用户查询社区
+export function getAllByFlag(params) {
+    return request({
+        url: '/v1/communtity/findAllByFlag',
         method: 'get',
         params
     })

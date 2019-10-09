@@ -27,6 +27,15 @@ export function addUser(data) {
   })
 }
 
+// 获取用户名称是否存在 
+export function getUserByUserName(params) {
+  return request({
+    url: '/v1/user/getUserByUserName',
+    method: 'get',
+    params
+  })
+}
+
 // 删除用户
 export function removeUser(data) {
   return request({

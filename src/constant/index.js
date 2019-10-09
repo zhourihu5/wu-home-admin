@@ -8,6 +8,8 @@ import { order } from './order'
 import { examine } from './examine'
 import { coupon } from './coupon'
 import { experience } from './experience'
+import { role } from './role'
+import { identity } from './identity'
 
 export const overall = {
     uploadUrl: process.env.VUE_APP_BASE_API + '/oss/upload',
@@ -21,5 +23,7 @@ export const overall = {
     order: order,
     examine: examine,
     coupon: coupon,
-    experience: experience
+    experience: experience,
+    role: role,
+    identity: identity
 } 

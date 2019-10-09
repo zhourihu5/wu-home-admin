@@ -684,9 +684,9 @@ export default {
             let params = this.bulidParams();
             console.log("params -- >", params);
             addExperoemce(params).then(function(res) {
+              _this.buttonLoading = false; // 清空按钮加载状态
               if (res.message == "SUCCESS") {
-                _this.buttonLoading = false; // 清空按钮加载状态
-                if (params.id) {
+                if (!params.id) {
                   // 保存成功
                   _this.$notify({
                     title: _this.generatePoint("notifySuccess.title"),

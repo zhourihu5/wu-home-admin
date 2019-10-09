@@ -18,6 +18,7 @@ export default {
         stage: 'stage',
         area: 'area',
         household: 'household',
+        householdIndex: 'household',
         member: 'member',
         floor: 'floor',
         unit: 'unit',
@@ -191,7 +192,10 @@ export default {
         amountUsed: "Amount Used",
         validDate: "Valid Date",
         see: "see",
-        nameOfRecipient: "Name Of Recipient"
+        nameOfRecipient: "Name Of Recipient",
+        role: 'role',
+        identity: "identity",
+        verifyPhone: "Verify Phone"
     },
     form: {
         title: 'Title',
@@ -326,8 +330,15 @@ export default {
         experienceNum: 'Experience Num',
         experienceCode: 'Experience',
         onImport: 'Import',
-        storeAddress: 'storeAddress',
+        storeAddress: 'StoreAddress',
         businessTime: 'Dusiness Time',
+        permission: 'Permission',
+        role: ' Role',
+        enable: 'Enable',
+        prohibit: 'prohibit',
+        state: 'State',
+        menu: 'Menu',
+        roleMark: 'Role Mark'
     },
     login: {
         title: 'Login Platform',
@@ -380,7 +391,8 @@ export default {
             message5: 'Congratulations on the success of deletion',
             message6: 'Congratulations on your success',
             message7: 'Congratulations on your success',
-            message8: 'Congratulations on your success'
+            message8: 'Congratulations on your success',
+            message9: 'Loading success'
         },
         login: {
             nickName: 'Please enter your account number.',

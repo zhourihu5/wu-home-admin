@@ -18,6 +18,7 @@ export default {
         stage: '期管理',
         area: '区管理',
         household: '住户管理',
+        householdIndex: '住户管理',
         floor: '楼宇管理',
         unit: '单元管理',
         family: '家庭管理',
@@ -47,7 +48,8 @@ export default {
         busunessIndex: '商家管理',
         experience: '体验卷管理',
         coupon: '优惠券管理',
-        couponIndex: '优惠券'
+        couponIndex: '优惠券',
+        permission: '权限管理',
     },
     table: {
         id: 'ID',
@@ -196,7 +198,10 @@ export default {
         validDate: "有效日期",
         availableGoods: "可使用商品",
         see: "查看",
-        nameOfRecipient: "领取人姓名"
+        nameOfRecipient: "领取人姓名",
+        role: '角色',
+        identity: "成员身份",
+        verifyPhone: "验证手机号"
     },
     form: {
         title: '标题',
@@ -331,6 +336,11 @@ export default {
         onImport: '导入',
         storeAddress: '门店地址',
         businessTime: '活动时间',
+        enable: '启用',
+        prohibit: '禁用',
+        state: '状态',
+        menu: '菜单',
+        roleMark: '角色标示'
     },
     login: {
         title: '吾家运营管理平台',
@@ -383,7 +393,8 @@ export default {
             message5: '恭喜您,删除成功',
             message6: '恭喜您,下架成功',
             message7: '恭喜您,操作成功',
-            message8: '恭喜您,发放成功'
+            message8: '恭喜您,发放成功',
+            message9: '加载成功'
         },
         login: {
             nickName: '请输入账号',
