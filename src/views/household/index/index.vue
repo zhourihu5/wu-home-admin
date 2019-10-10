@@ -345,22 +345,59 @@ export default {
         _this.communityflag = res.data[0].flag; // 社区标示
         _this.communityCode = res.data[0].code; // 默认选择第一个社区
         _this.communityId = res.data[0].id;
-        // 该社区下包含 期与区
-        if (
-          res.data[0].flag.indexOf("期") > -1 &&
-          res.data[0].flag.indexOf("区") > -1
-        ) {
-          // 查询期
-          getStageByCommuntity({ commCode: _this.communityCode })
-            .then(function(stage) {
-              console.log("stage -- ", stage);
-              _this.issuList = stage.data; // 期集合
-              _this.issuCode =
-                _this.issuList.length > 0 ? _this.issuList[0].code : ""; // 默认选择第一个期
-              _this.issuShow = true;
-              return getDistrictByCommuntity({ issuCode: _this.issuCode }); // 查询区
-            })
-            .then(function(issu) {
+        if (res.data[0].flag) {
+          // 该社区下包含 期与区
+          if (
+            res.data[0].flag.indexOf("期") > -1 &&
+            res.data[0].flag.indexOf("区") > -1
+          ) {
+            // 查询期
+            getStageByCommuntity({ commCode: _this.communityCode })
+              .then(function(stage) {
+                console.log("stage -- ", stage);
+                _this.issuList = stage.data; // 期集合
+                _this.issuCode =
+                  _this.issuList.length > 0 ? _this.issuList[0].code : ""; // 默认选择第一个期
+                _this.issuShow = true;
+                return getDistrictByCommuntity({ issuCode: _this.issuCode }); // 查询区
+              })
+              .then(function(issu) {
+                console.log("issu --- >", issu);
+                _this.disList = issu.data; // 区集合
+                _this.disCode =
+                  _this.disList.length > 0 ? _this.disList[0].code : ""; // 用户选中的区
+                _this.disShow = true; // 是否显示选择区
+                _this.getOrganize(); // 查询楼
+              });
+          } else if (
+            res.data[0].flag.indexOf("期") > -1 &&
+            res.data[0].flag.indexOf("区") == -1
+          ) {
+            _this.disCode = "";
+            _this.disList = [];
+            _this.disShow = false;
+            // 该社区包含期
+            getStageByCommuntity({ commCode: _this.communityCode }).then(
+              function(stage) {
+                console.log("stage -- ", stage);
+                _this.issuList = stage.data; // 期集合
+                _this.issuCode =
+                  _this.issuList.length > 0 ? _this.issuList[0].code : ""; // 默认选择第一个期
+                _this.issuShow = true;
+                _this.getOrganize(); // 查询楼
+              }
+            );
+          } else if (
+            res.data[0].flag.indexOf("期") == -1 &&
+            res.data[0].flag.indexOf("区") > -1
+          ) {
+            _this.issuCode = "";
+            _this.issuList = []; // 期集合
+            _this.issuShow = false;
+            // 该社区包含区
+            getDistrictByCommuntity({ issuCode: _this.issuCode }).then(function(
+              issu
+            ) {
               console.log("issu --- >", issu);
               _this.disList = issu.data; // 区集合
               _this.disCode =
@@ -368,52 +405,29 @@ export default {
               _this.disShow = true; // 是否显示选择区
               _this.getOrganize(); // 查询楼
             });
-        } else if (
-          res.data[0].flag.indexOf("期") > -1 &&
-          res.data[0].flag.indexOf("区") == -1
-        ) {
-          _this.disCode = "";
-          _this.disList = [];
-          _this.disShow = false;
-          // 该社区包含期
-          getStageByCommuntity({ commCode: _this.communityCode }).then(function(
-            stage
-          ) {
-            console.log("stage -- ", stage);
-            _this.issuList = stage.data; // 期集合
-            _this.issuCode =
-              _this.issuList.length > 0 ? _this.issuList[0].code : ""; // 默认选择第一个期
-            _this.issuShow = true;
+            console.log("该社区包含区");
+          } else {
+            // 不包含期 区
+            _this.issuShow = false;
+            _this.issuList = [];
+            _this.issuCode = "";
+            _this.disShow = false;
+            _this.disList = [];
+            _this.disCode = "";
             _this.getOrganize(); // 查询楼
-          });
-        } else if (
-          res.data[0].flag.indexOf("期") == -1 &&
-          res.data[0].flag.indexOf("区") > -1
-        ) {
-          _this.issuCode = "";
-          _this.issuList = []; // 期集合
-          _this.issuShow = false;
-          // 该社区包含区
-          getDistrictByCommuntity({ issuCode: _this.issuCode }).then(function(
-            issu
-          ) {
-            console.log("issu --- >", issu);
-            _this.disList = issu.data; // 区集合
-            _this.disCode =
-              _this.disList.length > 0 ? _this.disList[0].code : ""; // 用户选中的区
-            _this.disShow = true; // 是否显示选择区
-            _this.getOrganize(); // 查询楼
-          });
-          console.log("该社区包含区");
+          }
         } else {
-          // 不包含期 区
           _this.issuShow = false;
           _this.issuList = [];
           _this.issuCode = "";
           _this.disShow = false;
           _this.disList = [];
           _this.disCode = "";
-          _this.getOrganize(); // 查询楼
+          _this.floorList = [];
+          _this.unitList = [];
+          _this.layerList = [];
+          _this.familyList = [];
+          _this.identityList = [];
         }
       }
     });
@@ -630,19 +644,58 @@ export default {
       _this.communityflag = item.flag;
       _this.communityCode = item.code; // 默认选择第一个社区
       _this.communityId = item.id;
-      // 包含期与区
-      if (item.flag.indexOf("期") > -1 && item.flag.indexOf("区") > -1) {
-        // 查询期
-        getStageByCommuntity({ commCode: item.code })
-          .then(function(stage) {
+      // 如果
+      // if(!item.flag) {
+      //   item.flag = "";
+      // }
+      if (item.flag) {
+        // 包含期与区
+        if (item.flag.indexOf("期") > -1 && item.flag.indexOf("区") > -1) {
+          // 查询期
+          getStageByCommuntity({ commCode: item.code })
+            .then(function(stage) {
+              console.log("stage --- >", stage);
+              _this.issuList = stage.data; // 期集合
+              _this.issuShow = true;
+              _this.issuCode =
+                _this.issuList.length > 0 ? _this.issuList[0].code : ""; // 默认选择第一个期
+              return getDistrictByCommuntity({ issuCode: _this.issuCode }); // 查询区
+            })
+            .then(function(issu) {
+              console.log("issu --- >", issu);
+              _this.disList = issu.data; // 区集合
+              _this.disCode =
+                _this.disList.length > 0 ? _this.disList[0].code : ""; // 用户选中的区
+              _this.disShow = true; // 是否显示选择区
+              _this.getOrganize(); // 查询楼
+            });
+        } else if (
+          item.flag.indexOf("期") > -1 &&
+          item.flag.indexOf("区") == -1
+        ) {
+          _this.disCode = "";
+          _this.disList = [];
+          _this.disShow = false;
+          // 该社区包含期
+          getStageByCommuntity({ commCode: item.code }).then(function(stage) {
             console.log("stage --- >", stage);
             _this.issuList = stage.data; // 期集合
             _this.issuShow = true;
             _this.issuCode =
               _this.issuList.length > 0 ? _this.issuList[0].code : ""; // 默认选择第一个期
-            return getDistrictByCommuntity({ issuCode: _this.issuCode }); // 查询区
-          })
-          .then(function(issu) {
+            _this.getOrganize(); // 查询楼
+          });
+        } else if (
+          item.flag.indexOf("期") == -1 &&
+          item.flag.indexOf("区") > -1
+        ) {
+          _this.issuCode = "";
+          _this.issuList = []; // 期集合
+          _this.issuShow = false;
+          // 该社区包含区
+          getDistrictByCommuntity({ issuCode: _this.issuCode }).then(function(
+            issu
+          ) {
             console.log("issu --- >", issu);
             _this.disList = issu.data; // 区集合
             _this.disCode =
@@ -650,48 +703,28 @@ export default {
             _this.disShow = true; // 是否显示选择区
             _this.getOrganize(); // 查询楼
           });
-      } else if (
-        item.flag.indexOf("期") > -1 &&
-        item.flag.indexOf("区") == -1
-      ) {
-        _this.disCode = "";
-        _this.disList = [];
-        _this.disShow = false;
-        // 该社区包含期
-        getStageByCommuntity({ commCode: item.code }).then(function(stage) {
-          console.log("stage --- >", stage);
-          _this.issuList = stage.data; // 期集合
-          _this.issuShow = true;
-          _this.issuCode =
-            _this.issuList.length > 0 ? _this.issuList[0].code : ""; // 默认选择第一个期
+        } else {
+          // 不包含期 区
+          _this.issuShow = false;
+          _this.issuList = [];
+          _this.issuCode = "";
+          _this.disShow = false;
+          _this.disList = [];
+          _this.disCode = "";
           _this.getOrganize(); // 查询楼
-        });
-      } else if (
-        item.flag.indexOf("期") == -1 &&
-        item.flag.indexOf("区") > -1
-      ) {
-        _this.issuCode = "";
-        _this.issuList = []; // 期集合
-        _this.issuShow = false;
-        // 该社区包含区
-        getDistrictByCommuntity({ issuCode: _this.issuCode }).then(function(
-          issu
-        ) {
-          console.log("issu --- >", issu);
-          _this.disList = issu.data; // 区集合
-          _this.disCode = _this.disList.length > 0 ? _this.disList[0].code : ""; // 用户选中的区
-          _this.disShow = true; // 是否显示选择区
-          _this.getOrganize(); // 查询楼
-        });
+        }
       } else {
-        // 不包含期 区
         _this.issuShow = false;
         _this.issuList = [];
         _this.issuCode = "";
         _this.disShow = false;
         _this.disList = [];
         _this.disCode = "";
-        _this.getOrganize(); // 查询楼
+        _this.floorList = [];
+        _this.unitList = [];
+        _this.layerList = [];
+        _this.familyList = [];
+        _this.identityList = [];
       }
     },
     // 查询家庭成员列表
