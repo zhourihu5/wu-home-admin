@@ -197,6 +197,7 @@ export default {
       _this.findMenu(function() {
         _this.dialogStatus = "create"; // 标示创建
         _this.dialogFormVisible = true; // 展示弹窗
+        _this.$refs.tree.setCheckedKeys([]);
       });
     },
     // 查询菜单
