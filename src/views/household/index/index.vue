@@ -181,12 +181,12 @@
                 <el-table-column align="center" :label="$t('table.id')" width="80">
                   <template slot-scope="scope">{{ scope.row.id }}</template>
                 </el-table-column>
-                <el-table-column :label="$t('table.name')" width="100" align="center">
+                <el-table-column :label="$t('table.name')" width="120" align="center">
                   <template slot-scope="scope">
                     <span>{{ scope.row.nickName ? scope.row.nickName : $t('table.noTime')}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column align="center" :label="$t('table.phone')" width="170">
+                <el-table-column align="center" :label="$t('table.phone')" width="150">
                   <template
                     slot-scope="scope"
                   >{{ scope.row.userName ? scope.row.userName : $t('table.noTime')}}</template>
