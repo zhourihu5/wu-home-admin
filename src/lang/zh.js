@@ -100,6 +100,7 @@ export default {
             platform: '请选择平台',
             community: '请输入社区名称',
             communityChoice: '请选择社区',
+            pleaseChoose: '请选择',
             floorChoice: '请选择楼宇',
             unitChoice: '请选择单元',
             familyChoice: '请选择家庭',
@@ -201,7 +202,8 @@ export default {
         nameOfRecipient: "领取人姓名",
         role: '角色',
         identity: "成员身份",
-        verifyPhone: "验证手机号"
+        verifyPhone: "验证手机号",
+        familyMemList: "家庭成员信息表"
     },
     form: {
         title: '标题',

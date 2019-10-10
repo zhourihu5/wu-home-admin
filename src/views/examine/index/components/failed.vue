@@ -81,7 +81,7 @@
 </template>
 <script>
 import Pagination from "@/components/Pagination"; // 分页
-import { getApplyAll } from "@/api/examine";
+import { getApplyAll, audit } from "@/api/examine";
 import { overall } from "@/constant/index";
 export default {
   components: { Pagination },
@@ -173,6 +173,7 @@ export default {
         center: true
       })
         .then(() => {
+          console.log("访问后台")
           audit({
             id: row.id,
             status: overall.examine.status[1].value.toString(),

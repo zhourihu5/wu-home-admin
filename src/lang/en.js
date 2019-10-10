@@ -97,6 +97,7 @@ export default {
             platform: 'Please choose platform',
             community: 'Please enter the community name',
             communityChoice: 'Please choose the community',
+            pleaseChoose: 'Please choose',
             floorChoice: 'Please choose the floor',
             unitChoice: 'Please choose the unit',
             familyChoice: 'Please choose the family',
@@ -195,7 +196,8 @@ export default {
         nameOfRecipient: "Name Of Recipient",
         role: 'role',
         identity: "identity",
-        verifyPhone: "Verify Phone"
+        verifyPhone: "Verify Phone",
+        familyMemList: "Family Membership Information Table"
     },
     form: {
         title: 'Title',
@@ -427,8 +429,8 @@ export default {
         familyUnit: 'Obtain this data after building selection',
         uptime: 'Uptime required',
         title: 'Title must be filled in',
-        required: 'required',
-        mandatory: 'required',
+        required: 'Required',
+        mandatory: 'Required',
         upload: 'Must upload',
         num: 'Positive integers must be filled in',
         modular: 'Please choose modular',

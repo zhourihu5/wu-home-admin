@@ -3,7 +3,7 @@
     <!-- search --->
     <div class="household-container">
       <!-- 社区 --->
-      <el-select v-model="communityCode" placeholder="请选择" @change="communityChange">
+      <el-select v-model="communityCode" :placeholder="$t('table.temp.pleaseChoose')" @change="communityChange">
         <el-option
           v-for="item in communityList"
           :key="item.id"
@@ -12,11 +12,11 @@
         ></el-option>
       </el-select>
       <!-- 期 --->
-      <el-select v-show="issuShow" v-model="issuCode" placeholder="请选择" @change="issuChange">
+      <el-select v-show="issuShow" v-model="issuCode" :placeholder="$t('table.temp.pleaseChoose')" @change="issuChange">
         <el-option v-for="item in issuList" :key="item.id" :label="item.name" :value="item.code"></el-option>
       </el-select>
       <!-- 区 --->
-      <el-select v-show="disShow" v-model="disCode" placeholder="请选择" @change="disChange">
+      <el-select v-show="disShow" v-model="disCode" :placeholder="$t('table.temp.pleaseChoose')" @change="disChange">
         <el-option v-for="item in disList" :key="item.id" :label="item.name" :value="item.code"></el-option>
       </el-select>
     </div>
@@ -24,7 +24,7 @@
       <el-row type="flex">
         <el-col :span="3">
           <div class="item-box" v-loading="floorLoading">
-            <h3>楼</h3>
+            <h3>{{ $t('form.floor') }}</h3>
             <ul v-if="floorList.length > 0" class="list-data">
               <li
                 v-for="(item, index) in floorList"
@@ -38,7 +38,7 @@
         </el-col>
         <el-col :span="3">
           <div class="item-box" v-loading="unitLoading">
-            <h3>单元</h3>
+            <h3>{{ $t('form.unit') }}</h3>
             <ul v-if="unitList.length > 0" class="list-data">
               <li
                 v-for="(item, index) in unitList"
@@ -52,7 +52,7 @@
         </el-col>
         <el-col :span="3">
           <div class="item-box" v-loading="layerLoading">
-            <h3>层</h3>
+            <h3>{{ $t('form.layer') }}</h3>
             <ul v-if="layerList.length > 0" class="list-data">
               <li
                 v-for="(item, index) in layerList"
@@ -66,7 +66,7 @@
         </el-col>
         <el-col :span="3">
           <div class="item-box" v-loading="familyLoading">
-            <h3>家庭</h3>
+            <h3>{{ $t('form.family') }}</h3>
             <ul v-if="familyList.length > 0" class="list-data">
               <li
                 v-for="(item, index) in familyList"
@@ -80,15 +80,15 @@
         </el-col>
         <el-col :span="12">
           <div class="item-box" v-loading="regionLoading">
-            <h3>添加家庭成员</h3>
+            <h3>{{ $t('table.addMember') }}</h3>
             <div class="item-form">
-              <h2 style="text-align: center">家庭成员信息表</h2>
+              <h2 style="text-align: center">{{ $t('table.familyMemList') }}</h2>
               <el-form
                 ref="bindForm"
                 :rules="rules"
                 :model="bindForm"
                 label-position="left"
-                label-width="80px"
+                label-width="100px"
                 style="width: 50%; margin: 0 auto;"
               >
                 <el-form-item :label="$t('table.name')" prop="name">
