@@ -293,13 +293,13 @@ export default {
             validator: this.validatePhone
           }
         ],
-        identityCard: [
-          {
-            required: true,
-            trigger: "change",
-            validator: this.validateIdentityCard
-          }
-        ],
+        // identityCard: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     validator: this.validateIdentityCard
+        //   }
+        // ],
         identity: [
           {
             required: true,
