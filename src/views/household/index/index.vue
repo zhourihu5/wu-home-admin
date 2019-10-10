@@ -634,6 +634,7 @@ export default {
     // 选择社区
     communityChange(val) {
       let _this = this;
+      _this.empty(); // 清空表单
       let item = null;
       for (let i = 0; i < _this.communityList.length; i++) {
         if (val == _this.communityList[i].code) {
@@ -740,6 +741,7 @@ export default {
     // 选择楼
     selectionFloor(index, item, event) {
       let _this = this;
+      _this.empty(); // 清空表单
       _this.floorCurrent = index;
       _this.unitLoading = true;
       // 查询单元
@@ -750,6 +752,7 @@ export default {
           if (unit) {
             console.log("unit --- ", unit);
             _this.unitList = unit.data;
+            _this.unitCurrent = 0;
             if (unit.data.length > 0) {
               return getLayerByCommuntity({ unitCode: unit.data[0].code }); // 查询层
             }
@@ -762,6 +765,7 @@ export default {
           _this.familyLoading = true;
           if (layer) {
             _this.layerList = layer.data;
+            _this.layerCurrent = 0;
             if (layer.data.length > 0) {
               return getFamilyByStoreyCode({ storeyCode: layer.data[0].code }); // 查询家庭
             }
@@ -774,6 +778,7 @@ export default {
           if (family) {
             console.log("family ---", family);
             _this.familyList = family.data;
+            _this.familyCurrent = 0;
             _this.bindForm.familyId =
               family.data.length > 0 ? family.data[0].id : "";
             if (_this.bindForm.familyId !== "") {
@@ -783,6 +788,7 @@ export default {
             }
           } else {
             _this.familyList = [];
+            _this.familyCurrent = 0;
             _this.identityList = [];
             _this.bindForm.familyId = "";
           }
@@ -791,6 +797,7 @@ export default {
     // 选择单元
     selectionUnit(index, item, event) {
       let _this = this;
+      _this.empty(); // 清空表单
       _this.unitCurrent = index;
       _this.layerLoading = true;
       getLayerByCommuntity({ unitCode: item.code })
@@ -799,6 +806,7 @@ export default {
           _this.familyLoading = true;
           if (layer) {
             _this.layerList = layer.data;
+            _this.layerCurrent = 0;
             if (layer.data.length > 0) {
               return getFamilyByStoreyCode({ storeyCode: layer.data[0].code }); // 查询家庭
             }
@@ -811,6 +819,7 @@ export default {
           if (family) {
             console.log("family ---", family);
             _this.familyList = family.data;
+            _this.familyCurrent = 0;
             _this.bindForm.familyId =
               family.data.length > 0 ? family.data[0].id : "";
             if (_this.bindForm.familyId !== "") {
@@ -818,6 +827,7 @@ export default {
             }
           } else {
             _this.familyList = [];
+            _this.familyCurrent = 0;
             _this.identityList = [];
             _this.bindForm.familyId = "";
           }
@@ -826,6 +836,7 @@ export default {
     // 选择层
     selectionLayer(index, item, event) {
       let _this = this;
+      _this.empty(); // 清空表单
       _this.layerCurrent = index;
       _this.familyLoading = true;
       getFamilyByStoreyCode({ storeyCode: item.code }).then(function(family) {
@@ -833,6 +844,7 @@ export default {
         if (family) {
           console.log("family ---", family);
           _this.familyList = family.data;
+          _this.familyCurrent = 0;
           _this.bindForm.familyId =
             family.data.length > 0 ? family.data[0].id : "";
           if (_this.bindForm.familyId !== "") {
@@ -842,6 +854,7 @@ export default {
           }
         } else {
           _this.familyList = [];
+          _this.familyCurrent = 0;
           _this.identityList = [];
           _this.bindForm.familyId = "";
         }
@@ -850,6 +863,7 @@ export default {
     // 选择家庭
     selectionFamily(index, item, event) {
       let _this = this;
+      _this.empty(); // 清空表单
       _this.familyCurrent = index;
       _this.bindForm.familyId = item.id; // 记录用户选择的家庭
       console.log("binForm  --- ", _this.bindForm);
@@ -858,6 +872,7 @@ export default {
     // 选择期
     issuChange(val) {
       let _this = this;
+      _this.empty(); // 清空表单
       let item = null;
       if (_this.communityflag.indexOf("区") > -1) {
         // 查询区
@@ -877,6 +892,7 @@ export default {
     // 选择区
     disChange(val) {
       let _this = this;
+      _this.empty(); // 清空表单
       console.log("val ---- ", val);
       _this.getOrganize(); // 查询楼
     },
