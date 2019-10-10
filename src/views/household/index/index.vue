@@ -3,7 +3,12 @@
     <!-- search --->
     <div class="household-container">
       <!-- 社区 --->
-      <el-select v-model="communityCode" :placeholder="$t('table.temp.pleaseChoose')" @change="communityChange">
+      <el-select
+        v-model="communityCode"
+        filterable
+        :placeholder="$t('table.temp.pleaseChoose')"
+        @change="communityChange"
+      >
         <el-option
           v-for="item in communityList"
           :key="item.id"
@@ -12,11 +17,21 @@
         ></el-option>
       </el-select>
       <!-- 期 --->
-      <el-select v-show="issuShow" v-model="issuCode" :placeholder="$t('table.temp.pleaseChoose')" @change="issuChange">
+      <el-select
+        v-show="issuShow"
+        v-model="issuCode"
+        :placeholder="$t('table.temp.pleaseChoose')"
+        @change="issuChange"
+      >
         <el-option v-for="item in issuList" :key="item.id" :label="item.name" :value="item.code"></el-option>
       </el-select>
       <!-- 区 --->
-      <el-select v-show="disShow" v-model="disCode" :placeholder="$t('table.temp.pleaseChoose')" @change="disChange">
+      <el-select
+        v-show="disShow"
+        v-model="disCode"
+        :placeholder="$t('table.temp.pleaseChoose')"
+        @change="disChange"
+      >
         <el-option v-for="item in disList" :key="item.id" :label="item.name" :value="item.code"></el-option>
       </el-select>
     </div>
@@ -114,7 +129,11 @@
                   />
                 </el-form-item>
                 <el-form-item :label="$t('table.identity')" prop="identity">
-                  <el-select v-model="bindForm.identity" :placeholder="$t('table.temp.type')">
+                  <el-select
+                    v-model="bindForm.identity"
+                    @change="identityChange"
+                    :placeholder="$t('table.temp.type')"
+                  >
                     <el-option
                       v-for="item in identityTypes"
                       :key="item.value"
@@ -123,6 +142,22 @@
                     ></el-option>
                   </el-select>
                 </el-form-item>
+                <template v-if="isBinding">
+                  <el-form-item :label="$t('table.ipad')" prop="paidCode">
+                    <el-input
+                      class="my-input"
+                      v-model="bindForm.paidCode"
+                      :placeholder="$t('table.temp.content')"
+                    />
+                  </el-form-item>
+                  <!-- <el-form-item :label="$t('table.base')" prop="baseCode">
+                    <el-input
+                      class="my-input"
+                      v-model="bindForm.baseCode"
+                      :placeholder="$t('table.temp.content')"
+                    />
+                  </el-form-item>-->
+                </template>
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="empty">{{ $t('table.cancel') }}</el-button>
@@ -288,20 +323,24 @@ export default {
         identityCard: "",
         identity: "",
         familyId: "",
-        id: ""
+        id: "",
+        paidCode: "" // 门口机code
+        // baseCode: "" // 底座code
       },
       identityList: [], // 成员集合数据
       buttonLoading: false,
       listLoading: false,
       dialogStatus: "create", // 标示当前操作是添加、还是修改
-      identityTypes: overall.identity.types
+      identityTypes: overall.identity.types,
+      roleMark: overall.role.mark, // 角色标示
+      isBinding: false // 是否显示绑定门口机、底座输入框
     };
   },
   created() {
     let _this = this;
     getAllByFlag().then(function(res) {
+      console.log("res ---- >", res);
       if (res.data.length > 0) {
-        console.log("res ---- >", res.data);
         _this.communityList = res.data; // 社区集合
         _this.communityflag = res.data[0].flag; // 社区标示
         _this.communityCode = res.data[0].code; // 默认选择第一个社区
@@ -472,6 +511,20 @@ export default {
   },
   methods: {
     generatePoint,
+    // 身份选择
+    identityChange(val) {
+      console.log("val --- ", val, this.identityTypes[1].value);
+      // 如果是业主 则验证身份显示编码
+      if (val == this.identityTypes[1].value) {
+        var user = JSON.parse(localStorage.getItem("user"));
+        // 根据登录用户的角色 来决定是否显示绑定门口机编码
+        if (user.roleFlag == this.roleMark[0].label) {
+          this.isBinding = true;
+        }
+      } else {
+        this.isBinding = false;
+      }
+    },
     // 验证账号 手机格式
     validatePhone(rule, value, callback) {
       let _this = this;
@@ -508,6 +561,7 @@ export default {
           _this.unitLoading = true;
           if (floor) {
             _this.floorList = floor.data;
+            _this.floorCurrent = 0;
             if (floor.data.length > 0) {
               return getUnitByFloor({ floorCode: floor.data[0].code }); // 查询单元
             }
@@ -521,6 +575,7 @@ export default {
           _this.layerLoading = true;
           if (unit) {
             _this.unitList = unit.data;
+            _this.unitCurrent = 0;
             if (unit.data.length > 0) {
               return getLayerByCommuntity({ unitCode: unit.data[0].code }); // 查询层
             }
@@ -534,6 +589,7 @@ export default {
           _this.familyLoading = true;
           if (layer) {
             _this.layerList = layer.data;
+            _this.layerCurrent = 0;
             if (layer.data.length > 0) {
               return getFamilyByStoreyCode({ storeyCode: layer.data[0].code }); // 查询家庭
             }
@@ -546,6 +602,7 @@ export default {
           _this.familyLoading = false;
           if (family) {
             _this.familyList = family.data;
+            _this.familyCurrent = 0;
             _this.bindForm.familyId =
               family.data.length > 0 ? family.data[0].id : "";
             if (_this.bindForm.familyId !== "") {
@@ -808,8 +865,19 @@ export default {
       this.bindForm.name = row.nickName;
       this.bindForm.phone = row.userName;
       this.bindForm.identityCard = row.identityCard;
-      this.bindForm.identity = row.identity.toString();
       this.bindForm.id = row.id;
+      this.bindForm.identity = row.identity.toString();
+      // 如果是业主 则验证身份显示编码
+      if (this.bindForm.identity == this.identityTypes[1].value) {
+        var user = JSON.parse(localStorage.getItem("user"));
+        // 根据登录用户的角色 来决定是否显示绑定门口机编码
+        if (user.roleFlag == this.roleMark[0].label) {
+          this.isBinding = true;
+        }
+      } else {
+        this.isBinding = false;
+      }
+      this.bindForm.paidCode = row.deviceKey ? row.deviceKey : ""; // 门口机设备编码
       console.log("_this.binfForm --- ", this.bindForm);
     },
     // 创建
@@ -828,6 +896,13 @@ export default {
             params.identityCard = _this.bindForm.identityCard;
             params.nickName = _this.bindForm.name;
             params.userName = _this.bindForm.phone;
+            // 如果页面显示出门口机code输入框 则携带参数
+            if (_this.isBinding) {
+              params.deviceKey = _this.bindForm.paidCode;
+              params.deviceFlag = overall.equipment.flag[1].value;
+              params.deviceType = overall.equipment.types[0].value;
+              params.deviceButtonKey = "01";
+            }
             console.log("params ---- >", params);
             addUserAndFamilyNew(params).then(function(res) {
               console.log("res --- >", res);
@@ -876,6 +951,13 @@ export default {
             params.nickName = _this.bindForm.name;
             params.userName = _this.bindForm.phone;
             params.userId = _this.bindForm.id;
+            // 如果页面显示出门口机code输入框 则携带参数
+            if (_this.isBinding) {
+              params.deviceKey = _this.bindForm.paidCode;
+              params.deviceFlag = overall.equipment.flag[1].value;
+              params.deviceType = overall.equipment.types[0].value;
+              params.deviceButtonKey = "01";
+            }
             console.log("params --- ", params);
             updateUserAndFamilyNew(params).then(function(res) {
               console.log("res --- >", res);
@@ -942,10 +1024,6 @@ export default {
             message: "已取消解绑"
           });
         });
-
-      //          "familyId": 0,
-      //   "userId": 0,
-      //   "userIds": "string"
     },
     // 清空
     empty() {
@@ -957,6 +1035,8 @@ export default {
       this.$refs.bindForm.resetFields(); // 重置省市区
       this.disabledPhone = false; // 解除 禁止修改手机号码
       this.dialogStatus = "create"; // 标示当前操作是添加、还是修改
+      this.isBinding = false; // 不显示门口机编码
+      this.bindForm.paidCode = ""; // 清空paidcode
     }
   }
 };
