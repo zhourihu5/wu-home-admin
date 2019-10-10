@@ -192,10 +192,10 @@ export default {
         grantNum: "Grant Num",
         amountUsed: "Amount Used",
         validDate: "Valid Date",
-        see: "see",
+        see: "See",
         nameOfRecipient: "Name Of Recipient",
-        role: 'role',
-        identity: "identity",
+        role: 'Role',
+        identity: "Identity",
         verifyPhone: "Verify Phone",
         familyMemList: "Family Membership Information Table"
     },
