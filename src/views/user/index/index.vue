@@ -219,10 +219,11 @@ export default {
         identityCard: "", // 身份证号
         roleId: "", // 角色ID
         communityIds: [], // 社区ID集合
-        cityCode: "" // 省市区code
+        cityCode: "", // 省市区code
         // province: "",
         // city: "",
         // area: ""
+        row: null // 编辑时候的缓存对象
       },
       // 平台标示选择
       options: overall.user.options,
@@ -348,6 +349,7 @@ export default {
     // 显示编辑页面
     showEditUserView(row) {
       let _this = this;
+      _this.row = row;
       console.log("row-- ", row);
       _this.userForm.id = row.id;
       _this.userForm.userName = row.userName;
@@ -449,7 +451,6 @@ export default {
       let _this = this;
       // _this.buttonLoading = true; // 按钮加载中
       _this.$refs.userForm.validate(valid => {
-        console.log("res --- >", _this.userForm);
         if (valid) {
           let params = {
             userName: _this.userForm.userName,
@@ -460,12 +461,22 @@ export default {
             roleId: _this.userForm.roleId,
             // communityIds: _this.userForm.communityIds.join(","),
             cityCode: _this.userForm.cityCode,
-            id: _this.userForm.id
+            id: _this.userForm.id,
+            createDate: _this.row.createDate,
+            wxOpenId: _this.row.wxOpenId,
+            realName: _this.row.realName,
+            birthday: _this.row.birthday,
+            sex: _this.row.sex,
+            wxCover: _this.row.wxCover,
+            wxNickName: _this.row.wxNickName,
+            communityCode: _this.row.communityCode,
+            communityIds: _this.row.communityIds,
+            cityCode: _this.row.cityCode,
           };
           if (_this.userForm.communityIds.length > 0) {
             params.communityIds = _this.userForm.communityIds.join(",");
           }
-          console.log("params --- >", params);
+          console.log("params --- >", params, this.row);
           addUser(params).then(function(res) {
             console.log("res --- >", res);
             _this.buttonLoading = false; // 清楚加载中
@@ -616,6 +627,7 @@ export default {
       this.showRole = false;
       this.roleList = [];
       this.communityList = [];
+      this.row = null;
     }
   }
 };
