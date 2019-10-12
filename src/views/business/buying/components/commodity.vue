@@ -83,9 +83,13 @@ export default {
   props: {
     commodity: {
       type: Object
+    },
+    type: {
+      type: String
     }
   },
   created() {
+    console.log("this.type --- >", this.type)
     if (this.commodity) {
       this.listQuery.name = this.commodity.name;
       this.commodityId = this.commodity.id;
@@ -112,7 +116,7 @@ export default {
       this.fetchData();
     },
     userChange(row) {
-      console.log(row);
+      console.log(row, this.type);
       this.$emit("transmitUser", row);
     }
   }

@@ -214,6 +214,7 @@ export default {
         Summary: '摘要',
         addModule: '添加模块',
         addCommodity: '添加商品',
+        addGift: '添加赠品',
         addCommodityLabel: '添加商品标签',
         addBusiness: '添加商家',
         addCondition: '添加条件',

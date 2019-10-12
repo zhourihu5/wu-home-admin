@@ -208,6 +208,7 @@ export default {
         Summary: 'Summary',
         addModule: 'Add Module',
         addCommodity: 'Add Commodity',
+        addGift: 'Add Gifts',
         addCommodityLabel: 'Add Commodity Label',
         addBusiness: 'Add Business',
         addCondition: 'Add Condition',

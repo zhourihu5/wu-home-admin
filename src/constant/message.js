@@ -12,6 +12,10 @@ export const message = {
         {
             label: "社区通知",
             value: 2
+        },
+        {
+            label: "政务通知",
+            value: 4
         }
     ]
 }

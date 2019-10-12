@@ -53,7 +53,7 @@
             slot-scope="scope"
           >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.name')" width="150">
+        <el-table-column align="center" :label="$t('table.name')" width="300">
           <template
             slot-scope="scope"
           >{{ scope.row.activityName ? scope.row.activityName : $t('table.noTime')}}</template>
