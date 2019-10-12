@@ -15,7 +15,7 @@ export const message = {
         },
         {
             label: "政务通知",
-            value: 4
+            value: 3
         }
     ]
 }
