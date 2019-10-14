@@ -293,13 +293,13 @@ export default {
             validator: this.validatePhone
           }
         ],
-        // identityCard: [
-        //   {
-        //     required: true,
-        //     trigger: "change",
-        //     validator: this.validateIdentityCard
-        //   }
-        // ],
+        identityCard: [
+          {
+            // required: true,
+            // trigger: "change",
+            validator: this.validateIdentityCard
+          }
+        ],
         identity: [
           {
             required: true,
@@ -550,10 +550,14 @@ export default {
     },
     // 验证身份证格式
     validateIdentityCard(rule, value, callback) {
-      if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value)) {
-        callback();
+      if (value) {
+        if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value)) {
+          callback();
+        } else {
+          callback(new Error(this.generatePoint("identityCard")));
+        }
       } else {
-        callback(new Error(this.generatePoint("identityCard")));
+        callback();
       }
     },
     // 查询  从楼开始查询到家庭
@@ -734,6 +738,11 @@ export default {
       _this.listLoading = true;
       findFamilyUser({ familyId: _this.bindForm.familyId }).then(function(res) {
         console.log("家庭成员  --- >", res);
+        if (res.data.length > 0) {
+          _this.bindForm.paidCode = res.data[0].deviceKey; // pad编码
+        } else {
+          _this.bindForm.paidCode = "";
+        }
         _this.listLoading = false;
         _this.identityList = res.data; // 列表数据
       });
@@ -1085,7 +1094,7 @@ export default {
       this.disabledPhone = false; // 解除 禁止修改手机号码
       this.dialogStatus = "create"; // 标示当前操作是添加、还是修改
       this.isBinding = false; // 不显示门口机编码
-      this.bindForm.paidCode = ""; // 清空paidcode
+      // this.bindForm.paidCode = ""; // 清空paidcode
     }
   }
 };
