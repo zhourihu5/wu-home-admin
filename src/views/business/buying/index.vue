@@ -733,6 +733,7 @@ export default {
       } else {
         this.buyingForm.giftName = commodity.name;
         this.buyingForm.giftImg = commodity.uploadImg.split(",")[0];
+        this.dialogCommodityVisible = false;
       }
       console.log("---- >", this.buyingForm)
     },

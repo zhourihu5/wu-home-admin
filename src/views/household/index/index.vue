@@ -150,13 +150,13 @@
                       :placeholder="$t('table.temp.content')"
                     />
                   </el-form-item>
-                  <!-- <el-form-item :label="$t('table.base')" prop="baseCode">
+                  <el-form-item :label="$t('table.base')" prop="baseCode">
                     <el-input
                       class="my-input"
                       v-model="bindForm.baseCode"
                       :placeholder="$t('table.temp.content')"
                     />
-                  </el-form-item>-->
+                  </el-form-item>
                 </template>
               </el-form>
               <div slot="footer" class="dialog-footer">
@@ -324,8 +324,8 @@ export default {
         identity: "",
         familyId: "",
         id: "",
-        paidCode: "" // 门口机code
-        // baseCode: "" // 底座code
+        paidCode: "", // 门口机code
+        baseCode: "" // 底座code
       },
       identityList: [], // 成员集合数据
       buttonLoading: false,
@@ -740,8 +740,10 @@ export default {
         console.log("家庭成员  --- >", res);
         if (res.data.length > 0) {
           _this.bindForm.paidCode = res.data[0].deviceKey; // pad编码
+          _this.bindForm.baseCode = res.data[0].pedestalKey; // 底座编码
         } else {
           _this.bindForm.paidCode = "";
+          _this.bindForm.baseCode = "";
         }
         _this.listLoading = false;
         _this.identityList = res.data; // 列表数据
@@ -936,6 +938,7 @@ export default {
         this.isBinding = false;
       }
       this.bindForm.paidCode = row.deviceKey ? row.deviceKey : ""; // 门口机设备编码
+      this.bindForm.baseCode = row.pedestalKey ? row.pedestalKey : ""; // 底座编码
       console.log("_this.binfForm --- ", this.bindForm);
     },
     // 创建
@@ -956,7 +959,8 @@ export default {
             params.userName = _this.bindForm.phone;
             // 如果页面显示出门口机code输入框 则携带参数
             if (_this.isBinding) {
-              params.deviceKey = _this.bindForm.paidCode;
+              params.deviceKey = _this.bindForm.paidCode; // 门口机编码
+              params.pedestalKey = _this.bindForm.baseCode; // 底座编码
               params.deviceFlag = overall.equipment.flag[1].value;
               params.deviceType = overall.equipment.types[0].value;
               params.deviceButtonKey = "01";
@@ -1011,7 +1015,8 @@ export default {
             params.userId = _this.bindForm.id;
             // 如果页面显示出门口机code输入框 则携带参数
             if (_this.isBinding) {
-              params.deviceKey = _this.bindForm.paidCode;
+              params.deviceKey = _this.bindForm.paidCode; // 门口机编码
+              params.pedestalKey = _this.bindForm.baseCode; // 底座编码
               params.deviceFlag = overall.equipment.flag[1].value;
               params.deviceType = overall.equipment.types[0].value;
               params.deviceButtonKey = "01";
