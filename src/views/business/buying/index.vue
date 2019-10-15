@@ -173,7 +173,7 @@
           />
           <el-button
             type="text"
-            @click="showCommodityList('commodity')"
+            @click="dialogCommodityVisible = true"
           >{{ $t('form.addCommodity') }}</el-button>
         </el-form-item>
         <el-form-item :label="$t('form.groupBuying')" prop="price">
@@ -198,16 +198,7 @@
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item :label="$t('form.giftGiving')" prop="giftName">
-          <el-input
-            :disabled="true"
-            v-model="buyingForm.giftName"
-            :placeholder="$t('table.temp.id')"
-            class="my-input"
-          />
-          <el-button type="text" @click="showCommodityList('gift')">{{ $t('form.addGift') }}</el-button>
-        </el-form-item>
-        <!-- <el-form-item :label="$t('form.giftGiving')" prop="file">
+        <el-form-item :label="$t('form.giftGiving')" prop="file">
           <el-upload
             :action="updateURL"
             list-type="picture-card"
@@ -221,7 +212,7 @@
           >
             <i class="el-icon-plus"></i>
           </el-upload>
-        </el-form-item>-->
+        </el-form-item>
         <!-- <el-form-item :label="$t('form.reductionType')" prop="saleType">
           <el-select v-model="buyingForm.saleType" placeholder="请选择">
             <el-option
@@ -262,11 +253,7 @@
       <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
         <!-- 住戶列表-->
         <transition name="el-zoom-in-top">
-          <commodity-List
-            :type="showCommodityType"
-            :commodity="buyingForm.commodity"
-            @transmitUser="userChoiceCommodity"
-          ></commodity-List>
+          <commodity-List :commodity="buyingForm.commodity" @transmitUser="userChoiceCommodity"></commodity-List>
         </transition>
       </el-dialog>
     </el-dialog>
@@ -418,8 +405,7 @@ export default {
         remark: "", // 详情
         isShow: "",
         status: "", // 状态
-        giftImg: "", // 团购赠品图片
-        giftName: "" // 赠品名称
+        giftImg: "" // 团购赠品图片
       },
       rules: {
         file: [
@@ -591,12 +577,11 @@ export default {
       communityList: [], // 社区集合
       updateURL: overall.uploadUrl,
       fileList: [], // 上传图片回显列表
-      // giftList: [], // 上传团购赠礼回显示列表
+      giftList: [], // 上传团购赠礼回显示列表
       uploadParams: {
         type: "activity"
       },
-      myRules: [], // 规则
-      showCommodityType: ""
+      myRules: [] // 规则
     };
   },
   created() {
@@ -654,7 +639,7 @@ export default {
       console.log("row --- >", row);
       _this.buyingForm.title = row.title;
       _this.fileList.push({ url: row.cover });
-      // _this.giftList.push({ url: row.giftImg });
+      _this.giftList.push({ url: row.giftImg });
       // 时间处理
       _this.buyingForm.startDate = new Date(row.startDate);
       _this.buyingForm.endDate = new Date(row.endDate);
@@ -718,24 +703,11 @@ export default {
       _this.dialogStatus = "update"; // 标示创建
       _this.dialogFormVisible = true; // 展示弹窗
     },
-    // 显示商品列表
-    showCommodityList(type) {
-      this.showCommodityType = type;
-      this.dialogCommodityVisible = true;
-    },
-    // 选中商品赋值
-    userChoiceCommodity(commodity, type) {
+    userChoiceCommodity(commodity) {
       console.log("选择 商品", commodity);
-      if (type == "commodity") {
-        this.buyingForm.commodityName = commodity.name; // 商品名称  回显
-        this.buyingForm.commodity = commodity;
-        this.dialogCommodityVisible = false;
-      } else {
-        this.buyingForm.giftName = commodity.name;
-        this.buyingForm.giftImg = commodity.uploadImg.split(",")[0];
-        this.dialogCommodityVisible = false;
-      }
-      console.log("---- >", this.buyingForm)
+      this.buyingForm.commodityName = commodity.name; // 商品名称  回显
+      this.buyingForm.commodity = commodity;
+      this.dialogCommodityVisible = false;
     },
 
     // 获取省市区数据
@@ -765,9 +737,9 @@ export default {
     handleAvatarSuccess(res, file) {
       this.buyingForm.cover = res.data;
     },
-    // handleGiftImgSuccess(res, file) {
-    //   this.buyingForm.giftImg = res.data;
-    // },
+    handleGiftImgSuccess(res, file) {
+      this.buyingForm.giftImg = res.data;
+    },
     // 添加数据
     createData() {
       let _this = this;
@@ -989,7 +961,7 @@ export default {
       };
       this.fileList = []; // 清空回显
       this.formDate = [];
-      // this.giftList = [];
+      this.giftList = [];
       this.$refs.provinceForm.initialization(); // 重置省市区
       this.myRules = []; // 重置规则
       this.$refs.buyingForm.resetFields();

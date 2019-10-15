@@ -85,7 +85,7 @@
               @click="showEditView(row, 'edit')"
             >{{ $t('table.edit') }}</el-button>
             <el-button
-              v-if="row.status == 1 && row.isShow == 0"
+              v-if="row.status != 3  && row.isShow == 0"
               type="success"
               size="mini"
               @click="upperData(row)"

@@ -98,6 +98,13 @@ export default {
       this.fetchData();
     }
   },
+  watch: {
+    type: {
+       handler: function(val, oldval) {
+        this.commodityId = "";
+      }
+    }
+  },
   methods: {
     // 查询数据
     fetchData() {
@@ -117,7 +124,7 @@ export default {
     },
     userChange(row) {
       console.log(row, this.type);
-      this.$emit("transmitUser", row);
+      this.$emit("transmitUser", row, this.type);
     }
   }
 };
