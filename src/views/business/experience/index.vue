@@ -91,7 +91,7 @@
               @click="upperData(row)"
             >{{ $t('table.upperShelf') }}</el-button>
             <el-button
-              v-if="row.status == 2 || row.isShow == 1"
+              v-if="row.isShow == 1"
               type="danger"
               size="mini"
               @click="upperData(row)"
