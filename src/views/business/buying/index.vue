@@ -732,7 +732,18 @@ export default {
       });
     },
     beforeAvatarUpload(file) {
-      this.uploadParams.file = file;
+      console.log("file --- >", file.size, file.size / 1024 /1024 < 5);
+      const isLt2M = file.size / 1024 /1024 < 5;
+      if (!isLt2M) {
+        this.$notify({
+          title: this.generatePoint("notifyWarning.title"),
+          message: this.generatePoint("notifyWarning.message6"),
+          type: "warning"
+        });
+        return false;
+      } else {
+        this.uploadParams.file = file;
+      }
     },
     handleAvatarSuccess(res, file) {
       this.buyingForm.cover = res.data;

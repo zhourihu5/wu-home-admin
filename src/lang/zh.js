@@ -410,6 +410,7 @@ export default {
             message: '最多只可上传一张,请删除后重新上传',
             message1: '请选择上面的选项,选择后会自动刷新列表数据',
             message5: '最多只可上传五张,请删除后重新上传',
+            message6: '请上传5MB以内的图片'
         },
         notifyError: {
             title: '错误',

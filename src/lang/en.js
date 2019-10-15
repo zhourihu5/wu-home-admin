@@ -395,7 +395,8 @@ export default {
             message6: 'Congratulations on your success',
             message7: 'Congratulations on your success',
             message8: 'Congratulations on your success',
-            message9: 'Loading success'
+            message9: 'Loading success',
+           
         },
         login: {
             nickName: 'Please enter your account number.',
@@ -407,7 +408,8 @@ export default {
             title1: 'tips',
             message: 'Up to one upload',
             message1: 'Please select the above option, which will automatically refresh the list data',
-            message5: 'Up to five uploads'
+            message5: 'Up to five uploads',
+            message6: 'Please upload pictures within 5MB'
         },
         platform: 'Platform Requirements',
         userName: 'Account cannot be empty',
