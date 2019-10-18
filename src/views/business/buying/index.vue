@@ -144,37 +144,23 @@
             :end-placeholder="$t('form.endTime')"
           ></el-date-picker>
         </el-form-item>
-        <!-- <el-form-item :label="$t('form.startTime')" prop="startDate">
-          <el-date-picker
-            v-model="buyingForm.startDate"
-            align="right"
-            type="datetime"
-            placeholder="选择日期"
-            :picker-options="pickerOptions"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item :label="$t('form.endTime')" prop="endDate">
-          <el-date-picker
-            v-model="buyingForm.endDate"
-            align="right"
-            type="datetime"
-            placeholder="选择日期"
-            :picker-options="pickerOptions"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          ></el-date-picker>
-        </el-form-item>-->
         <el-form-item :label="$t('form.commodity')" prop="commodityName">
           <el-input
             :disabled="true"
-            v-model="buyingForm.commodityName"
+            v-model="buyingForm.commodity.name"
             :placeholder="$t('table.temp.id')"
             class="my-input"
           />
-          <el-button
-            type="text"
-            @click="dialogCommodityVisible = true"
-          >{{ $t('form.addCommodity') }}</el-button>
+          <el-button type="text" @click="addMerchandise('commodity')">{{ $t('form.addCommodity') }}</el-button>
+        </el-form-item>
+        <el-form-item :label="$t('form.giftGiving')" prop="giftName">
+          <el-input
+            :disabled="true"
+            v-model="buyingForm.gift.name"
+            :placeholder="$t('table.temp.id')"
+            class="my-input"
+          />
+          <el-button type="text" @click="addMerchandise('gift')">{{ $t('form.addGift') }}</el-button>
         </el-form-item>
         <el-form-item :label="$t('form.groupBuying')" prop="price">
           <el-input
@@ -198,41 +184,6 @@
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item :label="$t('form.giftGiving')" prop="file">
-          <el-upload
-            :action="updateURL"
-            list-type="picture-card"
-            :limit="1"
-            :multiple="false"
-            :file-list="giftList"
-            :on-exceed="exceedUpload"
-            :before-upload="beforeAvatarUpload"
-            :on-success="handleGiftImgSuccess"
-            :data="uploadParams"
-          >
-            <i class="el-icon-plus"></i>
-          </el-upload>
-        </el-form-item>
-        <!-- <el-form-item :label="$t('form.reductionType')" prop="saleType">
-          <el-select v-model="buyingForm.saleType" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>-->
-        <!-- <el-form-item :label="$t('form.reductionRule')" prop="saleRules">
-          <el-button type="text" @click="addRule">{{ $t('form.addCondition') }}</el-button>
-          <div class="rule" v-for="(item, index) in myRules" :key="index">
-            <span class>团购活动达到</span>
-            <el-input type="number" v-model="item.num" />
-            <span>人后，商品满减</span>
-            <el-input type="number" v-model="item.rmb" />
-            {{buyingForm.reductionType}}
-          </div>
-        </el-form-item>-->
         <el-form-item :label="$t('form.deliveryTime')" prop="deliveryHour" class="delivery-time">
           <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')" />
           <span>小时</span>
@@ -253,7 +204,11 @@
       <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
         <!-- 住戶列表-->
         <transition name="el-zoom-in-top">
-          <commodity-List :commodity="buyingForm.commodity" @transmitUser="userChoiceCommodity"></commodity-List>
+          <commodity-List
+            :type="subType"
+            :commodity="subType == 'commodity' ? buyingForm.commodity : buyingForm.gift"
+            @transmitUser="userChoiceCommodity"
+          ></commodity-List>
         </transition>
       </el-dialog>
     </el-dialog>
@@ -390,10 +345,17 @@ export default {
         title: "", // 标题
         startDate: "", // 开始时间
         endDate: "", // 结束时间
-        // commodityId: "", // 商品ID
-        // communityCode: "", // 商品code
-        commodityName: "", // 商品名称回显示
-        commodity: null, // 回显实体
+        // commodityName: "", // 商品名称回显示
+
+        // 商品
+        commodity: {
+          name: ""
+        },
+
+        // 赠品
+        gift: {
+          name: ""
+        },
         cover: "", // 封面
         saleType: "1", // 满减类型
         saleRules: "", // 满减规则
@@ -448,32 +410,30 @@ export default {
             }
           }
         ],
-        // startDate: [
-        //   {
-        //     required: true,
-        //     trigger: "change",
-        //     message: this.generatePoint("mandatory")
-        //   }
-        // ],
-        // endDate: [
-        //   {
-        //     required: true,
-        //     trigger: "change",
-        //     message: this.generatePoint("mandatory")
-        //   }
-        // ],
-        // saleType: [
-        //   {
-        //     required: true,
-        //     trigger: "change",
-        //     message: this.generatePoint("mandatory")
-        //   }
-        // ],
         commodityName: [
           {
             required: true,
             trigger: "change",
-            message: this.generatePoint("mandatory")
+            validator: (rule, value, callback) => {
+              if (this.buyingForm.commodity.name) {
+                callback();
+              } else {
+                callback(this.generatePoint("mandatory"));
+              }
+            }
+          }
+        ],
+        giftName: [
+          {
+            required: true,
+            trigger: "change",
+            validator: (rule, value, callback) => {
+              if (this.buyingForm.gift.name) {
+                callback();
+              } else {
+                callback(this.generatePoint("mandatory"));
+              }
+            }
           }
         ],
         deliveryHour: [
@@ -521,40 +481,6 @@ export default {
             }
           }
         ],
-        // saleRules: [
-        //   {
-        //     required: true,
-        //     trigger: "change",
-        //     validator: (rule, value, callback) => {
-        //       if (this.myRules.length == 0) {
-        //         callback(this.generatePoint("required"));
-        //       } else {
-        //         let falg = true;
-        //         for (let i = 0; i < this.myRules.length; i++) {
-        //           if (!this.myRules[i].num || !this.myRules[i].rmb) {
-        //             falg = false;
-        //             break;
-        //           } else {
-        //             let re = /^[0-9]+([.]{1}[0-9]+){0,1}$/;
-        //             if (
-        //               !re.test(this.myRules[i].num) ||
-        //               !re.test(this.myRules[i].rmb)
-        //             ) {
-        //               falg = false;
-        //               break;
-        //             }
-        //           }
-        //         }
-        //         console.log("falg -- ", falg);
-        //         if (falg) {
-        //           callback();
-        //         } else {
-        //           callback(this.generatePoint("numOk"));
-        //         }
-        //       }
-        //     }
-        //   }
-        // ],
         remark: [
           {
             required: true,
@@ -581,7 +507,8 @@ export default {
       uploadParams: {
         type: "activity"
       },
-      myRules: [] // 规则
+      myRules: [], // 规则
+      subType: "commodity"
     };
   },
   created() {
@@ -628,6 +555,12 @@ export default {
     queryBuying() {
       this.fetchData();
     },
+    // 添加商品、赠品
+    addMerchandise(type) {
+      console.log("type --- >", type);
+      this.subType = type;
+      this.dialogCommodityVisible = true;
+    },
     // 显示添加页面
     showAddView() {
       this.dialogStatus = "create"; // 标示创建
@@ -657,8 +590,9 @@ export default {
       _this.buyingForm.area = row.area;
       _this.buyingForm.city = row.city;
       _this.buyingForm.province = row.province;
-      _this.buyingForm.commodity = row.commodity;
-      _this.buyingForm.commodityName = row.commodity.name;
+      _this.buyingForm.commodity = row.commodity; // 商品
+      _this.buyingForm.gift = row.gitCommodity; // 赠品
+      // _this.buyingForm.commodityName = row.commodity.name;
       _this.buyingForm.isShow = row.isShow;
       _this.buyingForm.status = row.status;
       _this.buyingForm.saleType = row.saleType;
@@ -703,11 +637,21 @@ export default {
       _this.dialogStatus = "update"; // 标示创建
       _this.dialogFormVisible = true; // 展示弹窗
     },
-    userChoiceCommodity(commodity) {
-      console.log("选择 商品", commodity);
-      this.buyingForm.commodityName = commodity.name; // 商品名称  回显
-      this.buyingForm.commodity = commodity;
+
+    // 商品模板回调
+    userChoiceCommodity(commodity, type) {
+      console.log("选择 商品", commodity, type);
+      if (type === "commodity") {
+        // 商品
+        this.buyingForm.commodity = commodity;
+      } else {
+        // 赠品
+        this.buyingForm.gift = commodity;
+      }
       this.dialogCommodityVisible = false;
+      // this.buyingForm.commodityName = commodity.name; // 商品名称  回显
+      // this.buyingForm.commodity = commodity;
+      // this.dialogCommodityVisible = false;
     },
 
     // 获取省市区数据
@@ -732,8 +676,8 @@ export default {
       });
     },
     beforeAvatarUpload(file) {
-      console.log("file --- >", file.size, file.size / 1024 /1024 < 5);
-      const isLt2M = file.size / 1024 /1024 < 5;
+      console.log("file --- >", file.size, file.size / 1024 / 1024 < 5);
+      const isLt2M = file.size / 1024 / 1024 < 5;
       if (!isLt2M) {
         this.$notify({
           title: this.generatePoint("notifyWarning.title"),
@@ -848,7 +792,8 @@ export default {
         communityId: _this.buyingForm.communityId,
         communityCode: _this.buyingForm.communityCode,
         cover: _this.buyingForm.cover,
-        giftImg: _this.buyingForm.giftImg,
+        giftImg: _this.buyingForm.gift.uploadImg.split(",")[0], // 赠品图片
+        giftId: _this.buyingForm.gift.id,
         deliveryHour: _this.buyingForm.deliveryHour,
         endDate: _this.buyingForm.endDate,
         startDate: _this.buyingForm.startDate,
@@ -953,10 +898,17 @@ export default {
         title: "", // 标题
         startDate: "", // 开始时间
         endDate: "", // 结束时间
-        // commodityId: "", // 商品ID
-        // communityCode: "", // 商品code
-        commodityName: "", // 商品名称回显示
-        commodity: null, // 回显实体
+        // commodityName: "", // 商品名称回显示
+
+        // 商品
+        commodity: {
+          name: ""
+        },
+
+        // 赠品
+        gift: {
+          name: ""
+        },
         cover: "", // 封面
         saleType: "1", // 满减类型
         saleRules: "", // 满减规则

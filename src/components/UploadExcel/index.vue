@@ -8,26 +8,49 @@
       class="excel-upload-input"
       accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
     />
-    <el-button type="text" @click="handleUpload">
-      {{ $t('form.onImport') }}
-    </el-button>
+    <!-- <input type="file" @change="importf(this)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/> -->
+    <el-button
+      v-if="buttomType === 'type'"
+      type="text"
+      @click="handleUpload"
+      :loading="buttonLoading"
+    >{{ $t('form.onImport') }}</el-button>
+    <el-button
+      v-if="buttomType === 'primary'"
+      type="primary"
+      @click="handleUpload"
+      :loading="buttonLoading"
+    >{{ $t('form.onImport') }}</el-button>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      da: ""
+      da: "",
+      buttonLoading: false
     };
+  },
+  props: {
+    buttomType: {
+      type: String,
+      default: "text"
+    }
   },
   methods: {
     handleUpload() {
       this.$refs["excel-upload-input"].click();
     },
+    // 结束按钮loading
+    endLoading() {
+      this.buttonLoading = false;
+    },
     // excel
     importfxx(obj) {
       console.log(1111);
       let _this = this;
+      _this.buttonLoading = true; // 导入按钮加载中防止多次点击
+      _this.$emit("showLoading", true); // 返回loading效果  true为启动loading false为结束loading
       let inputDOM = this.$refs.inputer;
       // 通过DOM取文件数据
       this.file = event.currentTarget.files[0];
@@ -42,6 +65,7 @@ export default {
         var wb; //读取完成的数据
         var outdata;
         var reader = new FileReader();
+        event.currentTarget.value = ""; // 清空file
         reader.onload = function(e) {
           var bytes = new Uint8Array(reader.result);
           var length = bytes.byteLength;
@@ -61,27 +85,7 @@ export default {
           }
           outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]); //outdata就是你想要的东西
           this.da = [...outdata];
-        //   console.log("da --- >", this.da);
           _this.$emit("getExcel", this.da); // 返回结果给父组件
-          //   let arr = []; // 处理后的结果
-          //   this.da.map(v => {
-          //     let obj = {};
-          //     obj.id = v.id;
-          //     obj.status = v.status;
-          //     arr.push(obj);
-          //   });
-          
-          //   let para = {
-          //     //withList: JSON.stringify(this.da)
-          //     withList: arr
-          //   };
-          //   _this.$message({
-          //     message: "请耐心等待导入成功",
-          //     type: "success"
-          //   });
-          //   withImport(para).then(res => {
-          //     window.location.reload();
-          //   });
         };
         reader.readAsArrayBuffer(f);
       };

@@ -89,9 +89,9 @@ export default {
     }
   },
   created() {
-    console.log("this.type --- >", this.type)
+    console.log("this.type --- >", this.commodity, this.type);
     if (this.commodity) {
-      this.listQuery.name = this.commodity.name;
+      // this.listQuery.name = this.commodity.name;
       this.commodityId = this.commodity.id;
       this.queryCommodity();
     } else {
@@ -99,11 +99,11 @@ export default {
     }
   },
   watch: {
-    type: {
-       handler: function(val, oldval) {
-        this.commodityId = "";
+    commodity: {
+      handler: function(val, oldval) {
+        this.commodityId = val.id;
       }
-    }
+    },
   },
   methods: {
     // 查询数据

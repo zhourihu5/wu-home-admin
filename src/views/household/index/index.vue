@@ -34,8 +34,30 @@
       >
         <el-option v-for="item in disList" :key="item.id" :label="item.name" :value="item.code"></el-option>
       </el-select>
+      <div class="my-import">
+        <upload-excel
+          ref="uploadExcel"
+          :buttomType="'primary'"
+          @showLoading="showPageLoading"
+          @getExcel="getExcelData"
+        ></upload-excel>
+        <!-- <input
+          id="upload"
+          type="file"
+          @change="importText(this)"
+          ref="excel-upload-input"
+          class="excel-upload-input"
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        />
+        <el-button
+          type="primary"
+          @click="handleUpload"
+          :loading="buttonLoading"
+        >{{ $t('form.onImport') }}</el-button>-->
+      </div>
+      <div class="progress">{{progressNum}}% --- 已导入 {{dataNum}} 条</div>
     </div>
-    <div class="household-content">
+    <div class="household-content" v-loading="pageLoading">
       <el-row type="flex">
         <el-col :span="3">
           <div class="item-box" v-loading="floorLoading">
@@ -80,7 +102,7 @@
           </div>
         </el-col>
         <el-col :span="3">
-          <div class="item-box" v-loading="familyLoading">
+          <div class="item-box" v-loading="familyLoading" element-loading-text="数据导入中">
             <h3>{{ $t('form.family') }}</h3>
             <ul v-if="familyList.length > 0" class="list-data">
               <li
@@ -235,11 +257,14 @@ import {
   addUserAndFamilyNew,
   findFamilyUser,
   updateUserAndFamilyNew,
-  delUserAndFamily
+  delUserAndFamily,
+  batchBinding
 } from "@/api/community";
 import { getUserByUserName } from "@/api/user";
 import { overall } from "@/constant/index";
 import { generatePoint } from "@/utils/i18n";
+import { importfxx } from "@/utils/importAndEport";
+import UploadExcel from "@/components/UploadExcel";
 // 验证手机号码
 function isvalidPhone(value) {
   var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
@@ -250,8 +275,10 @@ function isvalidPhone(value) {
   }
 }
 export default {
+  components: { UploadExcel },
   data() {
     return {
+      pageLoading: false,
       colSpan: 0,
       block: 0,
       regionLoading: false,
@@ -333,7 +360,9 @@ export default {
       dialogStatus: "create", // 标示当前操作是添加、还是修改
       identityTypes: overall.identity.types,
       roleMark: overall.role.mark, // 角色标示
-      isBinding: false // 是否显示绑定门口机、底座输入框
+      isBinding: false, // 是否显示绑定门口机、底座输入框
+      progressNum: 0,
+      dataNum: 0, // 导入数据条数
     };
   },
   created() {
@@ -525,6 +554,41 @@ export default {
   },
   methods: {
     generatePoint,
+    importfxx,
+    // 显示导入Loading
+    showPageLoading(fag) {
+      this.pageLoading = fag;
+    },
+    // 获取Excel组件中的数据
+    getExcelData(data) {
+      console.log("data = ", data);
+      let _this = this;
+      let length = data.length; // 执行总数
+      let count = 0; // 记录每次执行数量
+      for (let i = 0; i < data.length; i++) {
+        // 添加数据
+        batchBinding({
+          userName: data[i]["电话"],
+          nickName: data[i]["业主姓名"],
+          communityCode: data[i]["房号"]
+        }).then(function(res) {
+          console.log("res --- >", res);
+          count = count + 1;
+          _this.dataNum = count;
+          _this.progressNum = Math.round((count / length) * 100);
+          if (count == length) {
+            _this.$refs.uploadExcel.endLoading(); // 清楚loading
+            _this.pageLoading = false;
+            _this.$notify({
+              title: _this.generatePoint("notifySuccess.title"),
+              message: _this.generatePoint("notifySuccess.message10"),
+              type: "success"
+            });
+            _this.progressNum = 0;
+          }
+        });
+      }
+    },
     // 身份选择
     identityChange(val) {
       console.log("val --- ", val, this.identityTypes[1].value);
@@ -1106,10 +1170,23 @@ export default {
 </script>
 <style lang="scss" scoped>
 .household {
+  .excel-upload-input {
+    display: none;
+    z-index: -9999;
+  }
   padding: 20px;
   min-height: calc(100vh - 50px);
   .household-container {
     margin-bottom: 20px;
+    .my-import {
+      display: inline-block;
+      margin-left: 10px;
+    }
+    .progress {
+      display: inline-block;
+      margin-left: 10px;
+      color: #a2a2a2;
+    }
   }
   .household-content {
     min-height: calc(100vh - 150px);

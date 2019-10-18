@@ -217,6 +217,15 @@ export function getLayerByCommuntity(params) {
     })
 }
 
+// 查询单元下所有层
+export function getStoreyAll(params) {
+    return request({
+        url: ' /v1/storey/findAll',
+        method: 'get',
+        params
+    })
+}
+
 // 添加层
 export function addStorey(data) {
     return request({
@@ -277,6 +286,15 @@ export function getAllByFlag(params) {
         url: '/v1/communtity/findAllByFlag',
         method: 'get',
         params
+    })
+}
+
+// 批量导入城市家园社区用户与家庭
+export function batchBinding(data) {
+    return request({
+        url: '/v1/family/admin',
+        method: 'post',
+        data
     })
 }
 

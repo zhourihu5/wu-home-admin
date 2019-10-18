@@ -397,7 +397,8 @@ export default {
             message6: '恭喜您,下架成功',
             message7: '恭喜您,操作成功',
             message8: '恭喜您,发放成功',
-            message9: '加载成功'
+            message9: '加载成功',
+            message10: '恭喜您,数据到入成功'
         },
         login: {
             nickName: '请输入账号',

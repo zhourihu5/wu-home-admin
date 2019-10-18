@@ -86,7 +86,7 @@
             <el-option
               v-for="item in unitList"
               :key="item.code"
-              :label="item.name"
+              :label="item.unitNo"
               :value="item.id"
             ></el-option>
           </el-select>
@@ -170,7 +170,8 @@ import {
   getFloorByCommuntity,
   getUnitByFloor,
   getLayerByCommuntity,
-  addStorey
+  addStorey,
+  getStoreyAll
 } from "@/api/community";
 import { generatePoint } from "@/utils/i18n";
 export default {
@@ -500,6 +501,10 @@ export default {
     },
     unitChange(val) {
       console.log("val --- ", val);
+      let _this = this;
+      getStoreyAll({ unitId: val}).then(function(res) {
+        console.log("res --- >", res);
+      })
     },
     // 获取期
     fetchStage() {
@@ -597,6 +602,7 @@ export default {
           _this.msg = "";
           _this.buttonDisabled = false;
         }
+        console.log("单元--- ", _this.unitList);
       });
     },
     // 修改

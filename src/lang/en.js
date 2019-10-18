@@ -396,7 +396,7 @@ export default {
             message7: 'Congratulations on your success',
             message8: 'Congratulations on your success',
             message9: 'Loading success',
-           
+            message10: 'Congratulations on the success of data entry'
         },
         login: {
             nickName: 'Please enter your account number.',
