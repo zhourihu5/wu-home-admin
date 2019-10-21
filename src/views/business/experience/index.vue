@@ -210,6 +210,7 @@
           </el-form-item>-->
           <el-form-item :label="$t('form.experienceCode')" prop="experienceCode">
             <upload-excel
+            
               v-if="experienceForm.experienceCodes.length == 0"
               @getExcel="getExcelData"
             ></upload-excel>

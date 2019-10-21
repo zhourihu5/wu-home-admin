@@ -35,7 +35,7 @@
         <el-option v-for="item in disList" :key="item.id" :label="item.name" :value="item.code"></el-option>
       </el-select>
       <!-- 技术内部调用 批量导入用户并且绑定房间 (当代家园)-->
-      <!-- <div class="my-import">
+      <div class="my-import">
         <upload-excel
           ref="uploadExcel"
           :buttomType="'primary'"
@@ -43,7 +43,7 @@
           @getExcel="getExcelData"
         ></upload-excel>
       </div>
-      <div class="progress">{{progressNum}}% --- 已导入 {{dataNum}} 条</div> -->
+      <div class="progress">{{progressNum}}% --- 已导入 {{dataNum}} 条</div>
     </div>
     <div class="household-content" v-loading="pageLoading">
       <el-row type="flex">

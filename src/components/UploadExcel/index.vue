@@ -10,7 +10,7 @@
     />
     <!-- <input type="file" @change="importf(this)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/> -->
     <el-button
-      v-if="buttomType === 'type'"
+      v-if="buttomType === 'text'"
       type="text"
       @click="handleUpload"
       :loading="buttonLoading"

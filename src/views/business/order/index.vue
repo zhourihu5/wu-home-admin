@@ -183,6 +183,9 @@ export default {
       if(_this.listQuery.status != "" && _this.listQuery.status != 0) {
         params.status = _this.listQuery.status;
       }
+      if(_this.listQuery.activityName != "") {
+        params.activityName = _this.listQuery.activityName;
+      }
       _this.listLoading = true;
       getOrderAll(params).then(function(res) {
         console.log("res --- ", res);
