@@ -34,28 +34,15 @@
       >
         <el-option v-for="item in disList" :key="item.id" :label="item.name" :value="item.code"></el-option>
       </el-select>
-      <div class="my-import">
+      <!-- <div class="my-import">
         <upload-excel
           ref="uploadExcel"
           :buttomType="'primary'"
           @showLoading="showPageLoading"
           @getExcel="getExcelData"
         ></upload-excel>
-        <!-- <input
-          id="upload"
-          type="file"
-          @change="importText(this)"
-          ref="excel-upload-input"
-          class="excel-upload-input"
-          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-        />
-        <el-button
-          type="primary"
-          @click="handleUpload"
-          :loading="buttonLoading"
-        >{{ $t('form.onImport') }}</el-button>-->
       </div>
-      <div class="progress">{{progressNum}}% --- 已导入 {{dataNum}} 条</div>
+      <div class="progress">{{progressNum}}% --- 已导入 {{dataNum}} 条</div> -->
     </div>
     <div class="household-content" v-loading="pageLoading">
       <el-row type="flex">
