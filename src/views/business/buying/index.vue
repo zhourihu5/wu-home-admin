@@ -591,7 +591,9 @@ export default {
       _this.buyingForm.city = row.city;
       _this.buyingForm.province = row.province;
       _this.buyingForm.commodity = row.commodity; // 商品
-      _this.buyingForm.gift = row.gitCommodity; // 赠品
+      if(row.gitCommodity) {
+         _this.buyingForm.gift = row.gitCommodity; // 赠品
+      }
       // _this.buyingForm.commodityName = row.commodity.name;
       _this.buyingForm.isShow = row.isShow;
       _this.buyingForm.status = row.status;
