@@ -71,7 +71,7 @@
               v-if="row.status != 3"
               type="primary"
               size="mini"
-              @click="showEditView(row)"
+              @click="showEditView(row, 'add')"
             >{{ $t('table.edit') }}</el-button>
             <el-button
               v-if="row.isShow == 0 && row.status != 3"
@@ -193,15 +193,22 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="close">{{ $t('table.cancel') }}</el-button>
+        <el-button v-if="operation == 'add'" @click="close">{{ $t('table.cancel') }}</el-button>
         <el-button
+          v-if="operation == 'add'"
           type="primary"
           @click="dialogStatus==='create'?createData():updateData()"
           :loading="buttonLoading"
         >{{ $t('table.confirm') }}</el-button>
       </div>
       <!-- 内部dialog -->
-      <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
+      <el-dialog
+        width="65%"
+        title="用户列表"
+        :close-on-click-modal="false"
+        :visible.sync="dialogCommodityVisible"
+        append-to-body
+      >
         <!-- 住戶列表-->
         <transition name="el-zoom-in-top">
           <commodity-List
@@ -508,7 +515,8 @@ export default {
         type: "activity"
       },
       myRules: [], // 规则
-      subType: "commodity"
+      subType: "commodity",
+      operation: "add"
     };
   },
   created() {
@@ -591,8 +599,8 @@ export default {
       _this.buyingForm.city = row.city;
       _this.buyingForm.province = row.province;
       _this.buyingForm.commodity = row.commodity; // 商品
-      if(row.gitCommodity) {
-         _this.buyingForm.gift = row.gitCommodity; // 赠品
+      if (row.gitCommodity) {
+        _this.buyingForm.gift = row.gitCommodity; // 赠品
       }
       // _this.buyingForm.commodityName = row.commodity.name;
       _this.buyingForm.isShow = row.isShow;
@@ -601,6 +609,13 @@ export default {
       if (row.remark) {
         _this.$nextTick(() => {
           _this.$refs.wangeditor.setContent(row.remark);
+          if (code == "see") {
+            _this.operation = "see";
+            _this.$refs.wangeditor.onDisabled();
+          } else {
+            _this.operation = "add";
+            _this.$refs.wangeditor.onEnable();
+          }
         });
       }
       // 回显示 省市区
@@ -632,10 +647,12 @@ export default {
           }
         }
       }
-      // 是否是查看功能
-      if (code == "see") {
-        _this.fromDisabled = true;
-      }
+      // // 是否是查看功能
+      // if (code == "see") {
+      //   _this.fromDisabled = true;
+      // } else {
+      //   _this.fromDisabled = false;
+      // }
       _this.dialogStatus = "update"; // 标示创建
       _this.dialogFormVisible = true; // 展示弹窗
     },

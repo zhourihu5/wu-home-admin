@@ -26,6 +26,14 @@ export default {
       default: false
     }
   },
+  // watch: {
+  //   myDisabled: {
+  //     handler: function(val, oldval) {
+  //       this.myDisabled = val;
+  //       console.log("myDisabled --- ", val);
+  //     }
+  //   }
+  // },
   mounted() {
     this.editor = new E("#editor");
     let _this = this;
@@ -72,6 +80,7 @@ export default {
     ];
 
     this.editor.create();
+    console.log("this.myDisabled --- ", this.myDisabled)
     if (this.myDisabled) {
       this.editor.$textElem.attr("contenteditable", false); // 禁用
     } else {
