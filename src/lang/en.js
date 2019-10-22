@@ -128,7 +128,8 @@ export default {
             content: 'Please enter the ontent',
             identityCard: 'Please enter the identityCard',
             user: 'Please enter the user',
-            role: 'Please select a role'
+            role: 'Please select a role',
+            phone: 'Please enter contact information'
         },
         platform: "Platform",
         roleName: 'RoleName',

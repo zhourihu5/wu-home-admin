@@ -131,7 +131,8 @@ export default {
             content: '请输入内容',
             identityCard: '请输入身份证号',
             user: '请选择用户',
-            role: '请选择角色'
+            role: '请选择角色',
+            phone: '请输入联系方式'
         },
         platform: '平台',
         roleName: '角色名称',
