@@ -3,11 +3,27 @@
     <!-- search --->
     <div class="system-container">
       <el-input
+        v-if="user.roleFlag != roleMark[1].label"
         v-model="listQuery.title"
         :placeholder="$t('table.temp.community')"
         style="width: 200px;"
         class="filter-item"
       />
+      <!-- 社区 --->
+      <el-select
+        v-if="user.roleFlag === roleMark[1].label"
+        v-model="communityCode"
+        filterable
+        :placeholder="$t('table.temp.pleaseChoose')"
+        @change="communityChange"
+      >
+        <el-option
+          v-for="item in communityList"
+          :key="item.id"
+          :label="item.name"
+          :value="item.code"
+        ></el-option>
+      </el-select>
       <el-button
         class="filter-item"
         type="primary"
@@ -45,7 +61,7 @@
         </el-table-column>
         <el-table-column align="center" :label="$t('table.deliveryTime')" width="600">
           <template slot-scope="scope">
-            <i class="el-icon-time"/>
+            <i class="el-icon-time" />
             <span>{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</span>
           </template>
         </el-table-column>
@@ -74,15 +90,32 @@
         style="width: 80%"
       >
         <el-form-item :label="$t('form.title')" prop="title">
-          <el-input style="width: 60%;" v-model="systemForm.title" :placeholder="$t('table.temp.title')"></el-input>
+          <el-input
+            style="width: 60%;"
+            v-model="systemForm.title"
+            :placeholder="$t('table.temp.title')"
+          ></el-input>
         </el-form-item>
         <el-form-item :label="$t('form.type')" prop="type">
-          <el-select v-model="systemForm.type" :placeholder="$t('table.temp.modular')">
-            <el-option v-for="item in type" :key="item.id" :label="item.label" :value="item.value"></el-option>
-          </el-select>
+          <template v-if="user.roleFlag != roleMark[1].label">
+            <el-select v-model="systemForm.type" :placeholder="$t('table.temp.modular')">
+              <el-option
+                v-for="item in type"
+                :key="item.id"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </template>
+          <template v-else>
+            <div style="color: #909399;">{{ type[1].label}}</div>
+          </template>
         </el-form-item>
-
-        <el-form-item :label="$t('form.area')" prop="areaOptionsVal">
+        <el-form-item
+          v-if="user.roleFlag != roleMark[1].label"
+          :label="$t('form.area')"
+          prop="areaOptionsVal"
+        >
           <el-cascader
             :props="areaProps"
             @change="handleAreaForm"
@@ -116,7 +149,7 @@
             resize="none"
             v-model="systemForm.content"
             @input="onChange"
-            rows=5
+            rows="5"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -165,7 +198,7 @@ import { generatePoint } from "@/utils/i18n";
 import { overall } from "@/constant/index";
 import wangeditor from "@/components/Wangeditor/index";
 import { getAreas } from "@/api/area";
-import { getCommuntityByArea } from "@/api/community";
+import { getAllByFlag, getCommuntityByArea } from "@/api/community";
 export default {
   components: { Pagination, wangeditor },
   data() {
@@ -186,6 +219,7 @@ export default {
       dialogFormVisible: false, // 是否展示dialog内容
       listQuery: {
         title: "",
+        communityId: "", // 社区ID
         pageNum: 1,
         pageSize: 10
       },
@@ -271,17 +305,51 @@ export default {
       communitypProps: {
         label: "name",
         value: "id"
-      }
-
-      // areaOptionsVal: []
+      },
+      roleMark: overall.role.mark, // 角色标示
+      communityCode: "", // 用户选中的社区
+      communityList: [], // 社区集合
+      user: null
     };
   },
   created() {
-    console.log(this.type);
-    this.fetchData();
+    let _this = this;
+    _this.user = JSON.parse(localStorage.getItem("user")); // 登录用户
+    console.log(" type === ", this.type);
+    console.log("user ---- >", _this.user.roleFlag);
+    // 社区管理员
+    if (_this.user.roleFlag === _this.roleMark[1].label) {
+      getAllByFlag().then(function(res) {
+        console.log("res --- >", res);
+        if (res.data.length > 0) {
+          _this.communityList = res.data; // 社区集合
+          _this.communityCode = res.data[0].code;
+          _this.listQuery.communityId = res.data[0].id;
+          _this.systemForm.type = _this.type[1].value;
+          let newData = [];
+          res.data.forEach(function(v) {
+            newData.push({
+              label: v.name,
+              key: v.id,
+              pinyin: v.name
+            });
+          });
+          _this.data = newData;
+          // _this.data = res.data;
+          _this.fetchData();
+        }
+      });
+    } else {
+      // 其他角色
+      _this.fetchData();
+    }
   },
   methods: {
     generatePoint,
+    // 选择社区
+    communityChange(val) {
+      console.log("val ---- >", val);
+    },
     handleChange(value, direction, movedKeys) {
       console.log(" -- ", this.value);
       console.log(value, direction, movedKeys);

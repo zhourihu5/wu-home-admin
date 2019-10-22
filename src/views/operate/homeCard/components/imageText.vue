@@ -66,7 +66,7 @@
           rows="5"
         ></el-input>-->
       </el-form-item>
-      <el-form-item :label="$t('form.addModule')" prop="addModule">
+      <!-- <el-form-item :label="$t('form.addModule')" prop="addModule">
         <div class="add-plate">
           <div class="card" v-for="(item, index) in serviceList" :key="index">
             <div class="cover">
@@ -79,7 +79,7 @@
             <i class="el-icon-plus"></i>
           </div>
         </div>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="close">{{ $t('table.cancel') }}</el-button>
@@ -268,17 +268,17 @@ export default {
             }
           }
         ],
-        addModule: [
-          {
-            validator: (rule, value, callback) => {
-              if (this.serviceList.length == 0) {
-                callback(this.generatePoint("modular"));
-              } else {
-                callback();
-              }
-            }
-          }
-        ]
+        // addModule: [
+        //   {
+        //     validator: (rule, value, callback) => {
+        //       if (this.serviceList.length == 0) {
+        //         callback(this.generatePoint("modular"));
+        //       } else {
+        //         callback();
+        //       }
+        //     }
+        //   }
+        // ]
       },
       uploadParams: {
         type: "card"
