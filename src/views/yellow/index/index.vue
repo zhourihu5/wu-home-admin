@@ -192,20 +192,20 @@ export default {
             message: this.generatePoint("required")
           }
         ],
-        phone: [
-          {
-            required: true,
-            trigger: "change",
-            validator: this.validatePhone
-          }
-        ],
-        address: [
-          {
-            required: true,
-            trigger: "change",
-            message: this.generatePoint("required")
-          }
-        ]
+        // phone: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     validator: this.validatePhone
+        //   }
+        // ],
+        // address: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     message: this.generatePoint("required")
+        //   }
+        // ]
       }
     };
   },
