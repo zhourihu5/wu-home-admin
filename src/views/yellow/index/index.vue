@@ -94,10 +94,10 @@
           <el-input v-model="yellowForm.name" :placeholder="$t('table.temp.name')" />
         </el-form-item>
         <el-form-item :label="$t('form.phone')" prop="phone">
-          <el-input v-model="yellowForm.phone" :placeholder="$t('table.temp.price')" />
+          <el-input v-model="yellowForm.phone" :placeholder="$t('table.temp.content')" />
         </el-form-item>
         <el-form-item :label="$t('form.address')" prop="address">
-          <el-input v-model="yellowForm.address" :placeholder="$t('table.temp.price')" />
+          <el-input v-model="yellowForm.address" :placeholder="$t('table.temp.address')" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
