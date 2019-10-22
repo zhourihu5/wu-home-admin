@@ -106,6 +106,7 @@
     <el-dialog
       :title="textMap[dialogStatus] == 'Create' ? $t('form.create') : $t('form.edit')"
       :visible.sync="dialogFormVisible"
+      :closeOnClickModal="clickfalse"
       @close="close"
     >
       <el-form
@@ -202,13 +203,7 @@
         >{{ $t('table.confirm') }}</el-button>
       </div>
       <!-- 内部dialog -->
-      <el-dialog
-        width="65%"
-        title="用户列表"
-        :close-on-click-modal="false"
-        :visible.sync="dialogCommodityVisible"
-        append-to-body
-      >
+      <el-dialog width="65%" title="用户列表" :visible.sync="dialogCommodityVisible" append-to-body>
         <!-- 住戶列表-->
         <transition name="el-zoom-in-top">
           <commodity-List
@@ -277,6 +272,7 @@ export default {
   components: { Pagination, Province, commodityList, wangeditor },
   data() {
     return {
+      clickfalse: false,
       fromDisabled: false,
       formDate: [],
       // 时间快捷方式
