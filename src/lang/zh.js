@@ -130,7 +130,8 @@ export default {
             stock: '请输入库存',
             content: '请输入内容',
             identityCard: '请输入身份证号',
-            user: '请选择用户'
+            user: '请选择用户',
+            role: '请选择角色'
         },
         platform: '平台',
         roleName: '角色名称',

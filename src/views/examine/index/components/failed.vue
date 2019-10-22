@@ -44,10 +44,10 @@
             slot-scope="scope"
           >{{ scope.row.applyName ? scope.row.applyName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.phone')" width="300">
+        <el-table-column align="center" :label="$t('table.phone')" width="350">
           <template slot-scope="scope">{{ scope.row.phone ? scope.row.phone : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column align="center" :label="$t('table.createTime')" width="200">
+        <el-table-column align="center" :label="$t('table.createTime')" width="510">
           <template
             slot-scope="scope"
           >{{ scope.row.createDate ? scope.row.createDate : $t('table.noTime')}}</template>
@@ -61,12 +61,12 @@
             slot-scope="scope"
           >{{ scope.row.familyName ? scope.row.familyName : $t('table.noTime')}}</template>
         </el-table-column>
-        <el-table-column :label="$t('table.operation')" align="center" width="360">
+        <!-- <el-table-column :label="$t('table.operation')" align="center" width="360">
           <template slot-scope="{row}">
-            <el-button type="primary" size="mini" @click="onAdopt(row)">{{ $t('table.adopt') }}</el-button>
+            <el-button type="primary" size="mini" @click="onAdopt(row)">{{ $t('table.adopt') }}</el-button> -->
             <!-- <el-button type="danger" size="mini" @click="deleteData(row)">{{ $t('table.reject') }}</el-button> -->
-          </template>
-        </el-table-column>
+          <!-- </template>
+        </el-table-column> -->
       </el-table>
       <!-- 分页 -->
       <pagination

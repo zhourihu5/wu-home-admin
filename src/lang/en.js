@@ -127,7 +127,8 @@ export default {
             stock: "Please enter the Stock",
             content: 'Please enter the ontent',
             identityCard: 'Please enter the identityCard',
-            user: 'Please enter the user'
+            user: 'Please enter the user',
+            role: 'Please select a role'
         },
         platform: "Platform",
         roleName: 'RoleName',

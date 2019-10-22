@@ -126,7 +126,7 @@
           <el-form-item v-show="showRole" :label="$t('table.role')" prop="role">
             <el-select
               v-model="userForm.roleId"
-              :placeholder="$t('table.temp.platform')"
+              :placeholder="$t('table.temp.role')"
               @change="roleChange"
             >
               <el-option
@@ -289,14 +289,12 @@ export default {
               }
             }
           }
+        ],
+        identityCard: [
+          {
+            validator: this.validateIdentityCard
+          }
         ]
-        // identityCard: [
-        //   {
-        //     required: true,
-        //     trigger: "change",
-        //     validator: this.validateIdentityCard
-        //   }
-        // ]
       },
       pickerOptions: {
         // 时间插件控制
@@ -471,7 +469,7 @@ export default {
             wxNickName: _this.row.wxNickName,
             communityCode: _this.row.communityCode,
             communityIds: _this.row.communityIds,
-            cityCode: _this.row.cityCode,
+            cityCode: _this.row.cityCode
           };
           if (_this.userForm.communityIds.length > 0) {
             params.communityIds = _this.userForm.communityIds.join(",");
@@ -540,10 +538,14 @@ export default {
     },
     // 验证身份证格式
     validateIdentityCard(rule, value, callback) {
-      if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value)) {
-        callback();
+      if (value) {
+        if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value)) {
+          callback();
+        } else {
+          callback(new Error(this.generatePoint("identityCard")));
+        }
       } else {
-        callback(new Error(this.generatePoint("identityCard")));
+        callback();
       }
     },
     getFlagText(flag) {
