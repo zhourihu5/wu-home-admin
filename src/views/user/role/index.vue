@@ -153,7 +153,7 @@ export default {
         // 时间插件控制
         disabledDate(time) {
           // 只可选择大于当前时间的日期
-          return time.getTime() < Date.now();
+          return time.getTime() < Date.now() - 8.64e7;
         }
       }
     };

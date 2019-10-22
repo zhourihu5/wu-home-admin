@@ -103,7 +103,7 @@ export default {
       pickerOptions: {
         disabledDate(time) {
           // 只可选择大于当前时间的日期
-          return time.getTime() < Date.now();
+          return time.getTime() < Date.now() - 8.64e7;
         }
       },
       linkForm: {
