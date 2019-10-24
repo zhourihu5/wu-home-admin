@@ -916,7 +916,7 @@ export default {
         communityId: _this.buyingForm.communityId,
         communityCode: _this.buyingForm.communityCode,
         cover: _this.buyingForm.cover,
-        giftImg: _this.buyingForm.gift.uploadImg.split(",")[0], // 赠品图片
+       
         giftId: _this.buyingForm.gift.id,
         deliveryHour: _this.buyingForm.deliveryHour,
         endDate: _this.buyingForm.endDate,
@@ -934,6 +934,11 @@ export default {
         shopAddress: _this.buyingForm.shopAddress, // 店面地址
         shopImg: _this.buyingForm.shopImg.join(",") // 店面图片
       };
+
+      if(_this.buyingForm.gift.uploadImg) {
+        params.giftImg = _this.buyingForm.gift.uploadImg.split(",")[0]; // 赠品图片
+      }
+
       if (_this.buyingForm.id) {
         params.id = _this.buyingForm.id;
         params.status = _this.buyingForm.status;
