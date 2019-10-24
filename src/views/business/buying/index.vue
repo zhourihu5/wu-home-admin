@@ -494,19 +494,19 @@ export default {
             }
           }
         ],
-        giftName: [
-          {
-            required: true,
-            trigger: "change",
-            validator: (rule, value, callback) => {
-              if (this.buyingForm.gift.name) {
-                callback();
-              } else {
-                callback(this.generatePoint("mandatory"));
-              }
-            }
-          }
-        ],
+        // giftName: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     validator: (rule, value, callback) => {
+        //       if (this.buyingForm.gift.name) {
+        //         callback();
+        //       } else {
+        //         callback(this.generatePoint("mandatory"));
+        //       }
+        //     }
+        //   }
+        // ],
         deliveryHour: [
           {
             required: true,
