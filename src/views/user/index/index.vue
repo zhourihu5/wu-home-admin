@@ -128,6 +128,7 @@
               v-model="userForm.roleId"
               :placeholder="$t('table.temp.role')"
               @change="roleChange"
+              :disabled="roleDisabled"
             >
               <el-option
                 v-for="item in roleList"
@@ -311,7 +312,8 @@ export default {
         communityValue: []
       },
       showCommunity: false, // 是否显示选择社区
-      showRole: false // 是否显示角色
+      showRole: false, // 是否显示角色
+      roleDisabled: false
     };
   },
   created() {
@@ -343,12 +345,14 @@ export default {
     showAddUserView() {
       this.dialogStatus = "create"; // 标示创建
       this.dialogFormVisible = true; // 展示弹窗
+      this.roleDisabled = false;
     },
     // 显示编辑页面
     showEditUserView(row) {
       let _this = this;
       _this.row = row;
       console.log("row-- ", row);
+      _this.roleDisabled = true;
       _this.userForm.id = row.id;
       _this.userForm.userName = row.userName;
       _this.userForm.userId = row.userId;

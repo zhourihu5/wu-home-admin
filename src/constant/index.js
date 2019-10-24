@@ -10,6 +10,7 @@ import { coupon } from './coupon'
 import { experience } from './experience'
 import { role } from './role'
 import { identity } from './identity'
+import { delivery } from './delivery'
 
 export const overall = {
     uploadUrl: process.env.VUE_APP_BASE_API + '/oss/upload',
@@ -25,5 +26,6 @@ export const overall = {
     coupon: coupon,
     experience: experience,
     role: role,
-    identity: identity
+    identity: identity,
+    delivery: delivery
 } 

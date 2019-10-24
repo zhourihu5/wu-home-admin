@@ -295,6 +295,7 @@ export default {
         reductionRule: 'Rule',
         reductionType: 'Type',
         deliveryTime: 'Delivery',
+        deliveryType: 'Distribution',
         commodityType: 'Commodity Type',
         price: 'Price',
         initPrice: 'Cost Price',
@@ -343,7 +344,12 @@ export default {
         prohibit: 'prohibit',
         state: 'State',
         menu: 'Menu',
-        roleMark: 'Role Mark'
+        roleMark: 'Role Mark',
+        delivery: 'Delivery',
+        selfTaking: 'Self taking',
+        store: 'Store',
+        storeAddress: 'Store address',
+        storeImg: 'Store photos',
     },
     login: {
         title: 'Login Platform',

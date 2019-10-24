@@ -1108,6 +1108,8 @@ export default {
     // 删除
     deleteData(row) {
       console.log("row --- >", row);
+      // console.log("communityId --- >", this.communityId)
+      // console.log("communityCode --- >", this.communityCode)
       let _this = this;
       this.$confirm("此操作将永久解除绑定, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -1118,6 +1120,8 @@ export default {
           let params = {};
           params.familyId = _this.bindForm.familyId;
           params.userId = row.id;
+          params.communityId = _this.communityId;
+          params.communityCode = _this.communityCode;
           console.log("params --- >", params);
           delUserAndFamily(params).then(function(res) {
             console.log("res --- >", res);

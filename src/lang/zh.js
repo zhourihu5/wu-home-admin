@@ -300,6 +300,7 @@ export default {
         reductionRule: '满减规则',
         reductionType: '满减类型',
         deliveryTime: '配送时效',
+        deliveryType: '配送方式',
         commodityType: '商品类型',
         price: '价格',
         initPrice: '上货价格',
@@ -345,7 +346,12 @@ export default {
         prohibit: '禁用',
         state: '状态',
         menu: '菜单',
-        roleMark: '角色标示'
+        roleMark: '角色标示',
+        delivery: '配送',
+        selfTaking: '自提',
+        store: '提货门店',
+        storeAddress: '门店地址',
+        storeImg: '门店照片'
     },
     login: {
         title: '吾家运营管理平台',

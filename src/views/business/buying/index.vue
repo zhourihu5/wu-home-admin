@@ -114,7 +114,7 @@
         :rules="rules"
         :model="buyingForm"
         label-position="right"
-        label-width="100px"
+        label-width="110px"
         style="width: 90%"
         :disabled="fromDisabled"
       >
@@ -185,10 +185,55 @@
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item :label="$t('form.deliveryTime')" prop="deliveryHour" class="delivery-time">
+        <!-- 配送方式 -->
+        <el-form-item :label="$t('form.deliveryType')" prop="deliveryType" class="delivery-time">
+          <el-radio-group v-model="buyingForm.type" @change="radioChange">
+            <el-radio :label="delivery[0].value">{{ $t('form.delivery') }}</el-radio>
+            <el-radio :label="delivery[1].value">{{ $t('form.selfTaking') }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <!-- 配送 -->
+        <el-form-item
+          v-if="buyingForm.type == delivery[0].value"
+          :label="$t('form.deliveryTime')"
+          prop="deliveryHour"
+          class="delivery-time"
+        >
           <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')" />
           <span>小时</span>
         </el-form-item>
+        <!-- 自提 -->
+        <el-form-item
+          v-if="buyingForm.type == delivery[1].value"
+          :label="$t('form.store')"
+          prop="shopAddress"
+        >
+          <el-input
+            class="my-input"
+            v-model="buyingForm.shopAddress"
+            :placeholder="$t('table.temp.content')"
+          />
+        </el-form-item>
+        <el-form-item
+          v-if="buyingForm.type == delivery[1].value"
+          :label="$t('form.storeImg')"
+          prop="shopImg"
+        >
+          <el-upload
+            :action="updateURL"
+            list-type="picture-card"
+            :limit="5"
+            :multiple="false"
+            :file-list="shopImgList"
+            :on-exceed="storeExceedUpload"
+            :before-upload="beforeAvatarUpload"
+            :on-success="handleShopImgSuccess"
+            :data="uploadParams"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
+
         <el-form-item :label="$t('form.activityExplain')" prop="remark">
           <wangeditor ref="wangeditor" :myDisabled="fromDisabled"></wangeditor>
         </el-form-item>
@@ -370,7 +415,10 @@ export default {
         remark: "", // 详情
         isShow: "",
         status: "", // 状态
-        giftImg: "" // 团购赠品图片
+        giftImg: "", // 团购赠品图片
+        type: overall.delivery.types[0].value, // 记录用户选择的配送方式 配送 自取
+        shopAddress: "", // 店面地址
+        shopImg: [] // 店面图片
       },
       rules: {
         file: [
@@ -384,6 +432,26 @@ export default {
                 callback();
               }
             }
+          }
+        ],
+        shopImg: [
+          {
+            required: true,
+            trigger: "change",
+            validator: (rule, value, callback) => {
+              if (this.buyingForm.shopImg.length == 0) {
+                callback(this.generatePoint("upload"));
+              } else {
+                callback();
+              }
+            }
+          }
+        ],
+        shopAddress: [
+          {
+            required: true,
+            trigger: "change",
+            message: this.generatePoint("required")
           }
         ],
         communityId: [
@@ -507,12 +575,14 @@ export default {
       updateURL: overall.uploadUrl,
       fileList: [], // 上传图片回显列表
       giftList: [], // 上传团购赠礼回显示列表
+      shopImgList: [], // 上传门店图片回显列表
       uploadParams: {
         type: "activity"
       },
       myRules: [], // 规则
       subType: "commodity",
-      operation: "add"
+      operation: "add",
+      delivery: overall.delivery.types // 配送形式  自提  配送
     };
   },
   created() {
@@ -532,12 +602,14 @@ export default {
     },
     formDate: {
       handler: function(val, oldval) {
-        if (val.length > 0) {
-          this.buyingForm.startDate = val[0];
-          this.buyingForm.endDate = val[1];
-        } else {
-          this.buyingForm.startDate = "";
-          this.buyingForm.endDate = "";
+        if (val) {
+          if (val.length > 0) {
+            this.buyingForm.startDate = val[0];
+            this.buyingForm.endDate = val[1];
+          } else {
+            this.buyingForm.startDate = "";
+            this.buyingForm.endDate = "";
+          }
         }
       }
     }
@@ -554,6 +626,16 @@ export default {
         _this.buyingList = res.data.content; // 列表数据
         _this.total = res.data.totalPages; // 总页数
       });
+    },
+    // 用户选择配送方式
+    radioChange(val) {
+      console.log("val --- ", val);
+      if (val == this.delivery[0].value) {
+        this.buyingForm.shopImg = [];
+        this.buyingForm.shopAddress = "";
+      } else {
+        this.buyingForm.deliveryHour = "";
+      }
     },
     // 搜索
     queryBuying() {
@@ -602,6 +684,21 @@ export default {
       _this.buyingForm.isShow = row.isShow;
       _this.buyingForm.status = row.status;
       _this.buyingForm.saleType = row.saleType;
+      if (row.type) {
+        _this.buyingForm.type = row.type;
+      }
+      _this.buyingForm.shopAddress = row.shopAddress;
+      if (row.shopImg) {
+        let imgs = row.shopImg.split(",");
+        // _this.shopImgList = row.shopImg.split(",");
+        imgs.forEach(function(v, i) {
+          let obj = {
+            url: v
+          };
+          _this.shopImgList.push(obj);
+        });
+      }
+
       if (row.remark) {
         _this.$nextTick(() => {
           _this.$refs.wangeditor.setContent(row.remark);
@@ -664,9 +761,6 @@ export default {
         this.buyingForm.gift = commodity;
       }
       this.dialogCommodityVisible = false;
-      // this.buyingForm.commodityName = commodity.name; // 商品名称  回显
-      // this.buyingForm.commodity = commodity;
-      // this.dialogCommodityVisible = false;
     },
 
     // 获取省市区数据
@@ -690,6 +784,19 @@ export default {
         type: "warning"
       });
     },
+    // 门店图片超出上传个数时触发
+    storeExceedUpload(file, fileList) {
+      this.$notify({
+        title: this.generatePoint("notifyWarning.title"),
+        message: this.generatePoint("notifyWarning.message5"),
+        type: "warning"
+      });
+    },
+    // 门点图片上传成功
+    handleShopImgSuccess(res, file) {
+      console.log("上传门点图片 -- ", res.data);
+      this.buyingForm.shopImg.push(res.data);
+    },
     beforeAvatarUpload(file) {
       console.log("file --- >", file.size, file.size / 1024 / 1024 < 5);
       const isLt2M = file.size / 1024 / 1024 < 5;
@@ -710,10 +817,11 @@ export default {
     handleGiftImgSuccess(res, file) {
       this.buyingForm.giftImg = res.data;
     },
+
     // 添加数据
     createData() {
       let _this = this;
-      _this.buttonLoading = true;
+      // _this.buttonLoading = true;
       _this.$refs.buyingForm.validate(valid => {
         if (valid) {
           try {
@@ -735,6 +843,7 @@ export default {
                 _this.$message.error(_this.generatePoint("system"));
               }
             });
+            // _this.buttonLoading = false;
           } catch (err) {
             console.error("err --- ", err); // 控制台打印异常
             _this.buttonLoading = false; // 清空按钮加载状态
@@ -820,7 +929,10 @@ export default {
         city: _this.buyingForm.city,
         province: _this.buyingForm.province,
         remark: this.$refs.wangeditor.getContentHtml(),
-        isShow: _this.buyingForm.isShow
+        isShow: _this.buyingForm.isShow,
+        type: _this.buyingForm.type, // 记录用户选择的配送方式 配送 自取
+        shopAddress: _this.buyingForm.shopAddress, // 店面地址
+        shopImg: _this.buyingForm.shopImg.join(",") // 店面图片
       };
       if (_this.buyingForm.id) {
         params.id = _this.buyingForm.id;
@@ -935,9 +1047,13 @@ export default {
         remark: "", // 详情
         isShow: "",
         status: "", // 状态
-        giftImg: "" // 团购赠品图片
+        giftImg: "", // 团购赠品图片
+        type: overall.delivery.types[0].value, // 记录用户选择的配送方式 配送 自取
+        shopAddress: "", // 店面地址
+        shopImg: [] // 店面图片
       };
       this.fileList = []; // 清空回显
+      this.shopImgList = [];
       this.formDate = [];
       this.giftList = [];
       this.$refs.provinceForm.initialization(); // 重置省市区
