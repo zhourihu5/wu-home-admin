@@ -689,6 +689,7 @@ export default {
       }
       _this.buyingForm.shopAddress = row.shopAddress;
       if (row.shopImg) {
+        
         let imgs = row.shopImg.split(",");
         // _this.shopImgList = row.shopImg.split(",");
         imgs.forEach(function(v, i) {
@@ -696,6 +697,7 @@ export default {
             url: v
           };
           _this.shopImgList.push(obj);
+          _this.buyingForm.shopImg.push(v)
         });
       }
 
