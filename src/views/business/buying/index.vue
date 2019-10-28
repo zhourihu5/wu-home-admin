@@ -689,7 +689,6 @@ export default {
       }
       _this.buyingForm.shopAddress = row.shopAddress;
       if (row.shopImg) {
-        
         let imgs = row.shopImg.split(",");
         // _this.shopImgList = row.shopImg.split(",");
         imgs.forEach(function(v, i) {
@@ -697,7 +696,7 @@ export default {
             url: v
           };
           _this.shopImgList.push(obj);
-          _this.buyingForm.shopImg.push(v)
+          _this.buyingForm.shopImg.push(v);
         });
       }
 
@@ -842,7 +841,11 @@ export default {
                 _this.fetchData();
               } else {
                 _this.buttonLoading = false; // 清空按钮加载状态
-                _this.$message.error(_this.generatePoint("system"));
+                if (res.content) {
+                  _this.$message.error(res.content);
+                } else {
+                  _this.$message.error(_this.generatePoint("system"));
+                }
               }
             });
             // _this.buttonLoading = false;
@@ -880,7 +883,11 @@ export default {
                 _this.fetchData();
               } else {
                 _this.buttonLoading = false; // 清空按钮加载状态
-                _this.$message.error(_this.generatePoint("system"));
+                if (res.content) {
+                  _this.$message.error(res.content);
+                } else {
+                  _this.$message.error(_this.generatePoint("system"));
+                }
               }
             });
           } catch (err) {
@@ -918,7 +925,7 @@ export default {
         communityId: _this.buyingForm.communityId,
         communityCode: _this.buyingForm.communityCode,
         cover: _this.buyingForm.cover,
-       
+
         giftId: _this.buyingForm.gift.id,
         deliveryHour: _this.buyingForm.deliveryHour,
         endDate: _this.buyingForm.endDate,
@@ -937,7 +944,7 @@ export default {
         shopImg: _this.buyingForm.shopImg.join(",") // 店面图片
       };
 
-      if(_this.buyingForm.gift.uploadImg) {
+      if (_this.buyingForm.gift.uploadImg) {
         params.giftImg = _this.buyingForm.gift.uploadImg.split(",")[0]; // 赠品图片
       }
 

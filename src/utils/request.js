@@ -42,11 +42,12 @@ service.interceptors.response.use(
           case 500:
             if (error.response.data.code == 500) {
               if(error.response.data.message == "类名不存在或执行表达式错误") {
-                Message({
-                  message: '定时任务的开始时间必须大于当前时间',
-                  type: 'error',
-                  duration: 2 * 1000
-                })
+                // Message({
+                //   message: '定时任务的开始时间必须大于当前时间',
+                //   type: 'error',
+                //   duration: 2 * 1000
+                // })
+                return { message: "error", content: '定时任务的开始时间必须大于当前时间'};
               } else {
                 Message({
                   message: error.response.data.message || 'error',
