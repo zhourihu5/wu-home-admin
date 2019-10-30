@@ -46,7 +46,8 @@ export default {
         order: 'order',
         examine: 'examine',
         examineIndex: 'Residence Audit',
-        busunessIndex: 'Business'
+        busunessIndex: 'Business',
+        verification: 'Verification'
     },
     table: {
         id: 'ID',
@@ -199,7 +200,8 @@ export default {
         role: 'Role',
         identity: "Identity",
         verifyPhone: "Verify Phone",
-        familyMemList: "Family Membership Information Table"
+        familyMemList: "Family Membership Information Table",
+        verificationCode: "verification Code"
     },
     form: {
         title: 'Title',
@@ -394,6 +396,7 @@ export default {
         grant: "Confirmation of issuance?",
         notifySuccess: {
             title: 'Success',
+            tips: 'tips',
             message: 'Congratulations on your success',
             message1: 'Congratulations on the success of the revision',
             message2: 'Congratulations on your success in saving and launching',
@@ -404,7 +407,8 @@ export default {
             message7: 'Congratulations on your success',
             message8: 'Congratulations on your success',
             message9: 'Loading success',
-            message10: 'Congratulations on the success of data entry'
+            message10: 'Congratulations on the success of data entry',
+            message11: '验证码发送'
         },
         login: {
             nickName: 'Please enter your account number.',

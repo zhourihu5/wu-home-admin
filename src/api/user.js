@@ -45,6 +45,15 @@ export function removeUser(data) {
   })
 }
 
+// 发送验证码
+export function addPhoneCode(params) {
+  return request({
+    url: '/v1/user/addPhoneCode',
+    method: 'get',
+    params
+  })
+}
+
 // 获取角色列表
 export function getRoleList() {
   return new Promise(function (resolve, reject) {

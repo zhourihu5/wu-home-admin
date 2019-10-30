@@ -50,6 +50,7 @@ export default {
         coupon: '优惠券管理',
         couponIndex: '优惠券',
         permission: '权限管理',
+        verification: '验证码管理'
     },
     table: {
         id: 'ID',
@@ -205,7 +206,8 @@ export default {
         role: '角色',
         identity: "成员身份",
         verifyPhone: "验证手机号",
-        familyMemList: "家庭成员信息表"
+        familyMemList: "家庭成员信息表",
+        verificationCode: "验证码"
     },
     form: {
         title: '标题',
@@ -396,6 +398,7 @@ export default {
         grant: "确认发放吗",
         notifySuccess: {
             title: '成功',
+            tips: '提示',
             message: '恭喜您,保存成功',
             message1: '恭喜您,修改成功',
             message2: '恭喜您,保存并投放成功',
@@ -406,7 +409,8 @@ export default {
             message7: '恭喜您,操作成功',
             message8: '恭喜您,发放成功',
             message9: '加载成功',
-            message10: '恭喜您,数据到入成功'
+            message10: '恭喜您,数据到入成功',
+            message11: '验证码发送成功'
         },
         login: {
             nickName: '请输入账号',
