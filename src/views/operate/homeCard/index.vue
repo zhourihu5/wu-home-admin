@@ -67,6 +67,10 @@
               size="mini"
               @click="stopPushing(row)"
             >{{ $t('table.stopPushing') }}</el-button>
+             <el-button
+              size="mini"
+              @click="edit(row)"
+            >{{ $t('table.edit') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -236,6 +240,10 @@ export default {
     // 页签切换
     handleClick(tab, event) {
       this.index = tab.index;
+    },
+    // 编辑
+    edit(row) {
+
     },
     close() {
       this.dialogFormVisible = false;

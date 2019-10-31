@@ -199,7 +199,7 @@
           prop="deliveryHour"
           class="delivery-time"
         >
-          <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.groupBuying')" />
+          <el-input v-model="buyingForm.deliveryHour" :placeholder="$t('table.temp.content')" />
           <span>小时</span>
         </el-form-item>
         <!-- 自提 -->
