@@ -135,7 +135,7 @@
           <el-form-item :label="$t('form.validDate')" prop="validDate">
             <el-date-picker
               v-model="queryDate"
-              type="daterange"
+              type="datetimerange"
               range-separator="至"
               :start-placeholder="$t('form.startTime')"
               :end-placeholder="$t('form.endTime')"
